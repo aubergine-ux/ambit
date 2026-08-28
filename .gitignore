@@ -1,0 +1,12 @@
+
+# local signing key and SDK path stay out of version control
+app/civops-release.jks
+local.properties
+.gradle/
+build/
+app/build/
+*.iml
+.idea/
+.kotlin/
+.directory
+CLAUDE.md
