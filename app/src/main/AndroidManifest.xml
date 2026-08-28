@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+      Location is not optional. Android gates every Wi-Fi and BLE scan result behind it:
+      without the grant, getScanResults() returns an empty list and the app has nothing to
+      display. It is also what the tracker correlator needs, since deciding whether a
+      beacon followed you means knowing you were somewhere else.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- Required to call WifiManager.startScan(), despite the name. -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+
+    <!--
+      Deliberately WITHOUT android:usesPermissionFlags="neverForLocation".
+
+      That flag is tempting for the privacy optics, but it strips location out of BLE scan
+      results, and location is exactly what the correlator consumes. Taking the
+      better-looking flag would quietly break the one feature that justifies this app.
+      The onboarding screen explains the requirement in plain words instead.
+    -->
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
+    <!-- Pre-31 Bluetooth. Capped so they are not requested on newer releases. -->
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH_ADMIN"
+        android:maxSdkVersion="30" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!--
+      android.permission.INTERNET is absent, and its absence is the design.
+
+      With no network permission the platform itself guarantees the offline claim: this
+      APK cannot make an outbound request even if a future dependency tried to. If a change
+      ever needs this line, that change needs a conversation first.
+    -->
+
+    <uses-feature
+        android:name="android.hardware.wifi"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.bluetooth_le"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.location.gps"
+        android:required="false" />
+
+    <application
+        android:name=".CivOpsApplication"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.CivOps"
+        tools:targetApi="34">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:screenOrientation="unspecified"
+            android:theme="@style/Theme.CivOps"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--
+          Both types are declared because both are used: `location` so observations can be
+          geotagged with the screen off, `connectedDevice` for the Bluetooth radio. On
+          Android 14+ a mismatch here kills the process at startForeground rather than at
+          first use, so the UI gates its start buttons on the runtime grant.
+        -->
+        <service
+            android:name=".scan.ScanService"
+            android:exported="false"
+            android:foregroundServiceType="location|connectedDevice" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.exports"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+    </application>
+</manifest>

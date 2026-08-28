@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Exports live in the app cache and are shared only when the user picks a target. -->
+    <cache-path name="exports" path="exports/" />
+</paths>
