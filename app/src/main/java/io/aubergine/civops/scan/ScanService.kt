@@ -1,0 +1,226 @@
+package io.aubergine.civops.scan
+
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.Context
+import android.content.Intent
+import android.content.pm.ServiceInfo
+import android.os.Build
+import android.os.IBinder
+import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
+import androidx.core.content.ContextCompat
+import dagger.hilt.android.AndroidEntryPoint
+import io.aubergine.civops.MainActivity
+import io.aubergine.civops.R
+import io.aubergine.civops.data.repo.ObservationRepository
+import io.aubergine.civops.data.repo.SettingsRepository
+import io.aubergine.civops.model.Observation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+/**
+ * Keeps the radios running with the screen off, and owns the write path into the log.
+ *
+ * ## Foreground service type
+ *
+ * Android 14 requires a declared type and a matching runtime permission, and gets it wrong
+ * loudly: the process is killed at start, not at first use. We declare `location` because
+ * geotagged observations are the entire point — a sighting with no fix cannot feed the
+ * correlator — and `connectedDevice` for the Bluetooth radio. Both need their permission
+ * granted *before* `startForeground`, which is why the UI gates the start button on the
+ * permission state rather than starting hopefully and handling failure.
+ */
+@AndroidEntryPoint
+class ScanService : Service() {
+
+    @Inject lateinit var coordinator: ScanCoordinator
+    @Inject lateinit var repository: ObservationRepository
+    @Inject lateinit var settings: SettingsRepository
+
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    private val pending = ArrayDeque<Observation>()
+    private val lock = Any()
+
+    override fun onBind(intent: Intent?): IBinder? = null
+
+    override fun onCreate() {
+        super.onCreate()
+        createChannel()
+        startForegroundCompat()
+        collectObservations()
+        startFlushLoop()
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.action) {
+            ACTION_STOP -> {
+                coordinator.stopAll()
+                stopSelf()
+                return START_NOT_STICKY
+            }
+            ACTION_START_WIFI -> scope.launch {
+                coordinator.startWifi(scope, settings.settings.first().wifiIntervalMs)
+            }
+            ACTION_START_BLE -> coordinator.startBle(scope)
+            ACTION_STOP_BLE -> coordinator.stopBle()
+            ACTION_STOP_WIFI -> coordinator.stopWifi()
+        }
+        // Restarting with no intent would resume scanning the user did not ask for, so we
+        // do not redeliver. A killed session stays stopped until the user starts it again.
+        return START_NOT_STICKY
+    }
+
+    override fun onDestroy() {
+        coordinator.stopAll()
+        scope.launch { flush() }
+        scope.cancel()
+        super.onDestroy()
+    }
+
+    private fun collectObservations() {
+        scope.launch {
+            repository.warmUp()
+            coordinator.observations.collect { observation ->
+                synchronized(lock) { pending.addLast(observation) }
+            }
+        }
+    }
+
+    /**
+     * Drains the buffer on a fixed cadence rather than per advertisement. A busy BLE
+     * environment produces hundreds of packets a minute and one transaction each would
+     * make the database the bottleneck instead of the radio.
+     */
+    private fun startFlushLoop() {
+        scope.launch {
+            while (true) {
+                kotlinx.coroutines.delay(FLUSH_INTERVAL_MS)
+                flush()
+                updateNotification()
+            }
+        }
+    }
+
+    private suspend fun flush() {
+        val batch = synchronized(lock) {
+            if (pending.isEmpty()) return
+            val copy = pending.toList()
+            pending.clear()
+            copy
+        }
+        runCatching { repository.record(batch) }
+    }
+
+    private fun startForegroundCompat() {
+        val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION or
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
+        } else {
+            0
+        }
+        runCatching {
+            ServiceCompat.startForeground(this, NOTIFICATION_ID, buildNotification(), type)
+        }
+    }
+
+    private fun updateNotification() {
+        val manager = ContextCompat.getSystemService(this, NotificationManager::class.java)
+        runCatching { manager?.notify(NOTIFICATION_ID, buildNotification()) }
+    }
+
+    private fun buildNotification(): Notification {
+        val wifi = coordinator.wifiRequested.value
+        val ble = coordinator.bleRequested.value
+        val radios = buildList {
+            if (wifi) add(getString(R.string.radio_wifi))
+            if (ble) add(getString(R.string.radio_ble))
+        }
+        val text = if (radios.isEmpty()) {
+            getString(R.string.notification_idle)
+        } else {
+            getString(R.string.notification_active, radios.joinToString(" + "))
+        }
+
+        val open = PendingIntent.getActivity(
+            this,
+            0,
+            Intent(this, MainActivity::class.java)
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+        val stop = PendingIntent.getService(
+            this,
+            1,
+            Intent(this, ScanService::class.java).setAction(ACTION_STOP),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+
+        return NotificationCompat.Builder(this, CHANNEL_SCAN)
+            .setContentTitle(getString(R.string.notification_title))
+            .setContentText(text)
+            .setSmallIcon(R.drawable.ic_stat_scan)
+            .setOngoing(true)
+            .setSilent(true)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setContentIntent(open)
+            .addAction(0, getString(R.string.action_stop), stop)
+            .build()
+    }
+
+    private fun createChannel() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+        val manager = ContextCompat.getSystemService(this, NotificationManager::class.java) ?: return
+        manager.createNotificationChannel(
+            NotificationChannel(
+                CHANNEL_SCAN,
+                getString(R.string.channel_scan),
+                NotificationManager.IMPORTANCE_LOW,
+            ).apply {
+                description = getString(R.string.channel_scan_description)
+                setShowBadge(false)
+            },
+        )
+        manager.createNotificationChannel(
+            NotificationChannel(
+                CHANNEL_ALERTS,
+                getString(R.string.channel_alerts),
+                NotificationManager.IMPORTANCE_HIGH,
+            ).apply {
+                description = getString(R.string.channel_alerts_description)
+            },
+        )
+    }
+
+    companion object {
+        const val CHANNEL_SCAN = "civops_scan"
+        const val CHANNEL_ALERTS = "civops_alerts"
+        const val NOTIFICATION_ID = 4201
+
+        const val ACTION_START_WIFI = "io.aubergine.civops.START_WIFI"
+        const val ACTION_STOP_WIFI = "io.aubergine.civops.STOP_WIFI"
+        const val ACTION_START_BLE = "io.aubergine.civops.START_BLE"
+        const val ACTION_STOP_BLE = "io.aubergine.civops.STOP_BLE"
+        const val ACTION_STOP = "io.aubergine.civops.STOP"
+
+        private const val FLUSH_INTERVAL_MS = 3_000L
+
+        fun send(context: Context, action: String) {
+            val intent = Intent(context, ScanService::class.java).setAction(action)
+            ContextCompat.startForegroundService(context, intent)
+        }
+
+        fun stop(context: Context) {
+            context.startService(Intent(context, ScanService::class.java).setAction(ACTION_STOP))
+        }
+    }
+}
