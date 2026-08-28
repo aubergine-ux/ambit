@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CIVOPS</string>
+
+    <string name="radio_wifi">Wi-Fi</string>
+    <string name="radio_ble">BLE</string>
+
+    <!-- Foreground service -->
+    <string name="notification_title">CIVOPS observation active</string>
+    <string name="notification_active">Scanning: %1$s</string>
+    <string name="notification_idle">Idle - no radio running</string>
+    <string name="channel_scan">Observation session</string>
+    <string name="channel_scan_description">Shown while the app is observing Wi-Fi or Bluetooth broadcasts.</string>
+    <string name="channel_alerts">Tracker alerts</string>
+    <string name="channel_alerts_description">Raised when a beacon has been seen following you across several places.</string>
+    <string name="action_stop">STOP</string>
+
+    <!-- Tracker notification -->
+    <string name="alert_tracker_title">Possible tracker: %1$s</string>
+    <string name="alert_tracker_body">Seen at %1$d separate places under %2$d rotating addresses, spread over %3$d m. Open CIVOPS to review the evidence.</string>
+
+    <!-- Radar panel -->
+    <string name="panel_radar">RADAR</string>
+    <string name="radar_caption">Passive RSSI visualization - not location. Distance is estimated from signal strength; bearing is arbitrary.</string>
+    <string name="radar_shapes">Wi-Fi circle | BLE square | ring spacing is estimated distance</string>
+    <string name="radar_counts">Wi-Fi points: %1$d | BLE points: %2$d | Last refresh: %3$ss</string>
+
+    <!-- Wi-Fi panel -->
+    <string name="panel_wifi">WI-FI</string>
+    <string name="wifi_needs_location">Location permission not granted. Android returns no scan results at all without it.</string>
+    <string name="wifi_disabled">Wi-Fi is switched off. Turn it on to observe; the app never connects to anything.</string>
+    <string name="wifi_waiting">Waiting for the first scan to return.</string>
+    <string name="wifi_idle">Not scanning. Press START WI-FI to begin.</string>
+    <string name="showing_top">Showing top %1$d of %2$d</string>
+    <string name="wifi_throttled_hint">Scan throttling active. Android caps startScan at 4 calls per 2 minutes. Turn off "Wi-Fi scan throttling" in Developer Options for a faster refresh.</string>
+    <string name="action_start_wifi">START WI-FI</string>
+    <string name="action_stop_wifi">STOP WI-FI</string>
+
+    <!-- BLE panel -->
+    <string name="panel_ble">BLE</string>
+    <string name="action_start_ble">START BLE</string>
+    <string name="action_stop_ble">STOP BLE</string>
+    <string name="action_show_ble_details">SHOW BLE DETAILS</string>
+    <string name="action_hide_ble_details">HIDE BLE DETAILS</string>
+    <string name="ble_status">BLE status: %1$s</string>
+    <string name="ble_optional">BLE is optional. Start it when you want Bluetooth observation.</string>
+    <string name="ble_unsupported">This device reports no Bluetooth LE support.</string>
+    <string name="ble_needs_permission">Nearby devices permission not granted.</string>
+    <string name="ble_adapter_off">Bluetooth is switched off.</string>
+    <string name="ble_rotation_note">Most BLE addresses rotate every ~15 minutes, so this count overstates how many physical devices are present.</string>
+
+    <!-- Export panel -->
+    <string name="panel_export">EXPORT</string>
+    <string name="export_caption">Write a snapshot of the current environment to a file you can share yourself.</string>
+    <string name="action_export_csv">CSV EXPORT</string>
+    <string name="action_export_json">JSON EXPORT</string>
+    <string name="action_export_debrief">DEBRIEF EXPORT</string>
+    <string name="export_offline_note">Built on-device. The debrief is plain text you can paste into any model you choose - the app never sends it anywhere itself.</string>
+
+    <!-- Scope panel -->
+    <string name="panel_scope">WHAT THIS DOES AND DOES NOT DO</string>
+    <string name="scope_body">Observes: Wi-Fi and Bluetooth metadata broadcast publicly by nearby hardware.
+Does not identify people or vehicles.
+Does not intercept traffic. Advertisement and beacon metadata only.
+Does not find a camera recording to an SD card. Only things actively broadcasting.
+Cannot give a bearing. One antenna gives distance estimates, not direction.
+No camera. No microphone. No network calls. No accounts.</string>
+
+    <!-- Alerts -->
+    <string name="alerts_banner">%1$d TRACKER ALERT(S) - REVIEW</string>
+    <string name="panel_method">CORRELATION METHOD</string>
+    <string name="alerts_method_body">Bluetooth trackers rotate their address every few minutes, so the address is useless as identity. Instead each advertisement is reduced to a signature: company ID, service UUIDs, payload shape, and the payload bytes that stay fixed across a key rotation.
+A signature is flagged only when it turns up at three or more spatially separated GPS fixes, with a real time gap between them, outside any place you have marked as known.
+The threshold is deliberately high. Two locations is usually a coincidence, and an alert that cries wolf gets ignored.</string>
+    <string name="action_run_correlation">RUN CORRELATION NOW</string>
+    <string name="panel_no_alerts">NO ALERTS</string>
+    <string name="alerts_empty_body">Nothing has met the threshold. This is the expected state.
+Correlation needs GPS fixes at several separate places over time, so a session that has not moved will never produce an alert no matter what is nearby.</string>
+    <string name="alerts_card_note">This is a correlation, not an identification. Check whether it belongs to you or someone you were with before treating it as anything else.</string>
+    <string name="action_dismiss">DISMISS</string>
+
+    <!-- Detail -->
+    <string name="detail_missing">That device is no longer in the log.</string>
+    <string name="action_back">BACK</string>
+    <string name="panel_signal_trace">SIGNAL TRACE</string>
+    <string name="detail_trace_empty">Not enough sightings yet to draw a trace.</string>
+    <string name="detail_trace_note">RSSI over time, fixed -100 to -20 dBm scale. Movement here is as often multipath or body shadowing as it is real distance change.</string>
+    <string name="panel_sightings">SIGHTING HISTORY</string>
+    <string name="detail_no_fixes">No sighting of this device carried a GPS fix, so it cannot contribute to correlation.</string>
+
+    <!-- Settings -->
+    <string name="panel_scan_settings">SCAN</string>
+    <string name="settings_interval_label">Wi-Fi scan interval</string>
+    <string name="settings_interval_warning">Below 30s, Android will refuse most of these requests and serve cached results instead. Turn off "Wi-Fi scan throttling" in Developer Options to make it real.</string>
+    <string name="settings_list_limit_label">Devices shown in list</string>
+    <string name="settings_keep_screen_on">Keep screen on while open</string>
+    <string name="panel_alerts_settings">ALERTS</string>
+    <string name="settings_audio_alerts">Audio cues</string>
+    <string name="settings_alert_priority">Beep on priority-vendor hardware</string>
+    <string name="settings_alert_new">Beep on every new device</string>
+    <string name="settings_tracker_alerts">Tracker correlation alerts</string>
+    <string name="panel_known_places">KNOWN PLACES</string>
+    <string name="settings_known_places_body">Correlation is suppressed inside a known place. Without this, a tracker in your own home flags itself every day and you stop reading the alerts.</string>
+    <string name="action_mark_here_safe">MARK CURRENT LOCATION AS KNOWN</string>
+    <string name="settings_no_known_places">No known places saved.</string>
+    <string name="panel_data">DATA</string>
+    <string name="settings_retention_label">Keep observations for</string>
+    <string name="action_prune">PRUNE OLD OBSERVATIONS</string>
+    <string name="action_clear_all">CLEAR ENTIRE LOG</string>
+    <string name="panel_about">ABOUT</string>
+    <string name="about_body">Everything runs on-device. No network calls, no telemetry, no accounts.
+Vendor names come from a bundled copy of the public IEEE OUI registry.</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_what_title">WHAT THIS IS</string>
+    <string name="onboarding_what_body">A passive observer of the radio environment around you.
+It logs Wi-Fi and Bluetooth broadcasts over time, names the manufacturer behind an address where it can, and warns you if a Bluetooth beacon appears to be following you between places.
+Everything happens on this device.</string>
+    <string name="onboarding_cannot_title">WHAT IT CANNOT DO</string>
+    <string name="onboarding_cannot_body">It cannot find a camera recording to an SD card. Only things actively broadcasting appear.
+It cannot identify people or vehicles.
+It does not intercept traffic - advertisement and beacon metadata only.
+It cannot tell you which direction something is in. One antenna gives a rough distance, never a bearing.
+Vendor labels describe a manufacturer, not who owns a device or what it is being used for.</string>
+    <string name="onboarding_location_title">WHY IT NEEDS LOCATION</string>
+    <string name="onboarding_location_body">Android ties every scan result to the location permission. Without it, the system returns an empty list and there is nothing to show at all. That is a platform rule, not a choice this app made.
+Location is also what makes the tracker correlator work: deciding whether a beacon has followed you means knowing you were in different places.
+Your position is written to the local log and nowhere else.</string>
+    <string name="onboarding_offline_title">OFFLINE BY DESIGN</string>
+    <string name="onboarding_offline_body">No network permission is requested. No telemetry, no accounts, no cloud.
+The debrief export is plain text. If you want a model to read it, you paste it yourself - the app never sends anything anywhere.</string>
+    <string name="action_grant_permissions">GRANT PERMISSIONS</string>
+    <string name="action_continue">CONTINUE</string>
+
+    <!-- Navigation -->
+    <string name="tab_ops">OPS</string>
+    <string name="tab_alerts">ALERTS</string>
+    <string name="tab_alerts_count">ALERTS (%1$d)</string>
+    <string name="tab_settings">SETTINGS</string>
+    <!-- Field labels used across the readouts -->
+    <string name="field_bssid">BSSID</string>
+    <string name="field_mac">MAC</string>
+    <string name="field_address">Address</string>
+    <string name="field_radio">Radio</string>
+    <string name="field_category">Category</string>
+    <string name="field_vendor">Vendor</string>
+    <string name="field_rssi">RSSI</string>
+    <string name="field_frequency">Frequency</string>
+    <string name="field_channel">Channel</string>
+    <string name="field_capabilities">Capabilities</string>
+    <string name="field_first_seen">First Seen</string>
+    <string name="field_last_seen">Last Seen</string>
+    <string name="field_last_rssi">Last RSSI</string>
+    <string name="field_best_rssi">Best RSSI</string>
+    <string name="field_est_distance">Est. distance</string>
+    <string name="field_observations">Observations</string>
+    <string name="field_geotagged">Geotagged sightings</string>
+    <string name="field_spread">Spread</string>
+    <string name="field_distinct_locations">Distinct locations</string>
+    <string name="field_addresses_observed">Addresses observed</string>
+    <string name="field_closest_signal">Closest signal</string>
+    <string name="field_company_id">Company ID</string>
+    <string name="field_ble_count">BLE count</string>
+    <string name="field_advertisements">Advertisements</string>
+    <string name="field_advertisements_per_min">Advertisements/min</string>
+    <string name="field_randomized">Randomized</string>
+    <string name="field_newest_advertiser">Newest advertiser</string>
+    <string name="field_strongest_advertiser">Strongest advertiser</string>
+    <string name="field_observations_stored">Observations stored</string>
+    <string name="field_version">Version</string>
+    <string name="field_package">Package</string>
+
+    <!-- Values that are themselves prose -->
+    <string name="value_randomized_no_vendor">randomized address - no vendor</string>
+    <string name="value_not_in_registry">not in registry</string>
+    <string name="value_seconds_ago">%1$ds ago</string>
+    <string name="value_dbm">%1$d dBm</string>
+    <string name="value_metres">%1$d m</string>
+    <string name="value_rotating">%1$d  (MAC rotation)</string>
+    <string name="value_of_total">%1$d of %2$d</string>
+    <string name="value_advertiser_summary">%1$s | %2$s | %3$d dBm</string>
+    <string name="value_rssi_with_proximity">%1$d dBm (%2$s)</string>
+    <string name="value_approx_metres">~%1$d m</string>
+    <string name="value_frequency_band">%1$d MHz (%2$s)</string>
+    <string name="value_channel_band">%1$d  (%2$s)</string>
+    <string name="chip_throttled">THROTTLED</string>
+    <string name="chip_remove">REMOVE</string>
+    <string name="trace_range">%1$d dBm .. %2$d dBm over %3$d sightings</string>
+
+    <!-- Transient feedback -->
+    <string name="toast_export_saved">Saved %1$s (%2$d bytes)</string>
+    <string name="toast_no_fix_yet">No location fix yet. Wait for GPS and try again.</string>
+    <string name="toast_known_place_saved">Saved \"%1$s\" as a known place.</string>
+    <string name="toast_pruned">Removed %1$d observations older than %2$d days.</string>
+    <string name="toast_log_cleared">Observation log cleared.</string>
+    <string name="toast_correlation_clean">Correlation complete. Nothing met the threshold.</string>
+    <string name="toast_correlation_flagged">Correlation complete. %1$d signature(s) flagged.</string>
+    <string name="toast_export_failed">Export failed.</string>
+    <string name="toast_correlation_failed">Correlation failed.</string>
+    <string name="default_known_place_label">Known place</string>
+    <!-- Export screen -->
+    <string name="panel_export_tabular">TABULAR EXPORT</string>
+    <string name="export_tabular_caption">Machine-readable snapshots. Timestamps are UTC epoch milliseconds alongside ISO-8601, so a file still means something a year from now.</string>
+    <string name="action_export_devices_csv">DEVICE TABLE (CSV)</string>
+    <string name="action_export_log_csv">OBSERVATION LOG (CSV)</string>
+    <string name="panel_export_debrief">DEBRIEF</string>
+    <string name="export_debrief_caption">A plain-text summary of the environment: totals, density, band spread, category breakdown, notable hardware, and the limits of the method.
+Written to be pasted into a language model of your choosing, or read as-is.</string>
+    <string name="action_preview_debrief">PREVIEW DEBRIEF</string>
+    <string name="panel_debrief_preview">PREVIEW</string>
+    <string name="panel_share">SHARE</string>
+    <string name="action_share_last">SHARE LAST EXPORT</string>
+    <string name="export_nothing_yet">Nothing exported yet this session.</string>
+    <string name="tab_export">EXPORT</string>
+</resources>

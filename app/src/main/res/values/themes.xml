@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      The app draws its own dark surface in Compose. This theme exists to keep the window
+      background and system bars dark from the very first frame, so launching does not
+      flash white on a night drive.
+    -->
+    <style name="Theme.CivOps" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/civ_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:colorAccent">@color/civ_accent</item>
+        <item name="android:textColor">@color/civ_text</item>
+    </style>
+</resources>
