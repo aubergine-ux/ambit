@@ -114,6 +114,7 @@ class LocateViewModel @Inject constructor(
             ScanService.send(context, ScanService.ACTION_START_BLE)
             startedBle = true
         }
+        coordinator.setBoost(true)
         viewModelScope.launch {
             coordinator.observations.collect { o ->
                 if (!matcher.matches(o)) return@collect
@@ -186,6 +187,7 @@ class LocateViewModel @Inject constructor(
 
     override fun onCleared() {
         soundJob?.cancel()
+        coordinator.setBoost(false)
         if (startedBle) ScanService.send(context, ScanService.ACTION_STOP_BLE)
         super.onCleared()
     }

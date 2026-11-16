@@ -86,7 +86,7 @@ class BleScanner @Inject constructor(
         _status.value = _status.value.copy(advertisementCount = 0, distinctAddresses = 0)
     }
 
-    fun observations(): Flow<Observation> = callbackFlow {
+    fun observations(mode: BleMode = BleMode.BALANCED): Flow<Observation> = callbackFlow {
         val scanner = adapter?.takeIf { it.isEnabled }?.bluetoothLeScanner
         if (scanner == null || !hasPermission()) {
             _status.value = _status.value.copy(
@@ -133,7 +133,13 @@ class BleScanner @Inject constructor(
         val trackers = callback(fatal = false)
 
         val settings = ScanSettings.Builder()
-            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+            .setScanMode(
+                when (mode) {
+                    BleMode.LOW_POWER -> ScanSettings.SCAN_MODE_LOW_POWER
+                    BleMode.BALANCED -> ScanSettings.SCAN_MODE_BALANCED
+                    BleMode.LOW_LATENCY -> ScanSettings.SCAN_MODE_LOW_LATENCY
+                },
+            )
             // Report every advertisement rather than one per device: rotations and RSSI
             // movement are the signal, and a first-match-only mode would hide both.
             .apply {

@@ -1,8 +1,12 @@
 package io.aubergine.ambit.scan
 
 import io.aubergine.ambit.model.Observation
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,13 +15,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-import javax.inject.Singleton
+import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * Merges the two radios into one observation stream and owns their lifecycles.
@@ -33,6 +40,8 @@ class ScanCoordinator @Inject constructor(
     private val wifiScanner: WifiScanner,
     private val bleScanner: BleScanner,
     private val locationSource: LocationSource,
+    private val motionMonitor: MotionMonitor,
+    private val power: PowerState,
 ) {
 
     data class State(
@@ -61,6 +70,31 @@ class ScanCoordinator @Inject constructor(
 
     private val _locationAvailable = MutableStateFlow(false)
     val locationAvailable: StateFlow<Boolean> = _locationAvailable.asStateFlow()
+
+    private val boost = MutableStateFlow(false)
+    private val atKnownPlace = MutableStateFlow(false)
+
+    /** Set by the service, which can see the user's known places. */
+    @Volatile var isKnownPlace: (Double, Double) -> Boolean = { _, _ -> false }
+
+    /** The radio plan for right now. Changes restart scanning with new settings. */
+    val plan: StateFlow<ScanPlan> = combine(motionMonitor.motion, atKnownPlace, power.saving, boost) { motion, known, saving, boosted ->
+        ScanPlan.forState(motion, known, saving, boosted)
+    }.distinctUntilChanged().stateIn(
+        kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.Default + kotlinx.coroutines.SupervisorJob()),
+        SharingStarted.Eagerly,
+        ScanPolicy.plan(Motion.UNKNOWN, false, false, false),
+    )
+
+    private val _bleActiveMillis = MutableStateFlow(0L)
+
+    /** Time the BLE radio has actually spent scanning this process, for the battery panel. */
+    val bleActiveMillis: StateFlow<Long> = _bleActiveMillis.asStateFlow()
+
+    /** Locate mode wants every packet, whatever the battery plan says. */
+    fun setBoost(on: Boolean) {
+        boost.value = on
+    }
 
     private var wifiJob: Job? = null
     private var bleJob: Job? = null
@@ -98,10 +132,10 @@ class ScanCoordinator @Inject constructor(
         _bleRequested.value = true
         bleScanner.refreshStatus()
         ensureLocation(scope)
-        bleJob = bleScanner.observations()
-            .catch { }
-            .onEach { _observations.emit(it) }
-            .launchIn(scope)
+        motionMonitor.start()
+        bleJob = scope.launch {
+            plan.collectLatest { p -> runBle(p) }
+        }
         _running.value = true
     }
 
@@ -113,9 +147,33 @@ class ScanCoordinator @Inject constructor(
         _running.value = wifiJob?.isActive == true
     }
 
+    /** Continuous, or in windows with pauses between them, as the plan says. */
+    private suspend fun runBle(p: ScanPlan) {
+        val window = p.onMillis
+        if (window == null) {
+            val started = System.currentTimeMillis()
+            try {
+                bleScanner.observations(p.bleMode).catch { }.collect { _observations.emit(it) }
+            } finally {
+                _bleActiveMillis.value += System.currentTimeMillis() - started
+            }
+            return
+        }
+        while (currentCoroutineContext().isActive) {
+            val started = System.currentTimeMillis()
+            withTimeoutOrNull(window) {
+                bleScanner.observations(p.bleMode).catch { }.collect { _observations.emit(it) }
+            }
+            _bleActiveMillis.value += System.currentTimeMillis() - started
+            delay(p.offMillis)
+        }
+    }
+
     fun stopAll() {
         stopWifi()
         stopBle()
+        motionMonitor.stop()
+        boost.value = false
         locationJob?.cancel()
         locationJob = null
         _locationAvailable.value = false
@@ -126,9 +184,17 @@ class ScanCoordinator @Inject constructor(
         if (locationJob?.isActive == true) return
         _locationAvailable.value = locationSource.hasPermission() && locationSource.isLocationEnabled()
         locationJob = scope.launch {
-            locationSource.updates()
-                .catch { }
-                .collect { _locationAvailable.value = true }
+            plan.map { it.locationIntervalMillis to it.locationMinDistanceMeters }
+                .distinctUntilChanged()
+                .collectLatest { (interval, distance) ->
+                    locationSource.updates(interval, distance)
+                        .catch { }
+                        .collect { location ->
+                            _locationAvailable.value = true
+                            motionMonitor.onLocation(location)
+                            atKnownPlace.value = isKnownPlace(location.latitude, location.longitude)
+                        }
+                }
         }
     }
 }
