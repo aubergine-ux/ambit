@@ -7,12 +7,14 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import io.aubergine.ambit.analysis.Sensitivity
 import io.aubergine.ambit.scan.WifiScanner
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 private val Context.settingsStore: DataStore<Preferences> by preferencesDataStore("ambit_settings")
 
@@ -35,6 +37,9 @@ class SettingsRepository @Inject constructor(
         val retentionDays: Int = DEFAULT_RETENTION_DAYS,
         val onboardingComplete: Boolean = false,
         val radarRimMeters: Int = DEFAULT_RADAR_RIM_M,
+        val sensitivity: Sensitivity = Sensitivity.STANDARD,
+        val wifiFollowAlerts: Boolean = true,
+        val glassesAlerts: Boolean = false,
     )
 
     val settings: Flow<Settings> = context.settingsStore.data.map { p ->
@@ -51,6 +56,10 @@ class SettingsRepository @Inject constructor(
             retentionDays = p[KEY_RETENTION_DAYS] ?: DEFAULT_RETENTION_DAYS,
             onboardingComplete = p[KEY_ONBOARDING] ?: false,
             radarRimMeters = p[KEY_RADAR_RIM] ?: DEFAULT_RADAR_RIM_M,
+            sensitivity = p[KEY_SENSITIVITY]?.let { runCatching { Sensitivity.valueOf(it) }.getOrNull() }
+                ?: Sensitivity.STANDARD,
+            wifiFollowAlerts = p[KEY_WIFI_FOLLOW] ?: true,
+            glassesAlerts = p[KEY_GLASSES] ?: false,
         )
     }
 
@@ -66,6 +75,9 @@ class SettingsRepository @Inject constructor(
     suspend fun setRetentionDays(value: Int) = put(KEY_RETENTION_DAYS, value)
     suspend fun setOnboardingComplete(value: Boolean) = put(KEY_ONBOARDING, value)
     suspend fun setRadarRim(value: Int) = put(KEY_RADAR_RIM, value)
+    suspend fun setSensitivity(value: Sensitivity) = put(KEY_SENSITIVITY, value.name)
+    suspend fun setWifiFollowAlerts(value: Boolean) = put(KEY_WIFI_FOLLOW, value)
+    suspend fun setGlassesAlerts(value: Boolean) = put(KEY_GLASSES, value)
 
     private suspend fun <T> put(key: Preferences.Key<T>, value: T) {
         context.settingsStore.edit { it[key] = value }
@@ -98,5 +110,8 @@ class SettingsRepository @Inject constructor(
         private val KEY_RETENTION_DAYS = intPreferencesKey("retention_days")
         private val KEY_ONBOARDING = booleanPreferencesKey("onboarding_complete")
         private val KEY_RADAR_RIM = intPreferencesKey("radar_rim_m")
+        private val KEY_SENSITIVITY = stringPreferencesKey("sensitivity")
+        private val KEY_WIFI_FOLLOW = booleanPreferencesKey("wifi_follow_alerts")
+        private val KEY_GLASSES = booleanPreferencesKey("glasses_alerts")
     }
 }

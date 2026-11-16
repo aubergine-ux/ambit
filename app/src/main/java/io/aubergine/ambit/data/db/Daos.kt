@@ -25,6 +25,9 @@ interface ObservationDao {
     @Query("SELECT * FROM observations WHERE radio = 'BLE' AND timestamp >= :since AND latitude IS NOT NULL ORDER BY timestamp ASC")
     suspend fun geotaggedBleSince(since: Long): List<ObservationEntity>
 
+    @Query("SELECT * FROM observations WHERE radio IN (:radios) AND timestamp >= :since AND latitude IS NOT NULL ORDER BY timestamp ASC")
+    suspend fun geotaggedSince(since: Long, radios: List<String>): List<ObservationEntity>
+
     @Query("SELECT COUNT(*) FROM observations")
     fun count(): Flow<Int>
 

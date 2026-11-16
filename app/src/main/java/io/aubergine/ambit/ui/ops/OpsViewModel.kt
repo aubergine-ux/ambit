@@ -305,7 +305,13 @@ class OpsViewModel @Inject constructor(
     fun runCorrelatorNow() {
         viewModelScope.launch {
             _busy.value = true
-            val fresh = runCatching { repository.refreshTrackerAlerts() }
+            val current = settingsRepository.settings.first()
+            val fresh = runCatching {
+                repository.refreshTrackerAlerts(
+                    config = current.sensitivity.config(),
+                    includeWifi = current.wifiFollowAlerts,
+                )
+            }
                 .getOrElse {
                     events.send(
                         Event.Failed(

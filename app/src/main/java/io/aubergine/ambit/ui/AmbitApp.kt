@@ -243,6 +243,9 @@ fun AmbitApp(startOnAlerts: Boolean = false) {
                     onSetAlertNew = settingsViewModel::setAlertOnNewDevice,
                     onSetAlertPriority = settingsViewModel::setAlertOnPriority,
                     onSetTrackerAlerts = settingsViewModel::setTrackerAlerts,
+                    onSetSensitivity = settingsViewModel::setSensitivity,
+                    onSetWifiFollow = settingsViewModel::setWifiFollowAlerts,
+                    onSetGlasses = settingsViewModel::setGlassesAlerts,
                     onSetKeepScreenOn = settingsViewModel::setKeepScreenOn,
                     onMarkSafeZone = {
                         settingsViewModel.markCurrentLocationSafe(

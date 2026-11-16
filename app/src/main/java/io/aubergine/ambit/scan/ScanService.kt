@@ -16,8 +16,10 @@ import androidx.core.content.ContextCompat
 import dagger.hilt.android.AndroidEntryPoint
 import io.aubergine.ambit.MainActivity
 import io.aubergine.ambit.R
+import io.aubergine.ambit.analysis.DeviceHints
 import io.aubergine.ambit.data.repo.ObservationRepository
 import io.aubergine.ambit.data.repo.SettingsRepository
+import io.aubergine.ambit.model.DeviceHint
 import io.aubergine.ambit.model.Observation
 import io.aubergine.ambit.util.AlertNotifier
 import io.aubergine.ambit.util.AudioAlerts
@@ -55,6 +57,9 @@ class ScanService : Service() {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val pending = ArrayDeque<Observation>()
     private val lock = Any()
+
+    @Volatile private var latestSettings = SettingsRepository.Settings()
+    @Volatile private var lastGlassesAlertAt = 0L
 
     override fun onBind(intent: Intent?): IBinder? = null
 
@@ -96,11 +101,29 @@ class ScanService : Service() {
 
     private fun collectObservations() {
         scope.launch {
+            settings.settings.collect { latestSettings = it }
+        }
+        scope.launch {
             repository.warmUp()
             coordinator.observations.collect { observation ->
                 synchronized(lock) { pending.addLast(observation) }
+                checkForGlasses(observation)
             }
         }
+    }
+
+    /**
+     * Opt-in, and rate-limited so a colleague wearing glasses all day produces one alert,
+     * not one per advertisement. Only fires when the signal suggests the device is close.
+     */
+    private fun checkForGlasses(observation: Observation) {
+        if (!latestSettings.glassesAlerts) return
+        if (observation.rssi < GLASSES_MIN_RSSI) return
+        if (DeviceHints.hintFor(observation, vendor = null) != DeviceHint.CAMERA_GLASSES) return
+        val now = observation.timestamp
+        if (now - lastGlassesAlertAt < GLASSES_ALERT_INTERVAL_MS) return
+        lastGlassesAlertAt = now
+        alertNotifier.notifyGlasses()
     }
 
     /**
@@ -130,7 +153,12 @@ class ScanService : Service() {
                 val current = settings.settings.first()
                 if (!current.trackerAlerts) continue
                 flush()
-                val fresh = runCatching { repository.refreshTrackerAlerts() }.getOrDefault(emptyList())
+                val fresh = runCatching {
+                    repository.refreshTrackerAlerts(
+                        config = current.sensitivity.config(),
+                        includeWifi = current.wifiFollowAlerts,
+                    )
+                }.getOrDefault(emptyList())
                 fresh.forEach { alert -> alertNotifier.notifyTracker(alert) }
                 if (fresh.isNotEmpty() && current.audioAlerts) {
                     withContext(Dispatchers.Main) { audioAlerts.play(AudioAlerts.Cue.TRACKER) }
@@ -232,6 +260,8 @@ class ScanService : Service() {
 
     companion object {
         const val CORRELATOR_INTERVAL_MS = 5 * 60 * 1000L
+        const val GLASSES_ALERT_INTERVAL_MS = 15 * 60 * 1000L
+        const val GLASSES_MIN_RSSI = -75
         const val CHANNEL_SCAN = "ambit_scan"
         const val CHANNEL_ALERTS = "ambit_alerts"
         const val NOTIFICATION_ID = 4201

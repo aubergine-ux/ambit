@@ -1,5 +1,6 @@
 package io.aubergine.ambit.data.repo
 
+import io.aubergine.ambit.analysis.DeviceHints
 import io.aubergine.ambit.analysis.OuiClassifier
 import io.aubergine.ambit.analysis.SignatureExtractor
 import io.aubergine.ambit.analysis.TrackerCorrelator
@@ -11,10 +12,10 @@ import io.aubergine.ambit.data.db.toModel
 import io.aubergine.ambit.model.Device
 import io.aubergine.ambit.model.Observation
 import io.aubergine.ambit.model.RadioType
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 /**
  * The single seam between stored data and everything above it.
@@ -94,6 +95,7 @@ class ObservationRepository @Inject constructor(
                     lastLatitude = newest.latitude ?: existing?.lastLatitude,
                     lastLongitude = newest.longitude ?: existing?.lastLongitude,
                     ignored = existing?.ignored ?: false,
+                    hint = DeviceHints.hintFor(newest, classification.vendor)?.name ?: existing?.hint,
                 ),
             )
         }
@@ -107,9 +109,11 @@ class ObservationRepository @Inject constructor(
     suspend fun refreshTrackerAlerts(
         now: Long = System.currentTimeMillis(),
         config: TrackerCorrelator.Config = TrackerCorrelator.Config(),
+        includeWifi: Boolean = false,
     ): List<TrackerCorrelator.Alert> {
         val since = now - config.lookbackMillis
-        val observations = db.observations().geotaggedBleSince(since).map { it.toModel() }
+        val radios = if (includeWifi) listOf(RadioType.BLE.name, RadioType.WIFI.name) else listOf(RadioType.BLE.name)
+        val observations = db.observations().geotaggedSince(since, radios).map { it.toModel() }
         val zones = db.safeZones().snapshot().map { it.toModel() }
         val alerts = correlator.analyse(observations, zones, now, config)
 

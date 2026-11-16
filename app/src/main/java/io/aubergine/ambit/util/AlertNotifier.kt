@@ -42,12 +42,16 @@ class AlertNotifier @Inject constructor(
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
         )
 
-        val body = context.getString(
-            R.string.alert_tracker_body,
-            alert.distinctLocations,
-            alert.addressesSeen.size,
-            alert.spreadMeters.roundToInt(),
-        )
+        val body = if (alert.family.isBluetooth) {
+            context.getString(
+                R.string.alert_tracker_body,
+                alert.distinctLocations,
+                alert.addressesSeen.size,
+                alert.spreadMeters.roundToInt(),
+            )
+        } else {
+            context.getString(R.string.alert_wifi_body, alert.distinctLocations, alert.spreadMeters.roundToInt())
+        }
 
         val notification = NotificationCompat.Builder(context, ScanService.CHANNEL_ALERTS)
             .setSmallIcon(R.drawable.ic_stat_alert)
@@ -61,5 +65,25 @@ class AlertNotifier @Inject constructor(
             .build()
 
         runCatching { manager.notify(alert.signatureKey.hashCode(), notification) }
+    }
+
+    /** Opt-in. Worded as a possibility, since the same Bluetooth IDs cover headsets and controllers. */
+    fun notifyGlasses() {
+        if (!canNotify()) return
+        val manager = ContextCompat.getSystemService(context, NotificationManager::class.java) ?: return
+        val body = context.getString(R.string.alert_glasses_body)
+        val notification = NotificationCompat.Builder(context, ScanService.CHANNEL_ALERTS)
+            .setSmallIcon(R.drawable.ic_stat_alert)
+            .setContentTitle(context.getString(R.string.alert_glasses_title))
+            .setContentText(body)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(body))
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+            .build()
+        runCatching { manager.notify(GLASSES_NOTIFICATION_ID, notification) }
+    }
+
+    private companion object {
+        const val GLASSES_NOTIFICATION_ID = 0x61A5
     }
 }

@@ -22,6 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.aubergine.ambit.BuildConfig
 import io.aubergine.ambit.R
+import io.aubergine.ambit.analysis.Sensitivity
 import io.aubergine.ambit.data.db.SafeZoneEntity
 import io.aubergine.ambit.data.repo.SettingsRepository
 import io.aubergine.ambit.scan.WifiScanner
@@ -45,6 +46,9 @@ fun SettingsScreen(
     onSetAlertNew: (Boolean) -> Unit,
     onSetAlertPriority: (Boolean) -> Unit,
     onSetTrackerAlerts: (Boolean) -> Unit,
+    onSetSensitivity: (Sensitivity) -> Unit,
+    onSetWifiFollow: (Boolean) -> Unit,
+    onSetGlasses: (Boolean) -> Unit,
     onSetKeepScreenOn: (Boolean) -> Unit,
     onMarkSafeZone: () -> Unit,
     onDeleteSafeZone: (Long) -> Unit,
@@ -130,6 +134,19 @@ fun SettingsScreen(
                         checked = state.settings.trackerAlerts,
                         onChange = onSetTrackerAlerts,
                     )
+                    SensitivityChooser(state.settings.sensitivity, onSetSensitivity)
+                    ToggleRow(
+                        label = stringResource(R.string.settings_wifi_follow),
+                        checked = state.settings.wifiFollowAlerts,
+                        onChange = onSetWifiFollow,
+                    )
+                    SettingNote(stringResource(R.string.settings_wifi_follow_note))
+                    ToggleRow(
+                        label = stringResource(R.string.settings_glasses),
+                        checked = state.settings.glassesAlerts,
+                        onChange = onSetGlasses,
+                    )
+                    SettingNote(stringResource(R.string.settings_glasses_note))
                 }
             }
         }
@@ -245,6 +262,45 @@ private fun <T> ChoiceRow(
             }
         }
     }
+}
+
+@Composable
+private fun SensitivityChooser(selected: Sensitivity, onSelect: (Sensitivity) -> Unit) {
+    val labels = mapOf(
+        Sensitivity.RELAXED to stringResource(R.string.sensitivity_relaxed),
+        Sensitivity.STANDARD to stringResource(R.string.sensitivity_standard),
+        Sensitivity.HIGH to stringResource(R.string.sensitivity_high),
+    )
+    val note = stringResource(
+        when (selected) {
+            Sensitivity.RELAXED -> R.string.sensitivity_relaxed_note
+            Sensitivity.STANDARD -> R.string.sensitivity_standard_note
+            Sensitivity.HIGH -> R.string.sensitivity_high_note
+        },
+    )
+    Text(
+        stringResource(R.string.settings_sensitivity_label),
+        style = MaterialTheme.typography.bodySmall,
+        color = AmbitColors.TextSecondary,
+        modifier = Modifier.padding(top = 8.dp),
+    )
+    ChoiceRow(
+        options = Sensitivity.entries,
+        selected = selected,
+        label = { labels.getValue(it) },
+        onSelect = onSelect,
+    )
+    SettingNote(note)
+}
+
+@Composable
+private fun SettingNote(text: String) {
+    Text(
+        text,
+        style = MaterialTheme.typography.bodySmall,
+        color = AmbitColors.TextDim,
+        modifier = Modifier.padding(bottom = 4.dp),
+    )
 }
 
 @Composable

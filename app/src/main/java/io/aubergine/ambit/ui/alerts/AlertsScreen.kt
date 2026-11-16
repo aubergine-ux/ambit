@@ -164,8 +164,17 @@ private fun AlertCard(
             modifier = Modifier.padding(top = 6.dp),
         )
 
+        if (!family.isBluetooth) {
+            Text(
+                text = stringResource(R.string.alerts_wifi_note),
+                style = MaterialTheme.typography.bodySmall,
+                color = AmbitColors.TextSecondary,
+                modifier = Modifier.padding(top = 6.dp),
+            )
+        }
+
         Column(Modifier.padding(top = 8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            AmbitButton(label = stringResource(R.string.action_locate), onClick = onLocate)
+            if (family.isBluetooth) AmbitButton(label = stringResource(R.string.action_locate), onClick = onLocate)
             AmbitOutlineButton(label = stringResource(R.string.action_open_guide), onClick = onGuide)
             AmbitOutlineButton(
                 label = stringResource(R.string.action_dismiss),

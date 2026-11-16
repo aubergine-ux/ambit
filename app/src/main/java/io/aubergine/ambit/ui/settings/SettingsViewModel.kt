@@ -6,10 +6,12 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.aubergine.ambit.R
+import io.aubergine.ambit.analysis.Sensitivity
 import io.aubergine.ambit.data.db.SafeZoneEntity
 import io.aubergine.ambit.data.repo.ObservationRepository
 import io.aubergine.ambit.data.repo.SettingsRepository
 import io.aubergine.ambit.scan.LocationSource
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +19,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -53,6 +54,9 @@ class SettingsViewModel @Inject constructor(
     fun setAlertOnNewDevice(value: Boolean) = launch { settingsRepository.setAlertOnNewDevice(value) }
     fun setAlertOnPriority(value: Boolean) = launch { settingsRepository.setAlertOnPriority(value) }
     fun setTrackerAlerts(value: Boolean) = launch { settingsRepository.setTrackerAlerts(value) }
+    fun setSensitivity(value: Sensitivity) = launch { settingsRepository.setSensitivity(value) }
+    fun setWifiFollowAlerts(value: Boolean) = launch { settingsRepository.setWifiFollowAlerts(value) }
+    fun setGlassesAlerts(value: Boolean) = launch { settingsRepository.setGlassesAlerts(value) }
     fun setKeepScreenOn(value: Boolean) = launch { settingsRepository.setKeepScreenOn(value) }
     fun setListLimit(value: Int) = launch { settingsRepository.setListLimit(value) }
     fun setRetentionDays(value: Int) = launch { settingsRepository.setRetentionDays(value) }

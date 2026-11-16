@@ -243,6 +243,55 @@ class TrackerCorrelatorTest {
         assertTrue(correlator.analyse(trail, now = now).isEmpty())
     }
 
+    private fun accessPoint(placeIndex: Int, atMillis: Long, bssid: String = "00:11:22:33:44:55") = Observation(
+        radio = RadioType.WIFI,
+        address = bssid,
+        name = "AndroidAP_1234",
+        rssi = -60,
+        latitude = placeLat(placeIndex),
+        longitude = -0.12,
+        accuracyMeters = 10f,
+        timestamp = atMillis,
+    )
+
+    @Test
+    fun `a wifi network that moves with the user is flagged`() {
+        val hotspot = listOf(0, 1, 2).map { accessPoint(it, now - (180 - it * 60) * minute) }
+        val alert = correlator.analyse(hotspot, now = now).single()
+        assertEquals(TrackerFamily.WIFI_NETWORK, alert.family)
+    }
+
+    @Test
+    fun `a wifi network that stays put is not`() {
+        val cafe = listOf(0, 0, 0).mapIndexed { i, place -> accessPoint(place, now - (180 - i * 60) * minute) }
+        assertTrue(correlator.analyse(cafe, now = now).isEmpty())
+    }
+
+    @Test
+    fun `every sensitivity level still needs three places`() {
+        for (level in Sensitivity.entries) {
+            assertTrue(level.name, level.config().minDistinctLocations >= 3)
+        }
+    }
+
+    @Test
+    fun `high sensitivity catches a short trail that standard lets pass`() {
+        // Three places 300 m apart within 12 minutes.
+        val shortTrip = listOf(0, 1, 2).map { i ->
+            sighting(i, now - (12 - i * 6) * minute).copy(latitude = 51.5 + i * 0.0027)
+        }
+        assertTrue(correlator.analyse(shortTrip, now = now, config = Sensitivity.STANDARD.config()).isEmpty())
+        assertEquals(1, correlator.analyse(shortTrip, now = now, config = Sensitivity.HIGH.config()).size)
+    }
+
+    @Test
+    fun `relaxed sensitivity waits for a fourth place`() {
+        val longTrail = listOf(0, 1, 2).map { i -> sighting(i, now - (180 - i * 60) * minute) }
+        assertTrue(correlator.analyse(longTrail, now = now, config = Sensitivity.RELAXED.config()).isEmpty())
+        val fourth = longTrail + sighting(3, now - 10 * minute)
+        assertEquals(1, correlator.analyse(fourth, now = now, config = Sensitivity.RELAXED.config()).size)
+    }
+
     @Test
     fun `an empty log produces no alerts`() {
         assertTrue(correlator.analyse(emptyList(), now = now).isEmpty())
