@@ -1,0 +1,22 @@
+{
+  "_note": "Advertisement payloads built from the published formats (Bluetooth SIG assigned numbers, IETF draft-ietf-dult-accessory-protocol-01, OpenHaystack and AirGuard reverse-engineering). They are not over-the-air captures: replace or extend with real captures from a device when available.",
+  "adverts": [
+    { "name": "AirTag, separated", "address": "C1:23:45:67:89:AB", "companyId": 76, "manufacturer": "121910AABBCCDDEEFF00112233445566778899AABBCCDDEEFF0100", "expect": { "family": "APPLE_FIND_MY", "owner": "SEPARATED" } },
+    { "name": "AirTag, near owner", "address": "D1:23:45:67:89:AB", "companyId": 76, "manufacturer": "12021000", "expect": { "family": "APPLE_FIND_MY", "owner": "NEAR_OWNER" } },
+    { "name": "AirPods, separated", "address": "E1:23:45:67:89:AB", "companyId": 76, "manufacturer": "121930AABBCCDDEEFF00112233445566778899AABBCCDDEEFF0100", "expect": { "family": "APPLE_FIND_MY", "owner": "SEPARATED" } },
+    { "name": "iPhone nearby-info", "address": "4A:23:45:67:89:AB", "companyId": 76, "manufacturer": "10050318C0FF", "expect": { "family": "UNKNOWN" } },
+    { "name": "SmartTag2, overmature offline", "address": "6B:23:45:67:89:AB", "serviceData": { "0000fd5a-0000-1000-8000-00805f9b34fb": "132A000011223344556677880000000000" }, "expect": { "family": "SAMSUNG_SMARTTAG", "owner": "SEPARATED" } },
+    { "name": "SmartTag, connected to owner", "address": "6C:23:45:67:89:AB", "serviceData": { "0000fd5a-0000-1000-8000-00805f9b34fb": "102A000011223344556677880000000000" }, "expect": { "family": "SAMSUNG_SMARTTAG", "owner": "NEAR_OWNER" } },
+    { "name": "Galaxy phone manufacturer data", "address": "7D:23:45:67:89:AB", "companyId": 117, "manufacturer": "42041001DEADBEEF", "expect": { "notFamily": "SAMSUNG_SMARTTAG" } },
+    { "name": "Find Hub tag, separated (UTP mode)", "address": "C2:23:45:67:89:AB", "flags": 6, "serviceData": { "0000feaa-0000-1000-8000-00805f9b34fb": "41AABBCCDDEEFF00112233445566778899AABBCC5C" }, "expect": { "family": "GOOGLE_FIND_MY", "owner": "SEPARATED" } },
+    { "name": "Find Hub tag, owner seen recently", "address": "C3:23:45:67:89:AB", "flags": 6, "serviceData": { "0000feaa-0000-1000-8000-00805f9b34fb": "40AABBCCDDEEFF00112233445566778899AABBCC5C" }, "expect": { "family": "GOOGLE_FIND_MY", "owner": "UNKNOWN" } },
+    { "name": "Eddystone-UID beacon", "address": "C4:23:45:67:89:AB", "serviceData": { "0000feaa-0000-1000-8000-00805f9b34fb": "00EE112233445566778899AABBCCDDEEFF0011" }, "expect": { "notFamily": "GOOGLE_FIND_MY" } },
+    { "name": "DULT tag, separated", "address": "C5:23:45:67:89:AB", "serviceData": { "0000fcb2-0000-1000-8000-00805f9b34fb": "0700AABBCCDDEEFF0011" }, "expect": { "family": "DULT", "owner": "SEPARATED" } },
+    { "name": "DULT tag, near owner", "address": "C6:23:45:67:89:AB", "serviceData": { "0000fcb2-0000-1000-8000-00805f9b34fb": "0701AABBCCDDEEFF0011" }, "expect": { "family": "DULT", "owner": "NEAR_OWNER" } },
+    { "name": "Tile", "address": "E6:23:45:67:89:AB", "serviceData": { "0000feed-0000-1000-8000-00805f9b34fb": "0200AABBCCDDEEFF" }, "expect": { "family": "TILE" } },
+    { "name": "Chipolo (own network)", "address": "D8:23:45:67:89:AB", "serviceData": { "0000fe33-0000-1000-8000-00805f9b34fb": "0001AABB" }, "expect": { "family": "CHIPOLO" } },
+    { "name": "Air-Weigh scale (not Chipolo)", "address": "00:23:45:67:89:AB", "companyId": 2608, "manufacturer": "0102", "expect": { "notFamily": "CHIPOLO" } },
+    { "name": "Pebblebee (own network)", "address": "F1:23:45:67:89:AB", "serviceUuids": ["0000fa25-0000-1000-8000-00805f9b34fb"], "expect": { "family": "PEBBLEBEE" } },
+    { "name": "Ray-Ban Meta glasses", "address": "5A:23:45:67:89:AB", "companyId": 3411, "manufacturer": "0102030405", "expect": { "hint": "CAMERA_GLASSES" } }
+  ]
+}
