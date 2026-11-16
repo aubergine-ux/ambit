@@ -72,8 +72,8 @@ screen off, and alerts only after a tag has been seen at **three separate places
 ### 📄 Evidence reports
 Each alert has a map and a timeline, plus a **PDF report** written for police or a support
 worker. It includes every sighting with local and UTC times, the method used and its limits,
-and a SHA-256 fingerprint of the data. CSV, JSON and a plain-text debrief are also available.
-Files leave the phone only when you share them.
+and a SHA-256 fingerprint of the data. CSV, JSON, GPX, KML and a plain-text debrief are also
+available. Files leave the phone only when you share them.
 
 </td>
 </tr>
@@ -154,7 +154,15 @@ it.
 </td>
 </tr>
 <tr>
-<td colspan="2" valign="top">
+<td valign="top">
+
+### 🔐 Encryption and backups
+The log is encrypted with SQLCipher under a key held by the phone's keystore. Old sightings are
+deleted automatically after a period you choose. You can back everything up to one
+password-protected file, restore it on another phone, or wipe it all in one step.
+
+</td>
+<td valign="top">
 
 ### 🎯 Radar view
 Shows each device at a rough distance worked out from signal strength (near, mid or far). A
