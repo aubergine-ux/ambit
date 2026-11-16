@@ -98,6 +98,15 @@ android {
     }
 }
 
+// Unit tests run once, against debug. The release variant would only repeat them, and the
+// Compose UI tests need the debug-only test activity manifest.
+androidComponents {
+    beforeVariants(selector().withBuildType("release")) { variant ->
+        @Suppress("DEPRECATION")
+        variant.enableUnitTest = false
+    }
+}
+
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
     arg("room.incremental", "true")
@@ -142,6 +151,9 @@ dependencies {
     testImplementation(libs.androidx.room.testing)
     // Robolectric needs the Android test core to hand out an application Context.
     testImplementation(libs.androidx.junit)
+    testImplementation(platform(libs.androidx.compose.bom))
+    testImplementation(libs.androidx.compose.ui.test.junit4)
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
