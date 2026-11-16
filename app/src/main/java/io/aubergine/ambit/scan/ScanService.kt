@@ -19,13 +19,17 @@ import io.aubergine.ambit.R
 import io.aubergine.ambit.data.repo.ObservationRepository
 import io.aubergine.ambit.data.repo.SettingsRepository
 import io.aubergine.ambit.model.Observation
+import io.aubergine.ambit.util.AlertNotifier
+import io.aubergine.ambit.util.AudioAlerts
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import javax.inject.Inject
+import kotlinx.coroutines.withContext
 
 /**
  * Keeps the radios running with the screen off, and owns the write path into the log.
@@ -45,6 +49,8 @@ class ScanService : Service() {
     @Inject lateinit var coordinator: ScanCoordinator
     @Inject lateinit var repository: ObservationRepository
     @Inject lateinit var settings: SettingsRepository
+    @Inject lateinit var alertNotifier: AlertNotifier
+    @Inject lateinit var audioAlerts: AudioAlerts
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val pending = ArrayDeque<Observation>()
@@ -58,6 +64,7 @@ class ScanService : Service() {
         startForegroundCompat()
         collectObservations()
         startFlushLoop()
+        startCorrelatorLoop()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -81,7 +88,8 @@ class ScanService : Service() {
 
     override fun onDestroy() {
         coordinator.stopAll()
-        scope.launch { flush() }
+        // The service scope is about to be cancelled; the last batch still has to land.
+        CoroutineScope(Dispatchers.IO + NonCancellable).launch { flush() }
         scope.cancel()
         super.onDestroy()
     }
@@ -106,6 +114,27 @@ class ScanService : Service() {
                 kotlinx.coroutines.delay(FLUSH_INTERVAL_MS)
                 flush()
                 updateNotification()
+            }
+        }
+    }
+
+    /**
+     * Correlation lives here, not in the UI, because the point is to catch a tracker while
+     * the phone is in a pocket. Periodic rather than per-advertisement: the analysis covers
+     * 24 hours and nothing meaningful changes second to second.
+     */
+    private fun startCorrelatorLoop() {
+        scope.launch {
+            while (true) {
+                kotlinx.coroutines.delay(CORRELATOR_INTERVAL_MS)
+                val current = settings.settings.first()
+                if (!current.trackerAlerts) continue
+                flush()
+                val fresh = runCatching { repository.refreshTrackerAlerts() }.getOrDefault(emptyList())
+                fresh.forEach { alert -> alertNotifier.notifyTracker(alert) }
+                if (fresh.isNotEmpty() && current.audioAlerts) {
+                    withContext(Dispatchers.Main) { audioAlerts.play(AudioAlerts.Cue.TRACKER) }
+                }
             }
         }
     }
@@ -202,6 +231,7 @@ class ScanService : Service() {
     }
 
     companion object {
+        const val CORRELATOR_INTERVAL_MS = 5 * 60 * 1000L
         const val CHANNEL_SCAN = "ambit_scan"
         const val CHANNEL_ALERTS = "ambit_alerts"
         const val NOTIFICATION_ID = 4201

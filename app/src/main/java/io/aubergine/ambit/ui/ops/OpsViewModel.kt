@@ -153,7 +153,6 @@ class OpsViewModel @Inject constructor(
         viewModelScope.launch { repository.warmUp() }
         startClock()
         watchForAudibleEvents()
-        startCorrelatorLoop()
     }
 
     /** Drives every "Ns ago" readout on the screen. One tick, one recomposition. */
@@ -184,25 +183,6 @@ class OpsViewModel @Inject constructor(
                             audioAlerts.play(AudioAlerts.Cue.PRIORITY)
                         settings.alertOnNewDevice -> audioAlerts.play(AudioAlerts.Cue.NEW_DEVICE)
                     }
-                }
-            }
-        }
-    }
-
-    /**
-     * Re-runs correlation periodically rather than on every observation: the analysis is
-     * over a 24-hour window and nothing meaningful changes second to second.
-     */
-    private fun startCorrelatorLoop() {
-        viewModelScope.launch {
-            while (true) {
-                delay(CORRELATOR_INTERVAL_MS)
-                val settings = settingsRepository.settings.first()
-                if (!settings.trackerAlerts) continue
-                val fresh = runCatching { repository.refreshTrackerAlerts() }.getOrDefault(emptyList())
-                fresh.forEach { alert ->
-                    alertNotifier.notifyTracker(alert)
-                    if (settings.audioAlerts) audioAlerts.play(AudioAlerts.Cue.TRACKER)
                 }
             }
         }
@@ -357,7 +337,6 @@ class OpsViewModel @Inject constructor(
     }
 
     private companion object {
-        const val CORRELATOR_INTERVAL_MS = 5 * 60 * 1000L
         const val DEFAULT_EXPORT_WINDOW_MS = 24 * 60 * 60 * 1000L
     }
 }
