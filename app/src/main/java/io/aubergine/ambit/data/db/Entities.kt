@@ -28,6 +28,8 @@ data class ObservationEntity(
     @ColumnInfo(name = "capabilities") val capabilities: String?,
     @ColumnInfo(name = "company_id") val companyId: Int?,
     @ColumnInfo(name = "service_uuids") val serviceUuids: String?,
+    @ColumnInfo(name = "service_data") val serviceData: String? = null,
+    @ColumnInfo(name = "adv_flags") val advertiseFlags: Int? = null,
     @ColumnInfo(name = "manufacturer_data") val manufacturerData: String?,
     @ColumnInfo(name = "tx_power") val txPower: Int?,
     @ColumnInfo(name = "latitude") val latitude: Double?,

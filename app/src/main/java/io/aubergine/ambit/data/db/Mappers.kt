@@ -7,6 +7,23 @@ import io.aubergine.ambit.model.Observation
 import io.aubergine.ambit.model.RadioType
 
 private const val UUID_SEPARATOR = ","
+private const val ENTRY_SEPARATOR = ";"
+private const val KEY_VALUE_SEPARATOR = "="
+
+internal fun Map<String, String>.encodeServiceData(): String? =
+    takeIf { it.isNotEmpty() }
+        ?.entries
+        ?.sortedBy { it.key }
+        ?.joinToString(ENTRY_SEPARATOR) { "${it.key}$KEY_VALUE_SEPARATOR${it.value}" }
+
+internal fun String?.decodeServiceData(): Map<String, String> =
+    this?.split(ENTRY_SEPARATOR)
+        ?.mapNotNull { entry ->
+            val parts = entry.split(KEY_VALUE_SEPARATOR, limit = 2)
+            if (parts.size == 2 && parts[0].isNotBlank()) parts[0] to parts[1] else null
+        }
+        ?.toMap()
+        .orEmpty()
 
 fun Observation.toEntity(signatureKey: String?): ObservationEntity = ObservationEntity(
     radio = radio.name,
@@ -19,6 +36,8 @@ fun Observation.toEntity(signatureKey: String?): ObservationEntity = Observation
     companyId = companyId,
     serviceUuids = serviceUuids.takeIf { it.isNotEmpty() }?.joinToString(UUID_SEPARATOR),
     manufacturerData = manufacturerDataHex,
+    serviceData = serviceData.encodeServiceData(),
+    advertiseFlags = advertiseFlags,
     txPower = txPower,
     latitude = latitude,
     longitude = longitude,
@@ -38,6 +57,8 @@ fun ObservationEntity.toModel(): Observation = Observation(
     companyId = companyId,
     serviceUuids = serviceUuids?.split(UUID_SEPARATOR)?.filter { it.isNotBlank() }.orEmpty(),
     manufacturerDataHex = manufacturerData,
+    serviceData = serviceData.decodeServiceData(),
+    advertiseFlags = advertiseFlags,
     txPower = txPower,
     latitude = latitude,
     longitude = longitude,

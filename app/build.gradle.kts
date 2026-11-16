@@ -80,6 +80,11 @@ android {
         resources.excludes += setOf("/META-INF/{AL2.0,LGPL2.1}")
     }
 
+    // Room's exported schemas double as instrumented migration-test fixtures.
+    sourceSets {
+        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+    }
+
     testOptions {
         unitTests.isReturnDefaultValues = true
         // Robolectric reads the bundled OUI registry out of merged assets; without this

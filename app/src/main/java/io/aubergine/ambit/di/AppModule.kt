@@ -8,6 +8,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import io.aubergine.ambit.data.db.AppDatabase
+import io.aubergine.ambit.data.db.Migrations
 import javax.inject.Singleton
 
 @Module
@@ -24,5 +25,6 @@ object AppModule {
         Room.databaseBuilder(context, AppDatabase::class.java, AppDatabase.NAME)
             // No destructive fallback, ever. Users keep months of observations in here and
             // a wiped log on upgrade is indistinguishable from data loss.
+            .addMigrations(*Migrations.ALL)
             .build()
 }

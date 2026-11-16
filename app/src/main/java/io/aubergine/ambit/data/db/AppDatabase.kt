@@ -4,8 +4,8 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 /**
- * Schema version 1 is the first shipped schema. Every change from here needs a real
- * migration — no destructive fallback. The observation log is the thing the user came for.
+ * Every schema change ships a real migration in [Migrations] — no destructive fallback.
+ * The observation log is the thing the user came for.
  */
 @Database(
     entities = [
@@ -14,7 +14,7 @@ import androidx.room.RoomDatabase
         SafeZoneEntity::class,
         TrackerAlertEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {

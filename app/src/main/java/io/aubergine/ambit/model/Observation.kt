@@ -24,6 +24,14 @@ data class Observation(
     val serviceUuids: List<String> = emptyList(),
     /** Raw manufacturer payload, hex, no separators. Used for tracker signatures. */
     val manufacturerDataHex: String? = null,
+    /**
+     * Service data keyed by lowercase 128-bit UUID, values hex. Most tracker networks
+     * (SmartTag, Google's Find Hub, Tile, Chipolo) put their state here, not in
+     * manufacturer data.
+     */
+    val serviceData: Map<String, String> = emptyMap(),
+    /** The advertisement's flags AD byte. Separates FMDN phones (0x02) from tags (0x06). */
+    val advertiseFlags: Int? = null,
     val txPower: Int? = null,
     val latitude: Double? = null,
     val longitude: Double? = null,
