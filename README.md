@@ -69,9 +69,11 @@ screen off, and alerts only after a tag has been seen at **three separate places
 </td>
 <td valign="top">
 
-### 📤 Your data, your formats
-Export to CSV (devices or raw sightings), versioned JSON, or a plain-text **environment debrief**
-you can read, archive or paste wherever you like. Files leave the phone only when you share them.
+### 📄 Evidence you can hand over
+Each alert has a map and a timeline, plus a **PDF report** written for police or a support
+worker. It includes every sighting with local and UTC times, the method used and its limits,
+and a SHA-256 fingerprint of the data. CSV, JSON and a plain-text debrief are also available.
+Files leave the phone only when you share them.
 
 </td>
 </tr>
@@ -87,10 +89,11 @@ where they're usually hidden, and how to switch one off safely.
 </td>
 <td valign="top">
 
-### 🛡️ Built to stay quiet
-Ambit only listens. Its single exception is Play sound, which opens a short Bluetooth
-connection to the tracker and only runs after you confirm. Nothing ever goes over the
-internet.
+### 🛡️ Safety first
+Lock the app with a PIN or your fingerprint. You can disguise its icon as "Notes", leave
+instantly with a button or a shake, and keep alerts discreet on the lock screen. An offline
+help page explains how to get support and keep evidence, without assuming which country
+you're in.
 
 </td>
 </tr>
@@ -124,6 +127,15 @@ plain-language list of why it was flagged.
 
 </td>
 <td valign="top">
+
+### 🗺️ Maps that never download
+Sightings are drawn on a bundled world outline (Natural Earth). For street detail, import
+your own MBTiles file. No map tiles are ever fetched.
+
+</td>
+</tr>
+<tr>
+<td colspan="2" valign="top">
 
 ### 🎯 A radar that admits it's decorative
 Distance comes from log-distance path loss and means roughly *near / mid / far*. The angle is a
