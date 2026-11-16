@@ -308,7 +308,7 @@ class OpsViewModel @Inject constructor(
             val current = settingsRepository.settings.first()
             val fresh = runCatching {
                 repository.refreshTrackerAlerts(
-                    config = current.sensitivity.config(),
+                    config = current.effectiveSensitivity().config(),
                     includeWifi = current.wifiFollowAlerts,
                 )
             }

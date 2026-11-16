@@ -80,6 +80,23 @@ class ObservationRepositoryTest {
     }
 
     @Test
+    fun `a trip's known place stops suppressing once the trip ends`() = runTest {
+        repository.record((0..2).map { sighting(it, now - (180 - it * 60) * minute) })
+        // A temporary known place around the middle stop, which leaves only two places.
+        repository.addSafeZone("hotel", 51.52, -0.12, 300.0, expiresAt = now + minute)
+        assertTrue(repository.analyse(now = now).isEmpty())
+        assertEquals(1, repository.analyse(now = now + 2 * minute).size)
+    }
+
+    @Test
+    fun `ending a trip removes only the temporary places`() = runTest {
+        repository.addSafeZone("home", 51.0, 0.0, 150.0)
+        repository.addSafeZone("hotel", 52.0, 0.0, 150.0, expiresAt = now + minute)
+        repository.deleteTemporarySafeZones()
+        assertEquals(listOf("home"), db.safeZones().snapshot().map { it.label })
+    }
+
+    @Test
     fun `stored alerts carry a confidence score and reasons`() = runTest {
         repository.record((0..2).map { sighting(it, now - (180 - it * 60) * minute) })
         repository.refreshTrackerAlerts(now = now)

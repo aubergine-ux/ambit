@@ -50,7 +50,15 @@ class SettingsRepository @Inject constructor(
         val quickExitButton: Boolean = false,
         val shakeToExit: Boolean = false,
         val discreetNotifications: Boolean = false,
-    )
+        /** Travel mode is on until this time; 0 when off. */
+        val travelUntil: Long = 0L,
+    ) {
+        fun travelling(now: Long = System.currentTimeMillis()): Boolean = travelUntil > now
+
+        /** Travel mode raises sensitivity to High; somewhere new, it is better to hear early. */
+        fun effectiveSensitivity(now: Long = System.currentTimeMillis()): Sensitivity =
+            if (travelling(now)) Sensitivity.HIGH else sensitivity
+    }
 
     val settings: Flow<Settings> = context.settingsStore.data.map { p ->
         Settings(
@@ -79,6 +87,7 @@ class SettingsRepository @Inject constructor(
             quickExitButton = p[KEY_QUICK_EXIT] ?: false,
             shakeToExit = p[KEY_SHAKE_EXIT] ?: false,
             discreetNotifications = p[KEY_DISCREET] ?: false,
+            travelUntil = p[KEY_TRAVEL_UNTIL] ?: 0L,
         )
     }
 
@@ -103,6 +112,7 @@ class SettingsRepository @Inject constructor(
     suspend fun setQuickExitButton(value: Boolean) = put(KEY_QUICK_EXIT, value)
     suspend fun setShakeToExit(value: Boolean) = put(KEY_SHAKE_EXIT, value)
     suspend fun setDiscreetNotifications(value: Boolean) = put(KEY_DISCREET, value)
+    suspend fun setTravelUntil(value: Long) = put(KEY_TRAVEL_UNTIL, value)
 
     /** Turns the lock on with a new PIN, or off when [stored] is null. */
     suspend fun setAppLock(stored: PinHasher.Stored?) {
@@ -168,5 +178,6 @@ class SettingsRepository @Inject constructor(
         private val KEY_QUICK_EXIT = booleanPreferencesKey("quick_exit_button")
         private val KEY_SHAKE_EXIT = booleanPreferencesKey("shake_to_exit")
         private val KEY_DISCREET = booleanPreferencesKey("discreet_notifications")
+        private val KEY_TRAVEL_UNTIL = longPreferencesKey("travel_until")
     }
 }

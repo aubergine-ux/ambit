@@ -47,7 +47,14 @@ object Migrations {
         }
     }
 
-    val ALL = arrayOf(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+    /** v5 lets travel mode add known places that expire when the trip ends. */
+    val MIGRATION_4_5 = object : Migration(4, 5) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE safe_zones ADD COLUMN expires_at INTEGER")
+        }
+    }
+
+    val ALL = arrayOf(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
 
     private const val SAMSUNG_COMPANY_ID = 0x0075
     private const val AIR_WEIGH_COMPANY_ID = 0x0A30

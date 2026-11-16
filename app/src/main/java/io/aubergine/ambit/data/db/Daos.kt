@@ -89,6 +89,9 @@ interface SafeZoneDao {
 
     @Query("DELETE FROM safe_zones WHERE id = :id")
     suspend fun delete(id: Long)
+
+    @Query("DELETE FROM safe_zones WHERE expires_at IS NOT NULL")
+    suspend fun deleteTemporary()
 }
 
 @Dao

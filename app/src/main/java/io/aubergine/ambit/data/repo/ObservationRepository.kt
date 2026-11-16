@@ -138,7 +138,7 @@ class ObservationRepository @Inject constructor(
         val since = now - config.lookbackMillis
         val radios = if (includeWifi) listOf(RadioType.BLE.name, RadioType.WIFI.name) else listOf(RadioType.BLE.name)
         val observations = db.observations().geotaggedSince(since, radios).map { it.toModel() }
-        val zones = db.safeZones().snapshot().map { it.toModel() }
+        val zones = db.safeZones().snapshot().filter { it.activeAt(now) }.map { it.toModel() }
         return correlator.analyse(
             observations = observations,
             safeZones = zones,
@@ -195,7 +195,13 @@ class ObservationRepository @Inject constructor(
     suspend fun setIgnored(address: String, ignored: Boolean) =
         db.devices().setIgnored(address, ignored)
 
-    suspend fun addSafeZone(label: String, latitude: Double, longitude: Double, radiusMeters: Double) {
+    suspend fun addSafeZone(
+        label: String,
+        latitude: Double,
+        longitude: Double,
+        radiusMeters: Double,
+        expiresAt: Long? = null,
+    ) {
         db.safeZones().insert(
             SafeZoneEntity(
                 label = label,
@@ -203,11 +209,14 @@ class ObservationRepository @Inject constructor(
                 longitude = longitude,
                 radiusMeters = radiusMeters,
                 createdAt = System.currentTimeMillis(),
+                expiresAt = expiresAt,
             ),
         )
     }
 
     suspend fun deleteSafeZone(id: Long) = db.safeZones().delete(id)
+
+    suspend fun deleteTemporarySafeZones() = db.safeZones().deleteTemporary()
 
     suspend fun observationsSince(since: Long): List<Observation> =
         db.observations().since(since).map { it.toModel() }

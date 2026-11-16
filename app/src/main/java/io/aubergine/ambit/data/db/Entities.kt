@@ -77,7 +77,11 @@ data class SafeZoneEntity(
     @ColumnInfo(name = "longitude") val longitude: Double,
     @ColumnInfo(name = "radius_m") val radiusMeters: Double,
     @ColumnInfo(name = "created_at") val createdAt: Long,
-)
+    /** Travel mode's temporary places (a hotel) stop counting at this time. Null is permanent. */
+    @ColumnInfo(name = "expires_at") val expiresAt: Long? = null,
+) {
+    fun activeAt(now: Long): Boolean = expiresAt == null || expiresAt > now
+}
 
 /** A correlator verdict the user has already been shown, so we do not re-notify. */
 @Entity(tableName = "tracker_alerts")

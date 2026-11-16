@@ -145,6 +145,20 @@ class MigrationTest {
         }
     }
 
+    @Test
+    fun `v4 known places survive the move to v5 as permanent places`() {
+        createAtVersion(4) { db ->
+            db.execSQL("INSERT INTO safe_zones (label, latitude, longitude, radius_m, created_at) VALUES ('home', 51.5, -0.1, 150.0, 1)")
+        }
+        openCurrent { db ->
+            db.query("SELECT label, expires_at FROM safe_zones").use { c ->
+                c.moveToFirst()
+                assertEquals("home", c.getString(0))
+                assertTrue(c.isNull(1))
+            }
+        }
+    }
+
     private fun createAtVersion(version: Int, seed: (SQLiteDatabase) -> Unit) {
         val schema = Json.parseToJsonElement(schemaFile(version).readText())
             .jsonObject.getValue("database").jsonObject
