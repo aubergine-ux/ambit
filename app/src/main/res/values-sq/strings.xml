@@ -1,0 +1,640 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AMBIT</string>
+
+    <string name="radio_wifi">Wi-Fi</string>
+    <string name="radio_ble">BLE</string>
+
+    <!-- Foreground service -->
+    <string name="notification_title">Vëzhgimi AMBIT është aktiv</string>
+    <string name="notification_active">Po skanon: %1$s</string>
+    <string name="notification_idle">Në pritje - asnjë radio nuk po punon</string>
+    <string name="channel_scan">Seanca e vëzhgimit</string>
+    <string name="channel_scan_description">Shfaqet kur aplikacioni vëzhgon transmetimet Wi-Fi ose Bluetooth.</string>
+    <string name="channel_alerts">Sinjalizime për gjurmues</string>
+    <string name="channel_alerts_description">Del kur një transmetues është parë duke të ndjekur nëpër disa vende.</string>
+    <string name="action_stop">NDALO</string>
+
+    <!-- Tracker notification -->
+    <string name="alert_tracker_title">Gjurmues i mundshëm: %1$s</string>
+    <string name="alert_tracker_body">Vende: %1$d. Ndryshime adrese: %2$d. Shtrirja: %3$d m. Hap Ambit për të parë provat.</string>
+
+    <!-- Radar panel -->
+    <string name="panel_radar">RADAR</string>
+    <string name="radar_caption">Vizualizim pasiv i RSSI - jo vendndodhje. Distanca vlerësohet nga fuqia e sinjalit; drejtimi është arbitrar.</string>
+    <string name="radar_shapes">Wi-Fi rreth | BLE katror | largësia mes unazave është distanca e vlerësuar</string>
+    <string name="radar_counts">Pika Wi-Fi: %1$d | Pika BLE: %2$d | Rifreskimi i fundit: %3$ss</string>
+
+    <!-- Wi-Fi panel -->
+    <string name="panel_wifi">WI-FI</string>
+    <string name="wifi_needs_location">Leja e vendndodhjes nuk është dhënë. Pa të, Android nuk kthen asnjë rezultat skanimi.</string>
+    <string name="wifi_disabled">Wi-Fi është i fikur. Ndize për të vëzhguar; aplikacioni nuk lidhet kurrë me asgjë.</string>
+    <string name="wifi_waiting">Në pritje të rezultatit të skanimit të parë.</string>
+    <string name="wifi_idle">Nuk po skanon. Shtyp NIS WI-FI për të filluar.</string>
+    <string name="showing_top">Po shfaqen %1$d të parat nga %2$d</string>
+    <string name="wifi_throttled_hint">Kufizimi i skanimit është aktiv. Android e lejon startScan vetëm 4 herë në 2 minuta. Çaktivizo \"Kufizimi i skanimit të Wi-Fi\" te Opsionet e zhvilluesit për rifreskim më të shpejtë.</string>
+    <string name="action_start_wifi">NIS WI-FI</string>
+    <string name="action_stop_wifi">NDALO WI-FI</string>
+
+    <!-- BLE panel -->
+    <string name="panel_ble">BLE</string>
+    <string name="action_start_ble">NIS BLE</string>
+    <string name="action_stop_ble">NDALO BLE</string>
+    <string name="action_show_ble_details">SHFAQ DETAJET BLE</string>
+    <string name="action_hide_ble_details">FSHIH DETAJET BLE</string>
+    <string name="ble_status">Statusi BLE: %1$s</string>
+    <string name="ble_optional">BLE është opsional. Nise kur do të vëzhgosh Bluetooth-in.</string>
+    <string name="ble_unsupported">Kjo pajisje nuk raporton mbështetje për Bluetooth LE.</string>
+    <string name="ble_needs_permission">Leja për pajisjet në afërsi nuk është dhënë.</string>
+    <string name="ble_adapter_off">Bluetooth-i është i fikur.</string>
+    <string name="ble_rotation_note">Shumica e adresave BLE ndryshojnë rreth çdo 15 minuta, ndaj ky numër e tejkalon numrin real të pajisjeve fizike përreth.</string>
+
+    <!-- Export panel -->
+    <string name="panel_export">EKSPORTO</string>
+    <string name="export_caption">Ruaj në një skedar një pamje të mjedisit aktual, që mund ta ndash vetë.</string>
+    <string name="action_export_csv">EKSPORTO CSV</string>
+    <string name="action_export_json">EKSPORTO JSON</string>
+    <string name="action_export_debrief">EKSPORTO PËRMBLEDHJEN</string>
+    <string name="export_offline_note">Krijohet në telefon. Eksportet janë skedarë të thjeshtë që mbeten këtu derisa të zgjedhësh t\'i ndash; aplikacioni vetë nuk dërgon asgjë.</string>
+
+    <!-- Scope panel -->
+    <string name="panel_scope">ÇFARË BËN DHE ÇFARË NUK BËN</string>
+    <string name="scope_body">Vëzhgon: metadata Wi-Fi dhe Bluetooth që pajisjet përreth transmetojnë publikisht.
+Nuk identifikon njerëz apo automjete.
+Nuk përgjon trafikun. Vetëm metadata të reklamimeve dhe transmetuesve.
+Nuk gjen kamera që regjistron në kartë SD. Vetëm pajisje që transmetojnë aktivisht.
+Nuk jep drejtim. Një antenë jep vlerësime distance, jo drejtim.
+Pa kamerë. Pa mikrofon. Pa thirrje në rrjet. Pa llogari.</string>
+
+    <!-- Alerts -->
+    <string name="alerts_banner">%1$d SINJALIZIM(E) PËR GJURMUES - SHQYRTO</string>
+    <string name="panel_method">METODA E KORRELIMIT</string>
+    <string name="alerts_method_body">Gjurmuesit e ndryshojnë shpesh adresën Bluetooth, por njoftojnë edhe nëse janë pranë pronarit. Kur janë larg tij, e mbajnë të njëjtin identitet për rreth një ditë. Ambit i shpërfill gjurmuesit që thonë se pronari është afër dhe i ndjek të tjerët sipas atij identiteti.
+Një gjurmues shënohet vetëm kur ka qenë me ty në tre ose më shumë vende të paktën 250 m larg njëri-tjetrit, ka lëvizur me ty mes tyre dhe asnjë nga këto vende nuk është i shënuar si i njohur.
+Pragu është qëllimisht i lartë. Dy vende zakonisht janë rastësi, dhe një sinjalizim që jep alarm të rremë shpërfillet.</string>
+    <string name="action_run_correlation">NIS KORRELIMIN TANI</string>
+    <string name="panel_no_alerts">ASNJË SINJALIZIM</string>
+    <string name="alerts_empty_body">Asgjë nuk e ka arritur pragun. Kjo është gjendja e pritshme.
+Korrelimi kërkon pozicione GPS në disa vende të ndryshme gjatë kohës, ndaj një seancë pa lëvizje nuk do të japë kurrë sinjalizim, pavarësisht se çfarë ka përreth.</string>
+    <string name="alerts_card_note">Ky është një korrelim, jo një identifikim. Kontrollo nëse është yti ose i dikujt me të cilin ishe, para se ta konsiderosh diçka tjetër.</string>
+    <string name="action_dismiss">HIQ</string>
+
+    <!-- Detail -->
+    <string name="detail_missing">Ajo pajisje nuk është më në regjistër.</string>
+    <string name="action_back">PRAPA</string>
+    <string name="panel_signal_trace">GRAFIKU I SINJALIT</string>
+    <string name="detail_trace_empty">Ende nuk ka mjaftueshëm pikasje për të vizatuar grafikun.</string>
+    <string name="detail_trace_note">RSSI në kohë, në shkallë fikse nga -100 deri në -20 dBm. Lëvizjet këtu vijnë po aq shpesh nga reflektimet e sinjalit ose nga trupi që e bllokon, sa nga ndryshimi real i distancës.</string>
+    <string name="panel_sightings">HISTORIKU I PIKASJEVE</string>
+    <string name="detail_no_fixes">Asnjë pikasje e kësaj pajisjeje nuk kishte pozicion GPS, ndaj nuk mund të ndihmojë në korrelim.</string>
+
+    <!-- Settings -->
+    <string name="panel_scan_settings">SKANIMI</string>
+    <string name="settings_interval_label">Intervali i skanimit Wi-Fi</string>
+    <string name="settings_interval_warning">Nën 30 s, Android refuzon shumicën e këtyre kërkesave dhe jep rezultate të ruajtura më parë. Çaktivizo \"Kufizimi i skanimit të Wi-Fi\" te Opsionet e zhvilluesit që intervali të jetë real.</string>
+    <string name="settings_list_limit_label">Pajisje të shfaqura në listë</string>
+    <string name="settings_keep_screen_on">Mbaje ekranin ndezur kur aplikacioni është i hapur</string>
+    <string name="panel_alerts_settings">SINJALIZIMET</string>
+    <string name="settings_audio_alerts">Tinguj paralajmërues</string>
+    <string name="settings_alert_priority">Bip për pajisje nga prodhues prioritarë</string>
+    <string name="settings_alert_new">Bip për çdo pajisje të re</string>
+    <string name="settings_tracker_alerts">Sinjalizime nga korrelimi i gjurmuesve</string>
+    <string name="panel_known_places">VENDET E NJOHURA</string>
+    <string name="settings_known_places_body">Korrelimi pezullohet brenda një vendi të njohur. Pa këtë, një gjurmues në shtëpinë tënde do të sinjalizohej çdo ditë dhe do të pushoje së lexuari sinjalizimet.</string>
+    <string name="action_mark_here_safe">SHËNO VENDNDODHJEN AKTUALE SI TË NJOHUR</string>
+    <string name="settings_no_known_places">Nuk ka vende të njohura të ruajtura.</string>
+    <string name="panel_data">TË DHËNAT</string>
+    <string name="settings_retention_label">Mbaji vëzhgimet për</string>
+    <string name="action_prune">FSHI VËZHGIMET E VJETRA</string>
+    <string name="action_clear_all">PASTRO GJITHË REGJISTRIN</string>
+    <string name="panel_about">RRETH</string>
+    <string name="about_body">Gjithçka funksionon në pajisje. Pa thirrje në rrjet, pa telemetri, pa llogari.
+Emrat e prodhuesve vijnë nga një kopje e përfshirë e regjistrit publik IEEE OUI.</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_what_title">ÇFARË ËSHTË</string>
+    <string name="onboarding_what_body">Një vëzhgues pasiv i mjedisit radio përreth teje.
+Regjistron me kalimin e kohës transmetimet Wi-Fi dhe Bluetooth, tregon prodhuesin pas një adrese kur mundet, dhe të paralajmëron nëse një transmetues Bluetooth duket se të ndjek nga një vend në tjetrin.
+Gjithçka ndodh në këtë pajisje.</string>
+    <string name="onboarding_cannot_title">ÇFARË NUK MUND TË BËJË</string>
+    <string name="onboarding_cannot_body">Nuk mund të gjejë kamera që regjistron në kartë SD. Shfaqen vetëm pajisjet që transmetojnë aktivisht.
+Nuk mund të identifikojë njerëz apo automjete.
+Nuk përgjon trafikun - vetëm metadata të reklamimeve dhe transmetuesve.
+Nuk mund të të tregojë në cilin drejtim ndodhet diçka. Një antenë jep një distancë të përafërt, kurrë drejtim.
+Etiketat e prodhuesve tregojnë prodhuesin, jo se kush e zotëron pajisjen apo për çfarë përdoret.</string>
+    <string name="onboarding_location_title">PSE I DUHET VENDNDODHJA</string>
+    <string name="onboarding_location_body">Android e lidh çdo rezultat skanimi me lejen e vendndodhjes. Pa të, sistemi kthen një listë bosh dhe nuk ka asgjë për të shfaqur. Ky është rregull i platformës, jo zgjedhje e këtij aplikacioni.
+Vendndodhja është edhe ajo që e bën të funksionojë korrelimin e gjurmuesve: për të vendosur nëse një transmetues të ka ndjekur, duhet ditur se ke qenë në vende të ndryshme.
+Pozicioni yt ruhet në regjistrin lokal dhe askund tjetër.</string>
+    <string name="onboarding_offline_title">PA INTERNET, ME QËLLIM</string>
+    <string name="onboarding_offline_body">Nuk kërkohet leje rrjeti. Pa telemetri, pa llogari, pa shërbime cloud.
+Eksportet janë skedarë të thjeshtë që mbeten në telefonin tënd derisa t\'i ndash vetë.</string>
+    <string name="action_grant_permissions">JEP LEJET</string>
+    <string name="action_continue">VAZHDO</string>
+
+    <!-- Navigation -->
+    <string name="tab_ops">OPERACIONE</string>
+    <string name="tab_alerts">SINJALIZIME</string>
+    <string name="tab_alerts_count">SINJALIZIME (%1$d)</string>
+    <string name="tab_settings">CILËSIMET</string>
+    <!-- Field labels used across the readouts -->
+    <string name="field_bssid">BSSID</string>
+    <string name="field_mac">MAC</string>
+    <string name="field_address">Adresa</string>
+    <string name="field_radio">Radio</string>
+    <string name="field_category">Kategoria</string>
+    <string name="field_vendor">Prodhuesi</string>
+    <string name="field_rssi">RSSI</string>
+    <string name="field_frequency">Frekuenca</string>
+    <string name="field_channel">Kanali</string>
+    <string name="field_capabilities">Aftësitë</string>
+    <string name="field_first_seen">Parë së pari</string>
+    <string name="field_last_seen">Parë së fundi</string>
+    <string name="field_last_rssi">RSSI i fundit</string>
+    <string name="field_best_rssi">RSSI më i mirë</string>
+    <string name="field_est_distance">Distanca e përafërt</string>
+    <string name="field_observations">Vëzhgime</string>
+    <string name="field_geotagged">Pikasje me vendndodhje</string>
+    <string name="field_spread">Shtrirja</string>
+    <string name="field_distinct_locations">Vendndodhje të dallueshme</string>
+    <string name="field_addresses_observed">Adresa të vëzhguara</string>
+    <string name="field_closest_signal">Sinjali më i afërt</string>
+    <string name="field_company_id">ID e kompanisë</string>
+    <string name="field_ble_count">Numri BLE</string>
+    <string name="field_advertisements">Reklamime</string>
+    <string name="field_advertisements_per_min">Reklamime/min</string>
+    <string name="field_randomized">Të rastësishme</string>
+    <string name="field_newest_advertiser">Reklamuesi më i ri</string>
+    <string name="field_strongest_advertiser">Reklamuesi më i fortë</string>
+    <string name="field_observations_stored">Vëzhgime të ruajtura</string>
+    <string name="field_version">Versioni</string>
+    <string name="field_package">Paketa</string>
+
+    <!-- Values that are themselves prose -->
+    <string name="value_randomized_no_vendor">adresë e rastësishme - pa prodhues</string>
+    <string name="value_not_in_registry">nuk është në regjistër</string>
+    <string name="value_seconds_ago">para %1$ds</string>
+    <string name="value_dbm">%1$d dBm</string>
+    <string name="value_metres">%1$d m</string>
+    <string name="value_rotating">%1$d  (ndryshim MAC-u)</string>
+    <string name="value_of_total">%1$d nga %2$d</string>
+    <string name="value_advertiser_summary">%1$s | %2$s | %3$d dBm</string>
+    <string name="value_rssi_with_proximity">%1$d dBm (%2$s)</string>
+    <string name="value_approx_metres">~%1$d m</string>
+    <string name="value_frequency_band">%1$d MHz (%2$s)</string>
+    <string name="value_channel_band">%1$d  (%2$s)</string>
+    <string name="chip_throttled">I KUFIZUAR</string>
+    <string name="chip_remove">HIQ</string>
+    <string name="trace_range">%1$d deri në %2$d dBm · pikasje: %3$d</string>
+
+    <!-- Transient feedback -->
+    <string name="toast_export_saved">U ruajt %1$s (%2$s)</string>
+    <string name="toast_no_fix_yet">Ende pa pozicion. Prit GPS-in dhe provo përsëri.</string>
+    <string name="toast_known_place_saved">\"%1$s\" u ruajt si vend i njohur.</string>
+    <string name="toast_log_cleared">Regjistri i vëzhgimeve u pastrua.</string>
+    <string name="toast_correlation_clean">Korrelimi përfundoi. Asgjë nuk e arriti pragun.</string>
+    <string name="toast_export_failed">Eksportimi dështoi.</string>
+    <string name="toast_correlation_failed">Korrelimi dështoi.</string>
+    <string name="default_known_place_label">Vend i njohur</string>
+    <!-- Export screen -->
+    <string name="panel_export_tabular">EKSPORT NË TABELA</string>
+    <string name="export_tabular_caption">Pamje të lexueshme nga makina. Kohët jepen në milisekonda UTC epoch bashkë me ISO-8601, që skedari të ketë kuptim edhe pas një viti.</string>
+    <string name="action_export_devices_csv">TABELA E PAJISJEVE (CSV)</string>
+    <string name="action_export_log_csv">REGJISTRI I VËZHGIMEVE (CSV)</string>
+    <string name="panel_export_debrief">PËRMBLEDHJA</string>
+    <string name="export_debrief_caption">Një përmbledhje në tekst të thjeshtë e mjedisit: totalet, dendësia, shpërndarja sipas brezave, ndarja sipas kategorive, pajisjet që bien në sy dhe kufijtë e metodës.
+Lexohet ashtu siç është, ose ngjite kudo që të duhet.</string>
+    <string name="action_preview_debrief">PARAPAMJA E PËRMBLEDHJES</string>
+    <string name="panel_debrief_preview">PARAPAMJA</string>
+    <string name="panel_share">NDAJ</string>
+    <string name="action_share_last">NDAJ EKSPORTIN E FUNDIT</string>
+    <string name="export_nothing_yet">Asgjë e eksportuar ende në këtë seancë.</string>
+    <string name="tab_export">EKSPORTO</string>
+
+    <!-- Tracker family names. Product and network names, usually left untranslated. -->
+    <string name="family_apple">Apple Find My</string>
+    <string name="family_samsung">Samsung SmartTag</string>
+    <string name="family_google">Google Find Hub</string>
+    <string name="family_tile">Tile</string>
+    <string name="family_chipolo">Chipolo</string>
+    <string name="family_unknown">Gjurmues i panjohur</string>
+
+    <!-- Locate mode: a hot/cold finder driven by Bluetooth signal strength. It never shows direction or distance; keep wording to "signal" and "stronger/weaker". -->
+    <string name="locate_title">GJEJ: %1$s</string>
+    <string name="locate_disclaimer">Kjo tregon fuqinë e sinjalit, jo drejtimin apo distancën. Lëviz ngadalë dhe shiko nëse sinjali bëhet më i fortë apo më i dobët.</string>
+    <string name="locate_listening_short">DUKE DËGJUAR</string>
+    <string name="locate_lost_short">PA SINJAL</string>
+    <string name="locate_listening">Duke dëgjuar për këtë gjurmues. Ec përreth ngadalë.</string>
+    <string name="locate_lost">Sinjali humbi. Kthehu aty ku ishte më i fortë.</string>
+    <string name="locate_heard_ago">Dëgjuar së fundi para %1$d s</string>
+    <string name="locate_current_address">Adresa aktuale</string>
+    <string name="locate_feedback_title">REAGIMI</string>
+    <string name="locate_toggle_haptics">Dridhje më e shpejtë kur sinjali forcohet</string>
+    <string name="locate_toggle_audio">Bip më i shpejtë kur sinjali forcohet</string>
+    <string name="locate_tips">Trupi yt e bllokon Bluetooth-in. Rrotullohu ngadalë në vend: sinjali zakonisht është më i fortë kur je përballë gjurmuesit. Leximet stabilizohen pas një ose dy sekondash.</string>
+
+    <!-- Hot/cold proximity bands, shown large in the meter. Short words; they describe signal, not distance. -->
+    <string name="proximity_cold">FTOHTË</string>
+    <string name="proximity_cool">FRESKËT</string>
+    <string name="proximity_warm">NGROHTË</string>
+    <string name="proximity_hot">NXEHTË</string>
+    <string name="proximity_very_hot">SHUMË NXEHTË</string>
+    <string name="trend_stronger">Po forcohet</string>
+    <string name="trend_steady">I qëndrueshëm</string>
+    <string name="trend_weaker">Po dobësohet</string>
+
+    <!-- Play sound: connects to a tracker over Bluetooth and asks it to beep. This is the only time the app transmits. -->
+    <string name="locate_sound_title">LUAJ TINGULL</string>
+    <string name="locate_sound_explainer">Kërkoji gjurmuesit të bjerë, që ta dëgjosh ku është. Funksionon vetëm kur gjurmuesi është larg pronarit të tij.</string>
+    <string name="locate_sound_unsupported">Rrjeti i këtij gjurmuesi nuk lejon persona të tjerë ta bëjnë të bjerë. Përdor matësin e sinjalit dhe këshillat e kërkimit.</string>
+    <string name="locate_sound_needs_signal">Gjurmuesi duhet të jetë fillimisht brenda rrezes.</string>
+    <string name="locate_sound_connecting">Po lidhet me gjurmuesin…</string>
+    <string name="locate_sound_playing">Gjurmuesit iu kërkua të bjerë. Dëgjo me vëmendje.</string>
+    <string name="locate_sound_finished">U krye. Mund të provosh përsëri nëse nuk e dëgjove.</string>
+    <string name="locate_sound_confirm_title">Ta bëjmë gjurmuesin të bjerë?</string>
+    <string name="locate_sound_confirm_body">Ambit do të lidhet me këtë gjurmues përmes Bluetooth dhe do t\'i kërkojë të luajë tingullin e tij. Kjo është e vetmja herë që Ambit dërgon diçka. Asgjë nuk kalon përmes internetit.\n\nGjurmuesi bie vetëm kur është larg pronarit të tij. Pronari mund ta kuptojë që dikush u lidh me të.</string>
+    <string name="locate_sound_confirm_yes">Lidhu dhe bjeri</string>
+    <string name="action_play_sound">LUAJ TINGULL NË GJURMUES</string>
+    <string name="action_stop_sound">NDALO</string>
+    <string name="action_cancel">Anulo</string>
+    <string name="action_locate">GJEJ</string>
+    <string name="locate_address_may_rotate">Kjo adresë është e rastësishme dhe mund të ndryshojë gjatë kërkimit. Gjetja e nisur nga një sinjalizim gjurmuesi i ndjek ndryshimet e adresës; kjo pamje nuk mundet.</string>
+    <string name="action_open_guide">SI TA GJESH DHE TA ÇAKTIVIZOSH</string>
+    <string name="action_guides">UDHËZUES PËR GJURMUESIT</string>
+    <string name="sound_fail_permission">Duhet leja e lidhjes Bluetooth. Jepe te cilësimet e aplikacionit.</string>
+    <string name="sound_fail_bluetooth_off">Bluetooth-i është i fikur.</string>
+    <string name="sound_fail_connect">Lidhja nuk u realizua. Afrohu dhe provo përsëri.</string>
+    <string name="sound_fail_no_service">Ky gjurmues nuk ofron tingull që mund ta aktivizojmë.</string>
+    <string name="sound_fail_refused">Gjurmuesi refuzoi. Mund të jetë afër pronarit të tij tani.</string>
+    <string name="sound_fail_timeout">Asnjë përgjigje nga gjurmuesi. Afrohu dhe provo përsëri.</string>
+
+    <!-- Tracker guides: offline help for finding and disabling a tracker. Each line in a multi-line string becomes one numbered step; keep the line breaks. -->
+    <string name="guide_safety_title">PARA SE TA FIKËSH</string>
+    <string name="guide_safety_body">Nëse mendon se dikush po të gjurmon qëllimisht, mendo së pari për sigurinë tënde. Fikja e gjurmuesit mund t\'i tregojë personit që e vendosi se u zbulua.\n\nPara se ta çaktivizosh, fotografoje aty ku e gjete dhe shëno datën, orën dhe vendin. Ruaje sinjalizimin e Ambit. Nëse e raporton, policia mund të dëshirojë vetë gjurmuesin; prodhuesit ndonjëherë mund ta identifikojnë pronarin kur ua kërkon policia.\n\nShërbimet lokale të mbështetjes për përndjekjen ose dhunën në familje mund të të ndihmojnë të planifikosh hapat e ardhshëm.</string>
+    <string name="guide_illustration_description">Forma tipike e një gjurmuesi %1$s</string>
+    <string name="guide_illustration_caption">Vetëm forma tipike. Dizajni ndryshon nga modeli në model.</string>
+    <string name="guide_looks_heading">Si duket</string>
+    <string name="guide_disable_heading">Si ta çaktivizosh</string>
+    <string name="guide_other_families">GJURMUES TË TJERË</string>
+    <string name="guide_apple_looks">AirTag: një disk i bardhë rreth 3 cm i gjerë, pak i fryrë, me pjesën e pasme prej metali të lëmuar. Aksesorët e tjerë Find My vijnë si karta, varëse çelësash dhe mbajtëse biçiklete, dhe duken si produkte të zakonshme.</string>
+    <string name="guide_apple_disable">AirTag: shtyp poshtë pjesën e pasme metalike të lëmuar dhe rrotulloje në drejtim të kundërt të akrepave të orës derisa të ndalojë.\nHiq kapakun dhe nxirr baterinë e rrumbullakët tip monedhë.\nAksesorët e tjerë Find My: kërko një kapak baterie ose një të çarë ku futet një monedhë. Kartat e mbyllura nuk mund të fiken; mbaji larg vetes ose dorëzoja policisë.</string>
+    <string name="guide_samsung_looks">Një katror i vogël me cepa të rrumbullakët, rreth 4 cm i gjerë, me një vrimë në një cep për unazën e çelësave. Zakonisht i zi, i bardhë ose në ngjyrë pastel.</string>
+    <string name="guide_samsung_disable">SmartTag origjinal dhe SmartTag+: hape kutinë te e çara e vogël në anë.\nSmartTag2: hap kapakun e baterisë në pjesën e pasme.\nNxirr baterinë tip monedhë.</string>
+    <string name="guide_google_looks">Prodhohen nga disa kompani (për shembull Chipolo, Pebblebee, Motorola dhe eufy). Format përfshijnë disqe, katrorë me cepa të rrumbullakët, varëse çelësash dhe karta sa një portofol.</string>
+    <string name="guide_google_disable">Kërko një kapak të pasmë që hiqet duke e rrotulluar ose rrëshqitur dhe fsheh një bateri tip monedhë.\nModelet në formë karte dhe ato të rimbushshme shpesh janë të mbyllura dhe nuk hapen.\nNëse telefoni yt ka sinjalizime për gjurmues të panjohur te cilësimet e sigurisë, mund të shfaqë udhëzimet e vetë prodhuesit.</string>
+    <string name="guide_tile_looks">Zakonisht një katror me cepa të rrumbullakët me vrimë për unazën e çelësave (Mate, Pro), një kartë e hollë (Slim) ose një disk i vogël ngjitës (Sticker).</string>
+    <string name="guide_tile_disable">Mate dhe Pro: hape kutinë te bashkimi për të arritur te bateria. Disa modele më të reja hapen duke i rrotulluar.\nSlim dhe Sticker janë të mbyllura dhe nuk mund të fiken. Mbaji larg vetes ose dorëzoja policisë.</string>
+    <string name="guide_chipolo_looks">Etiketa të rrumbullakëta ose katrore me cepa të rrumbullakët, me vrimë për unazën e çelësave, ose një kartë e hollë. Shpesh me ngjyra të ndezura.</string>
+    <string name="guide_chipolo_disable">Modelet e rrumbullakëta: rrotullo kapakun për të arritur te bateria tip monedhë.\nModelet në formë karte janë të mbyllura dhe nuk mund të fiken.</string>
+    <string name="guide_unknown_looks">Ambit nuk e lidhi dot këtë sinjal me një rrjet të njohur gjurmuesish. Mund të jetë gjurmues, byzylyk fitnesi, transmetues apo diçka tjetër që transmeton përmes Bluetooth.</string>
+    <string name="guide_unknown_disable">Përdor matësin e sinjalit për të gjetur ku është më i fortë.\nKërko çdo send të vogël që nuk e njeh.\nNëse gjen një pajisje, kërko kapakun e baterisë ose një buton ndezjeje.</string>
+    <string name="guide_hiding_title">KU FSHIHEN GJURMUESIT</string>
+    <string name="guide_hiding_body">Çanta: xhepat e brendshëm, astari, nën pjesën e poshtme, portofolat.\nXhaketa: xhepat dhe kapuçët, ndonjëherë të qepur në astar.\nMakina: nën ndenjëse, mes jastëkëve të ndenjëseve, në kutinë e dorezave, në xhepat e dyerve, në veshjen e bagazhit, nën gomën rezervë.\nJashtë makinës: në strehët e rrotave, pas parakolpëve, nën shasi, shpesh në një kuti magnetike.\nBiçikleta dhe skuterë: nën shalë, brenda tubit të kornizës, te dritat ose zilja.\nDhurata dhe sende të përbashkëta: lodra, kapakë telefoni, varëse çelësash, sendet e fëmijëve.</string>
+    <string name="guide_search_title">SI TË KËRKOSH</string>
+    <string name="guide_search_body">Nis modalitetin Gjej dhe ec ngadalë nëpër zonën ku ndodhi sinjalizimi.\nKur sinjali është NXEHTË, ndalo dhe kontrollo gjithçka brenda rreth një krahu largësi.\nKontrollo një send në një kohë: largo një çantë ose xhaketë, pastaj shiko nëse sinjali e ndjek.\nNëse gjurmuesi e mbështet, përdor Luaj tingull dhe dëgjo.\nMungesa e sinjalit nuk provon që nuk ka gjurmues. Disa transmetojnë vetëm herë pas here.</string>
+
+    <!-- Additional tracker families. -->
+    <string name="family_dult">Gjurmues i përputhshëm me DULT</string>
+    <string name="family_pebblebee">Pebblebee</string>
+    <string name="family_wifi">Rrjet Wi-Fi</string>
+    <string name="guide_dult_looks">Një gjurmues që ndjek standardin IETF DULT për zbulimin e gjurmuesve të padëshiruar. Çdo markë mund ta mbështesë, ndaj mund të jetë disk, etiketë katrore, kartë ose diçka e integruar në një produkt tjetër.</string>
+    <string name="guide_dult_disable">Përdor Luaj tingull për të dëgjuar ku është.\nKërko një kapak baterie, një pjesë të pasme që hiqet duke e rrotulluar ose një të çarë ku futet një monedhë.\nGjurmuesit e mbyllur ose të rimbushshëm mund të mos fiken. Mbaji larg vetes ose dorëzoja policisë.</string>
+    <string name="guide_pebblebee_looks">Etiketa të vogla të rrumbullakëta, varëse çelësash dhe karta sa një portofol. Shumë prej tyre janë të rimbushshme.</string>
+    <string name="guide_pebblebee_disable">Përdor Luaj tingull për të dëgjuar ku është.\nModelet e rimbushshme nuk kanë bateri për të hequr. Disa fiken duke mbajtur shtypur butonin gjatë; përndryshe mbaje larg vetes ose dorëzoja policisë.</string>
+    <string name="guide_wifi_looks">Një rrjet Wi-Fi që u shfaq në disa vende ku shkove. Më shpesh është hotspot i telefonit të dikujt që udhëton në të njëjtin drejtim, ose Wi-Fi i një autobusi, treni apo makine. Mund të jetë edhe një kamerë portative ose një gjurmues me Wi-Fi.</string>
+    <string name="guide_wifi_disable">Kontrollo nëse emri i rrjetit i përket një mjeti që përdore ose një personi me të cilin udhëtove.\nNëse nuk e shpjegon dot, kontrollo makinën dhe çantat ashtu si për një gjurmues Bluetooth.\nGjurmuesit Wi-Fi zakonisht kanë buton ndezjeje ose bateri të jashtme.</string>
+
+    <!-- Device hints: pattern matches that make a device worth a second look. Always worded as a possibility. -->
+    <string name="field_note">Shënim</string>
+    <string name="hint_camera_glasses">Mund të jenë syze me kamerë (Bluetooth i Meta ose Luxottica). Mund të jetë edhe kufje VR ose pajisje tjetër e Meta.</string>
+    <string name="hint_camera_setup">Ka emër si i një kamere në modalitetin e konfigurimit. Mund të jetë një kamerë që dikush po e konfiguron afër.</string>
+    <string name="hint_iot_setup">Ka emër si i një pajisjeje shtëpie inteligjente në modalitetin e konfigurimit.</string>
+    <string name="hint_camera_vendor">Prodhuar nga një kompani që shet kryesisht kamera. Rrjeti ose hotspot-i i saj mund t\'i përkasë një kamere.</string>
+
+    <!-- Detection settings. -->
+    <string name="settings_sensitivity_label">Ndjeshmëria e sinjalizimeve për gjurmues</string>
+    <string name="sensitivity_relaxed">E ULËT</string>
+    <string name="sensitivity_standard">STANDARDE</string>
+    <string name="sensitivity_high">E LARTË</string>
+    <string name="sensitivity_relaxed_note">Pret për 4 vende të shpërndara në një zonë më të gjerë dhe të paktën 45 minuta. Më pak alarme të rreme; paralajmëron më ngadalë.</string>
+    <string name="sensitivity_standard_note">3 vende të paktën 250 m larg njëri-tjetrit, gjatë 20 minutave ose më shumë. Ekuilibër mes shpejtësisë dhe alarmeve të rreme.</string>
+    <string name="sensitivity_high_note">3 vende të paktën 150 m larg njëri-tjetrit, gjatë 10 minutave ose më shumë. Paralajmëron më shpejt në udhëtime të shkurtra, por ka më shumë gjasa të sinjalizojë dikë që thjesht udhëton në të njëjtin drejtim.</string>
+    <string name="settings_wifi_follow">Sinjalizo për rrjete Wi-Fi që udhëtojnë me mua</string>
+    <string name="settings_wifi_follow_note">Zakonisht një hotspot telefoni ose Wi-Fi i një autobusi, treni apo makine. Kërkon që skanimi Wi-Fi të jetë aktiv.</string>
+    <string name="settings_glasses">Sinjalizo kur mund të ketë syze me kamerë afër</string>
+    <string name="settings_glasses_note">Përputh ID-të Bluetooth të Meta dhe Luxottica nga afër. Kufjet dhe kontrolluesit VR përdorin të njëjtat ID. Jo më shumë se një sinjalizim çdo 15 minuta.</string>
+    <string name="alert_glasses_title">Mund të ketë syze me kamerë afër</string>
+    <string name="alert_glasses_body">Një pajisje Bluetooth shumë afër përdor ID të Meta ose Luxottica, siç bëjnë Ray-Ban Meta dhe syze të ngjashme. Mund të jetë edhe kufje VR ose pajisje tjetër e Meta.</string>
+    <string name="alert_wifi_body">Vende: %1$d. Shtrirja: %2$d m. Shpesh është hotspot i një telefoni afër, ose rrjet autobusi, treni apo makine. Hap Ambit për ta shqyrtuar.</string>
+    <string name="alerts_wifi_note">Ky rrjet u pa në disa vende ku shkove. Mund të jetë hotspot në telefonin e dikujt afër, ose Wi-Fi i një autobusi, treni apo makine me të cilën udhëtove. Gjetja nuk ofrohet për Wi-Fi, sepse Android lejon vetëm pak skanime Wi-Fi çdo dy minuta.</string>
+
+    <!-- Alert confidence: a 0–100 weighting of the evidence with a plain-language breakdown. Each reason is one short sentence; the points are added after it in code. -->
+    <string name="alerts_confidence">Besueshmëria: %1$d/100</string>
+    <string name="alerts_confidence_note">Një peshim i provave, jo probabilitet.</string>
+    <string name="alerts_why">PSE U SINJALIZUA</string>
+    <string name="reason_line">%1$s (%2$s)</string>
+    <string name="reason_duration">Ndjekur për rreth %1$d orë</string>
+    <string name="reason_separated">Ka njoftuar se është larg pronarit</string>
+    <string name="reason_spread">Gjurma shtrihet mbi %1$d km</string>
+    <string name="reason_known_tracker">I përket një rrjeti të njohur gjurmuesish</string>
+    <string name="reason_unknown_beacon">Nuk është lloj i njohur gjurmuesi, ndaj kjo është më pak e sigurt</string>
+    <string name="reason_wifi">Rrjetet Wi-Fi shpesh udhëtojnë me njerëz të tjerë, ndaj kjo është më pak e sigurt</string>
+    <string name="action_trust">KJO ËSHTË IMJA</string>
+
+    <!-- Trusted devices in settings. -->
+    <string name="panel_trusted">PAJISJET E BESUARA</string>
+    <string name="trusted_empty">Ende asgjë e besuar. Përdor \"Kjo është imja\" te një sinjalizim për etiketat e tua.</string>
+    <string name="trusted_rotation_note">Etiketat e Apple dhe Google e ndryshojnë identitetin rreth një herë në ditë, ndaj besimi te njëra prej tyre zgjat vetëm rreth një ditë.</string>
+    <string name="trusted_added">%1$s u shënua si e besuar</string>
+
+    <!-- Offline maps. -->
+    <string name="value_km">%1$d km</string>
+    <string name="map_attribution_basemap">Harta bazë: Natural Earth</string>
+    <string name="panel_offline_map">HARTA PA INTERNET</string>
+    <string name="settings_map_note">Hartat nuk shkarkojnë kurrë asgjë. Harta e integruar tregon vijat bregdetare, liqenet dhe kufijtë. Për rrugë, importo një skedar raster MBTiles që e ke krijuar ose shkarkuar vetë.</string>
+    <string name="settings_map_current">Harta</string>
+    <string name="settings_map_bundled">Konturi i integruar i botës</string>
+    <string name="settings_map_unnamed">Hartë e importuar</string>
+    <string name="settings_map_zoom">Nivelet e zmadhimit</string>
+    <string name="action_import_map">IMPORTO SKEDAR MBTILES</string>
+    <string name="action_remove_map">HIQ HARTËN E IMPORTUAR</string>
+    <string name="toast_map_imported">Harta u importua.</string>
+    <string name="toast_map_rejected">Ai skedar nuk është hartë raster MBTiles. Pllakat vektoriale nuk mbështeten.</string>
+
+    <!-- Evidence view and PDF report. The PDF is meant to be handed to police or a support worker who has never heard of the app: plain, factual wording. -->
+    <string name="action_evidence">PROVAT DHE HARTA</string>
+    <string name="action_export_pdf">EKSPORTO RAPORTIN PDF</string>
+    <string name="evidence_title">PROVAT: %1$s</string>
+    <string name="evidence_loading">Po mblidhen pikasjet…</string>
+    <string name="evidence_missing">Pikasjet pas këtij sinjalizimi nuk ruhen më. Mund të jenë fshirë nga cilësimi i ruajtjes së të dhënave.</string>
+    <string name="alerts_confidence_short">Besueshmëria</string>
+    <string name="evidence_sightings">Pikasje</string>
+    <string name="evidence_map">KU U PA</string>
+    <string name="evidence_map_note">Numrat janë vendet sipas radhës në të cilën u vizituan. Pozicionet vijnë nga vendndodhja e telefonit dhe mund të gabojnë me dhjetëra metra.</string>
+    <string name="evidence_timeline">KRONOLOGJIA</string>
+    <string name="evidence_timeline_row">Vendi %1$d: %2$s deri në %3$s, sinjali më i fortë %4$d dBm</string>
+    <string name="evidence_report_title">RAPORT PËR POLICINË OSE PËR NJË PUNONJËS MBËSHTETJEJE</string>
+    <string name="evidence_report_body">Një PDF me kronologjinë, çdo pikasje, një hartë dhe një shpjegim se si u mblodhën të dhënat dhe çfarë nuk mund të provojnë. Mbetet në telefonin tënd derisa të zgjedhësh ku ta dërgosh.</string>
+    <string name="evidence_exporting">PO KRIJOHET PDF-JA…</string>
+    <string name="evidence_export_failed">PDF-ja nuk u krijua dot.</string>
+    <string name="evidence_share_subject">Raport provash për gjurmues</string>
+    <string name="evidence_pdf_title">Raport provash për gjurmues Bluetooth</string>
+    <string name="evidence_pdf_generated">Krijuar më %1$s (%2$s) nga %3$s në %4$s.</string>
+    <string name="evidence_pdf_summary">Përmbledhje</string>
+    <string name="evidence_pdf_type">Lloji i gjurmuesit</string>
+    <string name="evidence_pdf_identity">Identiteti i përdorur nga aplikacioni</string>
+    <string name="evidence_pdf_first">Parë për herë të parë</string>
+    <string name="evidence_pdf_last">Parë për herë të fundit</string>
+    <string name="evidence_pdf_places">Vende të veçanta</string>
+    <string name="evidence_pdf_sightings">Pikasje të regjistruara</string>
+    <string name="evidence_pdf_addresses">Adresa Bluetooth të përdorura</string>
+    <string name="evidence_pdf_spread">Distanca mes vendeve më të largëta</string>
+    <string name="evidence_pdf_closest">Sinjali më i fortë</string>
+    <string name="evidence_pdf_confidence">Pikët e besueshmërisë (peshimi i provave nga aplikacioni, jo probabilitet)</string>
+    <string name="evidence_pdf_map">Harta e vendeve</string>
+    <string name="evidence_pdf_places_heading">Vendet, sipas radhës</string>
+    <string name="evidence_pdf_place_row">%1$d. %2$s deri në %3$s në %4$s, sinjali më i fortë %5$d dBm</string>
+    <string name="evidence_pdf_sightings_heading">Çdo pikasje</string>
+    <string name="evidence_pdf_sightings_columns">Ora lokale           UTC                   Gjerësia   Gjatësia     ±m   dBm  Adresa Bluetooth</string>
+    <string name="evidence_pdf_method_heading">Si u mblodhën këto të dhëna</string>
+    <string name="evidence_pdf_method">Telefoni dëgjoi për reklamime Bluetooth Low Energy, transmetimet e shkurtra publike që gjurmuesit dërgojnë që rrjeti i pronarit të tyre t\'i gjejë. Ai nuk u lidh me gjurmuesin, nuk deshifroi përmbajtjen e tij dhe nuk ndërhyri në të. Sa herë që gjurmuesi u dëgjua, telefoni ruajti kohën, fuqinë e sinjalit të marrë dhe pozicionin GPS të vetë telefonit. Gjurmuesit e ndryshojnë rregullisht adresën Bluetooth; aplikacioni i grupoi pikasjet duke përdorur identifikuesin që çdo rrjet gjurmuesish e mban të qëndrueshëm ndërsa gjurmuesi është larg pronarit të tij. Një sinjalizim jepet vetëm kur i njëjti gjurmues dëgjohet në tre ose më shumë vende të paktën 250 m larg njëri-tjetrit dhe është zhvendosur mes tyre bashkë me telefonin.</string>
+    <string name="evidence_pdf_limits_heading">Çfarë nuk mund të tregojë ky raport</string>
+    <string name="evidence_pdf_limits">Nuk mund të identifikojë pronarin e gjurmuesit apo kush e vendosi. Nuk mund të tregojë ku është gjurmuesi tani, ose sa saktësisht afër ishte: fuqia e sinjalit jep vetëm një ide të përafërt të distancës. Pozicionet janë të telefonit, jo të gjurmuesit, dhe mund të gabojnë me dhjetëra metra. Një gjurmues i mbajtur nga dikush që udhëton në të njëjtin drejtim do të jepte një model të ngjashëm. Rrjetet e gjurmuesve i ndryshojnë formatet e reklamimit, ndaj lloji i gjurmuesit është përputhja më e mirë e aplikacionit, jo një siguri.</string>
+    <string name="evidence_pdf_integrity_heading">Integriteti</string>
+    <string name="evidence_pdf_integrity">SHA-256 i tabelës së pikasjeve në formë kanonike: %1$s. Rillogaritja nga të njëjtat të dhëna jep të njëjtën vlerë, gjë që tregon se tabela nuk është ndryshuar pasi u krijua ky raport. Nuk provon asgjë për të dhënat para kësaj.</string>
+    <string name="evidence_pdf_footer">Faqja %1$d</string>
+
+    <!-- App lock. -->
+    <string name="lock_title">Fut PIN-in</string>
+    <string name="lock_wrong">PIN i gabuar.</string>
+    <string name="lock_delete">Fshi</string>
+    <string name="lock_enter">Hyr</string>
+    <string name="lock_biometric">PËRDOR GJURMËN E GISHTIT OSE FYTYRËN</string>
+    <string name="lock_use_pin">Përdor PIN-in</string>
+    <string name="pin_dialog_title">Vendos një PIN</string>
+    <string name="pin_dialog_body">4 deri në 12 shifra. Nëse e harron, do të duhet të pastrosh të dhënat e aplikacionit dhe do të humbasësh historikun.</string>
+    <string name="pin_dialog_pin">PIN</string>
+    <string name="pin_dialog_again">PIN-i përsëri</string>
+    <string name="pin_dialog_set">Vendos PIN-in</string>
+
+    <!-- Safety settings for people who may be watched by the person tracking them. -->
+    <string name="panel_safety">SIGURIA</string>
+    <string name="settings_app_lock">Kyçe aplikacionin me PIN</string>
+    <string name="settings_app_lock_note">Kërkon PIN-in sa herë që hapet aplikacioni. Skanimi vazhdon në sfond.</string>
+    <string name="settings_biometric">Lejo shkyçjen me gjurmë gishti ose fytyrë</string>
+    <string name="settings_hide_recents">Fshihe aplikacionin te aplikacionet e fundit</string>
+    <string name="settings_hide_recents_note">Bllokon edhe pamjet e ekranit të aplikacionit. Çaktivizoje kur do të bësh pamje ekrani të provave.</string>
+    <string name="settings_disguise">Maskoje ikonën e aplikacionit si \"Shënime\"</string>
+    <string name="settings_disguise_note">Ndryshon ikonën dhe emrin në ekranin bazë. Emri i vërtetë shfaqet ende në listën e aplikacioneve të telefonit, te cilësimet dhe në kokën e njoftimeve.</string>
+    <string name="settings_quick_exit">Shfaq një buton daljeje të shpejtë</string>
+    <string name="settings_shake_exit">Tunde telefonin për të dalë</string>
+    <string name="settings_quick_exit_note">Dalja e shpejtë të çon menjëherë te ekrani bazë dhe e heq aplikacionin nga aplikacionet e fundit.</string>
+    <string name="settings_discreet">Njoftime diskrete</string>
+    <string name="settings_discreet_note">Sinjalizimet thonë vetëm \"Kujtesë\" dhe fshihen në ekranin e kyçjes.</string>
+    <string name="action_quick_exit">DIL</string>
+    <string name="action_help">NDIHMË DHE MBËSHTETJE</string>
+    <string name="disguise_name">Shënime</string>
+    <string name="notification_discreet_title">Aktiv</string>
+    <string name="notification_discreet_text">Trokit për ta hapur.</string>
+    <string name="notification_discreet_alert_title">Kujtesë</string>
+    <string name="notification_discreet_alert_body">Hape aplikacionin kur të kesh një moment.</string>
+
+    <!-- Offline help page. Deliberately names no country, service or phone number. -->
+    <string name="help_danger_title">NËSE JE NË RREZIK TANI</string>
+    <string name="help_danger_body">Telefono numrin vendor të urgjencës. Nëse nuk është e sigurt të flasësh, shumë shërbime urgjence pranojnë mesazhe me tekst ose thirrje pa folur; kontrollo si funksionon i yti kur të kesh mundësi.</string>
+    <string name="help_support_title">KËRKO MBËSHTETJE</string>
+    <string name="help_support_body">Shërbimet për njerëzit që përjetojnë përndjekje ose dhunë në familje mund të të ndihmojnë të kuptosh mundësitë e tua dhe të bësh një plan sigurie.\nShumë prej tyre ofrojnë linja ndihme dhe shërbime bisede falas dhe konfidenciale. Kërko një të tillë në vendin tënd nga një pajisje që personi tjetër nuk mund ta kontrollojë.\nNjë mjek, një mik i besuar, ose një punonjës për mirëqenien në punë apo në shkollë mund të të ndihmojë gjithashtu të gjesh mbështetje.</string>
+    <string name="help_evidence_title">RUAJ PROVAT</string>
+    <string name="help_evidence_body">Eksporto raportin PDF nga ekrani i provave të sinjalizimit dhe ruaj një kopje diku ku personi tjetër nuk mund ta arrijë.\nFotografo çdo gjurmues që gjen aty ku e gjete, para se ta prekësh.\nShëno datat, oraret dhe vendet e çdo gjëje që të shqetësoi.\nPolicia mund të dëshirojë vetë gjurmuesin. Prodhuesit ndonjëherë mund ta identifikojnë pronarin kur ua kërkon policia.</string>
+    <string name="help_phone_title">KONTROLLO TELEFONIN DHE LLOGARITË</string>
+    <string name="help_phone_body">Kontrollo ndarjen e vendndodhjes në aplikacionet e hartave, të familjes dhe \"gjej pajisjen time\".\nKërko aplikacione që nuk i njeh, sidomos ato me qasje te vendndodhja ose me të drejta administratori të pajisjes.\nNdrysho fjalëkalimet e llogarive kryesore nga një pajisje e sigurt dhe aktivizo hyrjen me dy hapa.\nKontrollo cilat pajisje janë të identifikuara në llogaritë e tua dhe hiq ato që nuk i njeh.\nKontrollo aplikacionin e makinës së lidhur, nëse makina jote ka një të tillë.</string>
+    <string name="help_plan_title">PLANIFIKO PARA SE TË VEPROSH</string>
+    <string name="help_plan_body">Heqja ose fikja e një gjurmuesi mund t\'i tregojë personit që e vendosi se u zbulua. Mendo si mund të reagojë.\nNjë shërbim mbështetjeje mund të të ndihmojë të vendosësh kur dhe si të veprosh në mënyrë të sigurt.\nNuk ke pse të bësh asgjë menjëherë. Ambit vazhdon të regjistrojë në sfond.</string>
+    <string name="help_app_title">ÇFARË MUND DHE ÇFARË NUK MUND TË BËJË AMBIT</string>
+    <string name="help_app_body">Ambit mund të vërejë gjurmues Bluetooth dhe rrjete Wi-Fi që shfaqen vazhdimisht kudo që shkon.\nNuk mund të gjejë gjurmues të fikur, gjurmues GPS që përdorin vetëm rrjetin celular, ose programe spiune në telefonin tënd.\nMungesa e sinjalizimit nuk do të thotë se nuk ka gjurmues. Beso edhe gjykimin tënd.</string>
+
+    <!-- Reliability and battery. Menu names in the phone-brand steps follow each maker's English UI; translators can adapt them to the localised menu names. -->
+    <string name="panel_reliability">BESUESHMËRIA DHE BATERIA</string>
+    <string name="reliability_status">Skanimi</string>
+    <string name="reliability_running">Në punë</string>
+    <string name="reliability_stopped">I ndalur</string>
+    <string name="reliability_killed">U ndal nga telefoni në %1$s</string>
+    <string name="reliability_motion">Telefoni është</string>
+    <string name="motion_moving">Në lëvizje: skanon vazhdimisht</string>
+    <string name="motion_still">I palëvizur: skanon me intervale të shkurtra</string>
+    <string name="motion_unknown">Ende e paqartë</string>
+    <string name="reliability_background_location">Vendndodhja në sfond</string>
+    <string name="reliability_background_location_note">Nevojitet që skanimi të vazhdojë të regjistrojë pozicionet pas një rinisjeje. Zgjidh \"Lejo gjatë gjithë kohës\" në ekranin tjetër.</string>
+    <string name="action_allow_background_location">LEJO VENDNDODHJEN GJATË GJITHË KOHËS</string>
+    <string name="reliability_battery_optimisation">Kufizimet e baterisë</string>
+    <string name="action_open_battery_settings">HAP CILËSIMET E BATERISË</string>
+    <string name="reliability_drain">Përdorimi i baterisë së telefonit gjatë skanimit</string>
+    <string name="reliability_drain_pending">Ende nuk ka të dhëna të mjaftueshme. Kontrollo përsëri pas disa orësh skanimi pa karikues.</string>
+    <string name="reliability_duty">Radioja Bluetooth aktive</string>
+    <string name="reliability_battery_note" formatted="false">Ambit synon të përdorë më pak se 3% të baterisë në ditë me ndjeshmërinë Standarde. Android nuk e lejon një aplikacion të matë pjesën e vet, ndaj kjo shifër është përdorimi i të gjithë telefonit ndërsa Ambit skanonte; cilësimet e baterisë së telefonit tregojnë pjesën e Ambit.</string>
+    <string name="value_allowed">Lejuar</string>
+    <string name="value_not_allowed">Nuk lejohet</string>
+    <string name="value_unrestricted">Pa kufizime</string>
+    <string name="value_restricted">I kufizuar</string>
+    <string name="value_percent_per_day">Rreth %1$d%% në ditë</string>
+    <string name="value_percent">%1$d%%</string>
+    <string name="watchdog_title">Skanimi u ndal</string>
+    <string name="watchdog_body">Telefoni yt e ndaloi Ambit në sfond. Trokit për ta nisur përsëri, pastaj shiko Cilësimet › Besueshmëria që të mos ndodhë më.</string>
+    <string name="oem_samsung">Samsung: Settings › Apps › Ambit › Battery › Unrestricted. Pastaj Settings › Battery › Background usage limits: sigurohu që Ambit të mos jetë te Sleeping apps ose Deep sleeping apps, dhe shtoje te Never sleeping apps.</string>
+    <string name="oem_xiaomi">Xiaomi, Redmi dhe POCO: Settings › Apps › Manage apps › Ambit. Aktivizo Autostart dhe vendos Battery saver në No restrictions. Te aplikacionet e fundit, kyç kartën e Ambit.</string>
+    <string name="oem_oneplus">OnePlus, OPPO dhe realme: Settings › Apps › Ambit › Battery. Lejo aktivitetin në sfond dhe vendose që të mos optimizohet. Kyç Ambit te aplikacionet e fundit.</string>
+    <string name="oem_huawei">Huawei dhe Honor: Settings › Battery › App launch. Vendose Ambit në Manage manually dhe aktivizo Auto-launch, Secondary launch dhe Run in background.</string>
+    <string name="oem_vivo">vivo dhe iQOO: Settings › Battery › Background power consumption management. Lejo përdorim të lartë të energjisë në sfond për Ambit dhe lejo Autostart.</string>
+    <string name="oem_motorola">Motorola: Settings › Apps › Ambit › App battery usage › Unrestricted.</string>
+    <string name="oem_google">Pixel: Settings › Apps › Ambit › App battery usage › Unrestricted.</string>
+    <string name="oem_generic">Vendos përdorimin e baterisë së Ambit në Unrestricted ose Don\'t optimise te cilësimet e aplikacionit. Disa telefona kanë edhe një cilësim Autostart ose App launch që duhet ta lejojë Ambit. Faqja dontkillmyapp.com tregon hapat për shumicën e markave.</string>
+
+    <!-- Travel mode. -->
+    <string name="panel_travel">MODALITETI I UDHËTIMIT</string>
+    <string name="travel_note">Për udhëtime: sinjalizimet kalojnë në ndjeshmëri të lartë dhe mund të shënosh një hotel ose shtëpinë e një miku si vend të njohur vetëm për këtë udhëtim. Në avion, tren dhe autobus, gjurmuesit e pasagjerëve të tjerë udhëtojnë gjithashtu me ty, ndaj prit më shumë sinjalizime në ato pjesë të rrugës.</string>
+    <string name="travel_until">Aktiv deri më</string>
+    <string name="travel_days">%1$d DITË</string>
+    <string name="action_end_travel">MBYLL MODALITETIN E UDHËTIMIT</string>
+    <string name="action_mark_temporary_place">SHËNOJE KËTË VEND SI TË NJOHUR PËR KËTË UDHËTIM</string>
+    <string name="default_temporary_place_label">Udhëtim</string>
+    <string name="known_place_until">Deri më %1$s</string>
+
+    <!-- Home-screen widget and Quick Settings tile. -->
+    <string name="widget_label">Statusi i Ambit</string>
+    <string name="widget_description">Tregon nëse skanimi është aktiv dhe sa sinjalizime janë të hapura.</string>
+    <string name="widget_scanning">Po skanon</string>
+    <string name="widget_stopped">Nuk po skanon</string>
+    <string name="widget_no_alerts">Asnjë sinjalizim i hapur</string>
+    <string name="widget_scan_now">SKANO TANI</string>
+    <string name="tile_label">Skanimi Ambit</string>
+    <string name="action_evidence_short">Provat</string>
+
+    <!-- Expert view: live log of raw Bluetooth advertisements. -->
+    <string name="panel_expert">EKSPERT: REGJISTRI I PAKETAVE</string>
+    <string name="expert_note">Një regjistër i drejtpërdrejtë i reklamimeve të papërpunuara Bluetooth që merr Ambit: të dhënat e prodhuesit, UUID-të e shërbimeve dhe të dhënat e shërbimeve, bashkë me atë që Ambit kuptoi nga secili.</string>
+    <string name="action_open_expert">HAP REGJISTRIN E PAKETAVE</string>
+    <string name="expert_counts">Paketa të shfaqura: %1$d. Të marra: %2$d.</string>
+    <string name="expert_start_ble">Nis skanimin Bluetooth për të parë paketat.</string>
+    <string name="expert_filter">Filtri: adresa, ID e kompanisë, UUID, bajte</string>
+    <string name="expert_trackers_only">Vetëm paketat e njohura si gjurmues</string>
+    <string name="action_pause">PAUZË</string>
+    <string name="action_resume">VAZHDO</string>
+    <string name="action_clear_log">PASTRO</string>
+
+    <!-- Map exports. -->
+    <string name="action_export_gpx">PIKASJET (GPX)</string>
+    <string name="action_export_kml">PIKASJET (KML)</string>
+    <string name="action_export_trail_gpx">GJURMA PËR APLIKACIONET E HARTAVE (GPX)</string>
+    <string name="action_export_trail_kml">GJURMA PËR APLIKACIONET E HARTAVE (KML)</string>
+
+    <!-- Encryption, backup, restore and wipe. -->
+    <string name="panel_backup">KOPJA REZERVË DHE FSHIRJA</string>
+    <string name="backup_encryption">Enkriptimi i bazës së të dhënave</string>
+    <string name="backup_encryption_on">Aktiv (SQLCipher, çelësi ruhet në ruajtësin e çelësave të telefonit)</string>
+    <string name="backup_encryption_failed">Joaktiv: nuk mund të aktivizohej në këtë telefon, ndaj të dhënat mbeten të paenkriptuara në vend që të rrezikohen</string>
+    <string name="backup_encryption_unknown">Fillon herën e parë që ruhen të dhëna</string>
+    <string name="backup_note">Kopja rezervë është një skedar i vetëm me gjithçka që Ambit ka regjistruar, i kyçur me një fjalëkalim që zgjedh ti. Mbaje diku ku personi për të cilin shqetësohesh nuk mund ta arrijë. Cilësimet e aplikacionit dhe PIN-i yt nuk përfshihen.</string>
+    <string name="action_backup">RUAJ KOPJE REZERVË NË SKEDAR</string>
+    <string name="action_restore">RIKTHE NGA NJË KOPJE REZERVË</string>
+    <string name="action_wipe_everything">FSHI GJITHÇKA</string>
+    <string name="backup_password_title">Zgjidh një fjalëkalim për kopjen rezervë</string>
+    <string name="backup_password_body">Të paktën 8 karaktere. Pa të, kopja rezervë nuk hapet dot nga askush, as nga ti.</string>
+    <string name="backup_password">Fjalëkalimi</string>
+    <string name="backup_password_again">Fjalëkalimi përsëri</string>
+    <string name="restore_password_title">Ta rikthesh këtë kopje rezervë?</string>
+    <string name="restore_password_body">Kjo zëvendëson gjithçka që ka tani Ambit me përmbajtjen e kopjes rezervë, pastaj rinis aplikacionin.</string>
+    <string name="action_continue_short">Vazhdo</string>
+    <string name="wipe_title">Të fshihet gjithçka?</string>
+    <string name="wipe_body">Kjo fshin çdo pikasje, sinjalizim, vend të njohur dhe pajisje të besuar, hartën e importuar, cilësimet dhe PIN-in tënd. Nuk mund të zhbëhet. Ambit rinis sikur të ishte instaluar sapo.</string>
+    <string name="wipe_confirm">Fshi</string>
+    <string name="toast_backup_saved">Kopja rezervë u ruajt.</string>
+    <string name="toast_backup_failed">Kopja rezervë nuk u ruajt dot.</string>
+    <string name="toast_restore_wrong_password">Fjalëkalim i gabuar, ose skedari është i dëmtuar.</string>
+    <string name="toast_restore_too_new">Kjo kopje rezervë është nga një version më i ri i Ambit. Përditëso fillimisht aplikacionin.</string>
+    <string name="toast_restore_failed">Ai skedar nuk u rikthye dot.</string>
+    <plurals name="widget_alerts">
+        <item quantity="one">%1$d sinjalizim i hapur</item>
+        <item quantity="other">%1$d sinjalizime të hapura</item>
+    </plurals>
+
+    <!-- Plurals: translators supply the forms their language needs (Albanian uses one/other). -->
+    <plurals name="toast_pruned">
+        <item quantity="one">U fshi %1$d vëzhgim më i vjetër se %2$s.</item>
+        <item quantity="other">U fshinë %1$d vëzhgime më të vjetra se %2$s.</item>
+    </plurals>
+    <plurals name="days">
+        <item quantity="one">%1$d ditë</item>
+        <item quantity="other">%1$d ditë</item>
+    </plurals>
+    <plurals name="toast_correlation_flagged">
+        <item quantity="one">Korrelimi përfundoi. U sinjalizua %1$d gjurmues.</item>
+        <item quantity="other">Korrelimi përfundoi. U sinjalizuan %1$d gjurmues.</item>
+    </plurals>
+    <plurals name="reason_places">
+        <item quantity="one">Parë në %1$d vend të veçantë</item>
+        <item quantity="other">Parë në %1$d vende të veçanta</item>
+    </plurals>
+    <plurals name="reason_accompanied">
+        <item quantity="one">U zhvendos bashkë me ty nga një vend te tjetri %1$d herë</item>
+        <item quantity="other">U zhvendos bashkë me ty nga një vend te tjetri %1$d herë</item>
+    </plurals>
+    <plurals name="reason_rotations">
+        <item quantity="one">Vazhdoi të të ndiqte pavarësisht %1$d ndryshimi adrese</item>
+        <item quantity="other">Vazhdoi të të ndiqte pavarësisht %1$d ndryshimeve të adresës</item>
+    </plurals>
+    <plurals name="reason_close">
+        <item quantity="one">Sinjal i fortë në %1$d vend, pra ishte pranë teje, jo thjesht përreth</item>
+        <item quantity="other">Sinjal i fortë në %1$d vende, pra ishte pranë teje, jo thjesht përreth</item>
+    </plurals>
+    <plurals name="trusted_paired">
+        <item quantity="one">Pajisja jote Bluetooth e çiftuar (kufje, orë, makinë) nuk sinjalizohet kurrë. Gjithsej: %1$d.</item>
+        <item quantity="other">Pajisjet e tua Bluetooth të çiftuara (kufje, orë, makinë) nuk sinjalizohen kurrë. Gjithsej: %1$d.</item>
+    </plurals>
+    <plurals name="map_description">
+        <item quantity="one">Hartë e %1$d pikasjeje</item>
+        <item quantity="other">Hartë e %1$d pikasjeve</item>
+    </plurals>
+
+    <!-- Alert severity bands, shown in brackets after the tracker name. -->
+    <string name="severity_low">I MUNDSHËM</string>
+    <string name="severity_elevated">I PROBABËL</string>
+    <string name="severity_high">SHUMË I PROBABËL</string>
+
+    <!-- Vendor categories. A category describes the manufacturer, never the owner. -->
+    <string name="category_priority">Prodhues prioritar / sigurie publike</string>
+    <string name="category_fleet">Flotë / ruter celular</string>
+    <string name="category_infrastructure">Infrastrukturë / rrjet</string>
+    <string name="category_commercial">Tregtar</string>
+    <string name="category_residential">Banesor</string>
+    <string name="category_randomized">Adresë e rastësishme</string>
+    <string name="category_unknown">Pa klasifikim</string>
+    <string name="legend_priority">PRIORITET</string>
+    <string name="legend_fleet">FLOTË</string>
+    <string name="legend_infrastructure">INFRA</string>
+    <string name="legend_commercial">TREGTAR</string>
+    <string name="legend_residential">BANESOR</string>
+    <string name="legend_randomized">RASTËSOR</string>
+    <string name="legend_unknown">I PANJOHUR</string>
+
+    <!-- Status chips and share-sheet subjects. -->
+    <string name="value_no_fix">pa pozicion</string>
+    <string name="chip_wifi_on">WI-FI AKTIV</string>
+    <string name="chip_wifi_off">WI-FI JOAKTIV</string>
+    <string name="chip_ble_on">BLE AKTIV</string>
+    <string name="chip_ble_off">BLE JOAKTIV</string>
+    <string name="chip_gps_fix">POZICION GPS</string>
+    <string name="chip_no_fix">PA POZICION</string>
+    <string name="value_on">AKTIV</string>
+    <string name="value_off">JOAKTIV</string>
+    <string name="share_subject_devices">Eksport pajisjesh nga Ambit</string>
+    <string name="share_subject_log">Regjistri i vëzhgimeve i Ambit</string>
+    <string name="share_subject_json">Eksport JSON nga Ambit</string>
+    <string name="share_subject_gpx">Pikasjet e Ambit (GPX)</string>
+    <string name="share_subject_kml">Pikasjet e Ambit (KML)</string>
+    <string name="share_subject_debrief">Përmbledhja e Ambit</string>
+    <!-- Spoken by screen readers for the radar picture. %2$d is how many are close. -->
+    <plurals name="radar_description">
+        <item quantity="one">Radari tregon %1$d pajisje, %2$d prej tyre afër. Vetëm distanca; pozicioni rreth rrethit nuk ka kuptim.</item>
+        <item quantity="other">Radari tregon %1$d pajisje, %2$d prej tyre afër. Vetëm distanca; pozicioni rreth rrethit nuk ka kuptim.</item>
+    </plurals>
+</resources>
