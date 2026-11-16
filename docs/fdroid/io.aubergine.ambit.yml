@@ -1,0 +1,27 @@
+# Draft metadata for a merge request to https://gitlab.com/fdroid/fdroiddata
+# (metadata/io.aubergine.ambit.yml). Descriptions and screenshots come from fastlane/ in this repo.
+Categories:
+  - Security
+  - Connectivity
+License: Apache-2.0
+SourceCode: https://github.com/aubergine-ux/ambit
+IssueTracker: https://github.com/aubergine-ux/ambit/issues
+Changelog: https://github.com/aubergine-ux/ambit/releases
+
+AutoName: Ambit
+
+RepoType: git
+Repo: https://github.com/aubergine-ux/ambit.git
+
+Builds:
+  - versionName: 3.0.0
+    versionCode: 3
+    commit: v3.0.0
+    subdir: app
+    gradle:
+      - yes
+
+AutoUpdateMode: Version
+UpdateCheckMode: Tags
+CurrentVersion: 3.0.0
+CurrentVersionCode: 3
