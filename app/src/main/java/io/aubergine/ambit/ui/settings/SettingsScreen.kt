@@ -62,6 +62,8 @@ fun SettingsScreen(
     onUntrust: (String) -> Unit,
     safety: SafetyCallbacks,
     importedMap: MbTiles.Metadata?,
+    reliability: ReliabilityInfo,
+    onRefreshReliability: () -> Unit,
     onPrune: () -> Unit,
     onClearAll: () -> Unit,
     modifier: Modifier = Modifier,
@@ -198,6 +200,10 @@ fun SettingsScreen(
                     if (state.trusted.isEmpty()) EmptyNote(stringResource(R.string.trusted_empty))
                 }
             }
+        }
+
+        item {
+            Column(Modifier.padding(horizontal = 10.dp)) { ReliabilityPanel(reliability, onRefreshReliability) }
         }
 
         item {

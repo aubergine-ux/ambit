@@ -1,7 +1,11 @@
 package io.aubergine.ambit.ui.settings
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +17,14 @@ import io.aubergine.ambit.data.db.TrustedEntity
 import io.aubergine.ambit.data.repo.ObservationRepository
 import io.aubergine.ambit.data.repo.SettingsRepository
 import io.aubergine.ambit.map.OfflineMaps
+import io.aubergine.ambit.reliability.BatteryLog
+import io.aubergine.ambit.reliability.BatteryMath
+import io.aubergine.ambit.reliability.Heartbeat
+import io.aubergine.ambit.reliability.OemGuidance
 import io.aubergine.ambit.scan.LocationSource
+import io.aubergine.ambit.scan.Motion
+import io.aubergine.ambit.scan.PowerState
+import io.aubergine.ambit.scan.ScanCoordinator
 import io.aubergine.ambit.security.PinHasher
 import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
@@ -29,6 +40,10 @@ import kotlinx.coroutines.withContext
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val offlineMaps: OfflineMaps,
+    private val heartbeat: Heartbeat,
+    private val batteryLog: BatteryLog,
+    private val coordinator: ScanCoordinator,
+    private val power: PowerState,
     @ApplicationContext private val context: Context,
     private val settingsRepository: SettingsRepository,
     private val repository: ObservationRepository,
@@ -73,6 +88,36 @@ class SettingsViewModel @Inject constructor(
     fun untrust(key: String) = launch { repository.untrust(key) }
 
     val importedMap = offlineMaps.imported
+
+    private val _reliability = MutableStateFlow(ReliabilityInfo())
+    val reliability: StateFlow<ReliabilityInfo> = _reliability.asStateFlow()
+
+    fun refreshReliability() {
+        val now = System.currentTimeMillis()
+        val beat = heartbeat.snapshot()
+        val started = coordinator.running.value
+        val uptime = (now - processStart).coerceAtLeast(1)
+        _reliability.value = ReliabilityInfo(
+            running = started,
+            killedAt = if (!started && Heartbeat.killed(beat, now)) beat.lastBeat else null,
+            backgroundLocation = Build.VERSION.SDK_INT < Build.VERSION_CODES.Q ||
+                ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION) ==
+                PackageManager.PERMISSION_GRANTED,
+            unrestricted = power.isIgnoringOptimizations(context.packageName),
+            oemGuide = OemGuidance.forManufacturer(Build.MANUFACTURER),
+            drainPerDay = BatteryMath.drainPerDay(batteryLog.read()),
+            bleDutyPercent = (coordinator.bleActiveMillis.value * 100 / uptime).toInt().coerceIn(0, 100),
+            motion = coordinator.plan.value.let { p ->
+                when {
+                    p.onMillis == null && p.bleMode != io.aubergine.ambit.scan.BleMode.LOW_POWER -> Motion.MOVING
+                    p.onMillis != null -> Motion.STILL
+                    else -> Motion.UNKNOWN
+                }
+            },
+        )
+    }
+
+    private val processStart = System.currentTimeMillis()
 
     init {
         viewModelScope.launch { offlineMaps.refresh() }

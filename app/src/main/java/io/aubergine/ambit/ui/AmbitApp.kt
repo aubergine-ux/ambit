@@ -282,6 +282,8 @@ fun AmbitApp(startOnAlerts: Boolean = false, onQuickExit: (() -> Unit)? = null) 
                         onOpenHelp = { navController.navigate(Routes.HELP) },
                     ),
                     importedMap = settingsViewModel.importedMap.collectAsStateWithLifecycle().value,
+                    reliability = settingsViewModel.reliability.collectAsStateWithLifecycle().value,
+                    onRefreshReliability = settingsViewModel::refreshReliability,
                     onPrune = settingsViewModel::pruneNow,
                     onClearAll = settingsViewModel::clearAll,
                     contentPadding = padding,

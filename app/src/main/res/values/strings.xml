@@ -460,4 +460,40 @@ Written to be pasted into a language model of your choosing, or read as-is.</str
     <string name="help_plan_body">Removing a tracker or switching it off can show the person who placed it that it was found. Think about how they might react.\nA support service can help you decide when and how to act safely.\nYou don\'t have to do anything straight away. Ambit keeps recording in the background.</string>
     <string name="help_app_title">WHAT AMBIT CAN AND CAN\'T DO</string>
     <string name="help_app_body">Ambit can notice Bluetooth trackers and Wi-Fi networks that keep turning up wherever you go.\nIt can\'t find trackers that are switched off, GPS trackers that use only the mobile network, or spyware on your phone.\nNo alert does not mean no tracker. Trust your own judgement too.</string>
+
+    <!-- Reliability and battery. Menu names in the phone-brand steps follow each maker's English UI; translators can adapt them to the localised menu names. -->
+    <string name="panel_reliability">RELIABILITY AND BATTERY</string>
+    <string name="reliability_status">Scanning</string>
+    <string name="reliability_running">Running</string>
+    <string name="reliability_stopped">Stopped</string>
+    <string name="reliability_killed">Stopped by the phone at %1$s</string>
+    <string name="reliability_motion">Phone is</string>
+    <string name="motion_moving">Moving: scanning continuously</string>
+    <string name="motion_still">Still: scanning in short bursts</string>
+    <string name="motion_unknown">Not sure yet</string>
+    <string name="reliability_background_location">Location in the background</string>
+    <string name="reliability_background_location_note">Needed so scanning can keep recording positions after a restart. Choose \"Allow all the time\" on the next screen.</string>
+    <string name="action_allow_background_location">ALLOW LOCATION ALL THE TIME</string>
+    <string name="reliability_battery_optimisation">Battery restrictions</string>
+    <string name="action_open_battery_settings">OPEN BATTERY SETTINGS</string>
+    <string name="reliability_drain">Phone battery use while scanning</string>
+    <string name="reliability_drain_pending">Not enough data yet. Check back after a few hours of scanning off the charger.</string>
+    <string name="reliability_duty">Bluetooth radio active</string>
+    <string name="reliability_battery_note">Ambit aims to use under 3% of the battery a day on Standard. Android doesn\'t let an app measure its own share, so this figure is the whole phone\'s use while Ambit was scanning; your phone\'s Battery settings show Ambit\'s share.</string>
+    <string name="value_allowed">Allowed</string>
+    <string name="value_not_allowed">Not allowed</string>
+    <string name="value_unrestricted">Not restricted</string>
+    <string name="value_restricted">Restricted</string>
+    <string name="value_percent_per_day">About %1$d%% a day</string>
+    <string name="value_percent">%1$d%%</string>
+    <string name="watchdog_title">Scanning stopped</string>
+    <string name="watchdog_body">Your phone stopped Ambit in the background. Tap to start it again, then see Settings › Reliability to stop it happening.</string>
+    <string name="oem_samsung">Samsung: Settings › Apps › Ambit › Battery › Unrestricted. Then Settings › Battery › Background usage limits: make sure Ambit is not in Sleeping or Deep sleeping apps, and add it to Never sleeping apps.</string>
+    <string name="oem_xiaomi">Xiaomi, Redmi and POCO: Settings › Apps › Manage apps › Ambit. Turn on Autostart and set Battery saver to No restrictions. In recent apps, lock Ambit\'s card.</string>
+    <string name="oem_oneplus">OnePlus, OPPO and realme: Settings › Apps › Ambit › Battery. Allow background activity and set it to not optimise. Lock Ambit in recent apps.</string>
+    <string name="oem_huawei">Huawei and Honor: Settings › Battery › App launch. Set Ambit to Manage manually and turn on Auto-launch, Secondary launch and Run in background.</string>
+    <string name="oem_vivo">vivo and iQOO: Settings › Battery › Background power consumption management. Allow high background power use for Ambit, and allow Autostart.</string>
+    <string name="oem_motorola">Motorola: Settings › Apps › Ambit › App battery usage › Unrestricted.</string>
+    <string name="oem_google">Pixel: Settings › Apps › Ambit › App battery usage › Unrestricted.</string>
+    <string name="oem_generic">Set Ambit\'s battery use to Unrestricted or Don\'t optimise in the app\'s settings. Some phones also have an Autostart or App launch setting that must allow Ambit. The site dontkillmyapp.com lists steps for most brands.</string>
 </resources>
