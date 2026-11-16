@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.aubergine.ambit.R
 import io.aubergine.ambit.analysis.PathLoss
+import io.aubergine.ambit.map.MapPoint
 import io.aubergine.ambit.model.Observation
 import io.aubergine.ambit.model.RadioType
 import io.aubergine.ambit.scan.WifiScanner
@@ -29,6 +30,7 @@ import io.aubergine.ambit.ui.common.AmbitPanel
 import io.aubergine.ambit.ui.common.EmptyNote
 import io.aubergine.ambit.ui.common.FieldLine
 import io.aubergine.ambit.ui.common.descriptionRes
+import io.aubergine.ambit.ui.map.SightingMap
 import io.aubergine.ambit.ui.theme.AmbitColors
 import io.aubergine.ambit.ui.theme.color
 import java.time.Instant
@@ -157,6 +159,22 @@ fun DetailScreen(
                                 color = AmbitColors.TextDim,
                             )
                         }
+                    }
+                }
+            }
+        }
+
+        if (state.geotagged.isNotEmpty()) {
+            item {
+                Column(Modifier.padding(horizontal = 10.dp)) {
+                    AmbitPanel(title = stringResource(R.string.evidence_map)) {
+                        SightingMap(
+                            state.geotagged.reversed().mapNotNull { o ->
+                                val lat = o.latitude ?: return@mapNotNull null
+                                val lon = o.longitude ?: return@mapNotNull null
+                                MapPoint(lat, lon)
+                            },
+                        )
                     }
                 }
             }
