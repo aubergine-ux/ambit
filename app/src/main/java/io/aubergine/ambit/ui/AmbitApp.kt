@@ -43,6 +43,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import io.aubergine.ambit.MainActivity
 import io.aubergine.ambit.R
 import io.aubergine.ambit.model.TrackerFamily
 import io.aubergine.ambit.ui.alerts.AlertsScreen
@@ -52,6 +53,8 @@ import io.aubergine.ambit.ui.detail.DetailScreen
 import io.aubergine.ambit.ui.detail.DetailViewModel
 import io.aubergine.ambit.ui.evidence.EvidenceScreen
 import io.aubergine.ambit.ui.evidence.EvidenceViewModel
+import io.aubergine.ambit.ui.expert.ExpertScreen
+import io.aubergine.ambit.ui.expert.ExpertViewModel
 import io.aubergine.ambit.ui.export.ExportScreen
 import io.aubergine.ambit.ui.guide.GuideScreen
 import io.aubergine.ambit.ui.help.HelpScreen
@@ -77,6 +80,7 @@ private object Routes {
     const val GUIDE = "guide/{family}"
     const val EVIDENCE = "evidence?key={key}"
     const val HELP = "help"
+    const val EXPERT = "expert"
 
     fun detail(address: String) = "detail/$address"
 
@@ -97,7 +101,11 @@ private object Routes {
  * always reached from a row, never browsed to.
  */
 @Composable
-fun AmbitApp(startOnAlerts: Boolean = false, onQuickExit: (() -> Unit)? = null) {
+fun AmbitApp(
+    launch: Intent? = null,
+    onLaunchHandled: () -> Unit = {},
+    onQuickExit: (() -> Unit)? = null,
+) {
     val context = LocalContext.current
     val navController = rememberNavController()
     val snackbar = remember { SnackbarHostState() }
@@ -137,8 +145,18 @@ fun AmbitApp(startOnAlerts: Boolean = false, onQuickExit: (() -> Unit)? = null) 
         }
     }
 
-    LaunchedEffect(startOnAlerts) {
-        if (startOnAlerts) navController.navigate(Routes.ALERTS)
+    // Notification taps, including ones that arrive while the app is already open.
+    LaunchedEffect(launch) {
+        val intent = launch ?: return@LaunchedEffect
+        val key = intent.getStringExtra(MainActivity.EXTRA_KEY).orEmpty()
+        when (intent.action) {
+            MainActivity.ACTION_SHOW_ALERTS -> navController.navigate(Routes.ALERTS)
+            MainActivity.ACTION_OPEN_LOCATE -> if (key.isNotEmpty()) {
+                navController.navigate(Routes.locateTracker(key, intent.getStringExtra(MainActivity.EXTRA_FAMILY).orEmpty()))
+            }
+            MainActivity.ACTION_OPEN_EVIDENCE -> if (key.isNotEmpty()) navController.navigate(Routes.evidence(key))
+        }
+        onLaunchHandled()
     }
 
     val start = if (permissionsGranted && onboardingDone) Routes.OPS else Routes.ONBOARDING
@@ -284,6 +302,12 @@ fun AmbitApp(startOnAlerts: Boolean = false, onQuickExit: (() -> Unit)? = null) 
                     importedMap = settingsViewModel.importedMap.collectAsStateWithLifecycle().value,
                     reliability = settingsViewModel.reliability.collectAsStateWithLifecycle().value,
                     onRefreshReliability = settingsViewModel::refreshReliability,
+                    onOpenExpert = { navController.navigate(Routes.EXPERT) },
+                    onStartTravel = settingsViewModel::startTravel,
+                    onEndTravel = settingsViewModel::endTravel,
+                    onMarkTemporaryPlace = {
+                        settingsViewModel.markTemporaryPlace(context.getString(R.string.default_temporary_place_label))
+                    },
                     onPrune = settingsViewModel::pruneNow,
                     onClearAll = settingsViewModel::clearAll,
                     contentPadding = padding,
@@ -349,6 +373,20 @@ fun AmbitApp(startOnAlerts: Boolean = false, onQuickExit: (() -> Unit)? = null) 
                 EvidenceScreen(
                     state = evidenceState,
                     onExportPdf = evidenceViewModel::exportPdf,
+                    onBack = { navController.popBackStack() },
+                    contentPadding = padding,
+                )
+            }
+
+            composable(Routes.EXPERT) {
+                val expertViewModel: ExpertViewModel = hiltViewModel()
+                val expertState by expertViewModel.state.collectAsStateWithLifecycle()
+                ExpertScreen(
+                    state = expertState,
+                    onPause = expertViewModel::setPaused,
+                    onFilter = expertViewModel::setFilter,
+                    onTrackersOnly = expertViewModel::setTrackersOnly,
+                    onClear = expertViewModel::clear,
                     onBack = { navController.popBackStack() },
                     contentPadding = padding,
                 )

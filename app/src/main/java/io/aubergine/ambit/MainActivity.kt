@@ -1,5 +1,6 @@
 package io.aubergine.ambit
 
+import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -31,10 +32,11 @@ import io.aubergine.ambit.ui.AmbitApp
 import io.aubergine.ambit.ui.lock.LockScreen
 import io.aubergine.ambit.ui.theme.AmbitColors
 import io.aubergine.ambit.ui.theme.AmbitTheme
+import javax.inject.Inject
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 // FragmentActivity rather than ComponentActivity because BiometricPrompt needs one.
 @AndroidEntryPoint
@@ -44,6 +46,9 @@ class MainActivity : FragmentActivity() {
     @Inject lateinit var appLock: AppLock
 
     private var latest = SettingsRepository.Settings()
+
+    /** The intent to act on: the launch one, then any delivered while the activity is open. */
+    private val launches = MutableStateFlow<Intent?>(null)
     private val shake = ShakeDetector()
     private val shakeListener = object : SensorEventListener {
         override fun onSensorChanged(event: SensorEvent) {
@@ -72,10 +77,8 @@ class MainActivity : FragmentActivity() {
             }
         }
 
-        val startOnAlerts = intent?.action == ACTION_SHOW_ALERTS
-        // From the watchdog's "scanning stopped" notification: the tap is the user action
-        // Android needs before a foreground service may start again.
-        if (intent?.action == ACTION_RESUME_SCANNING) ScanService.resume(this)
+        launches.value = intent
+        handleResume(intent)
         val settingsOrNull = settings.settings
             .map<SettingsRepository.Settings, SettingsRepository.Settings?> { it }
             .distinctUntilChanged()
@@ -84,6 +87,7 @@ class MainActivity : FragmentActivity() {
             AmbitTheme {
                 val current by settingsOrNull.collectAsStateWithLifecycle(initialValue = null)
                 val locked by appLock.locked.collectAsStateWithLifecycle()
+                val launch by launches.collectAsStateWithLifecycle()
                 val s = current
                 when {
                     // Settings not read yet: show nothing rather than flash unlocked content.
@@ -95,12 +99,26 @@ class MainActivity : FragmentActivity() {
                         onQuickExit = if (s.quickExitButton) ({ QuickExit.exit(this) }) else null,
                     )
                     else -> AmbitApp(
-                        startOnAlerts = startOnAlerts,
+                        launch = launch,
+                        onLaunchHandled = { launches.value = null },
                         onQuickExit = if (s.quickExitButton) ({ QuickExit.exit(this) }) else null,
                     )
                 }
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        launches.value = intent
+        handleResume(intent)
+    }
+
+    // From the watchdog's "scanning stopped" notification: the tap is the user action
+    // Android needs before a foreground service may start again.
+    private fun handleResume(intent: Intent?) {
+        if (intent?.action == ACTION_RESUME_SCANNING) ScanService.resume(this)
     }
 
     override fun onResume() {
@@ -152,5 +170,9 @@ class MainActivity : FragmentActivity() {
     companion object {
         const val ACTION_SHOW_ALERTS = "io.aubergine.ambit.SHOW_ALERTS"
         const val ACTION_RESUME_SCANNING = "io.aubergine.ambit.RESUME_SCANNING"
+        const val ACTION_OPEN_LOCATE = "io.aubergine.ambit.OPEN_LOCATE"
+        const val ACTION_OPEN_EVIDENCE = "io.aubergine.ambit.OPEN_EVIDENCE"
+        const val EXTRA_KEY = "key"
+        const val EXTRA_FAMILY = "family"
     }
 }

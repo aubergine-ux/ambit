@@ -5,11 +5,13 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
+import android.service.quicksettings.TileService
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
@@ -28,6 +30,8 @@ import io.aubergine.ambit.reliability.Heartbeat
 import io.aubergine.ambit.reliability.Watchdog
 import io.aubergine.ambit.util.AlertNotifier
 import io.aubergine.ambit.util.AudioAlerts
+import io.aubergine.ambit.widget.ScanTileService
+import io.aubergine.ambit.widget.StatusWidget
 import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -78,6 +82,8 @@ class ScanService : Service() {
         startFlushLoop()
         startCorrelatorLoop()
         startHousekeeping()
+        heartbeat.setAlive(true)
+        heartbeat.beat()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -89,6 +95,10 @@ class ScanService : Service() {
                 return START_NOT_STICKY
             }
             ACTION_START_WIFI -> startWifi()
+            ACTION_SCAN_NOW -> {
+                startWifi()
+                coordinator.startBle(scope)
+            }
             ACTION_START_BLE -> coordinator.startBle(scope)
             ACTION_STOP_BLE -> coordinator.stopBle()
             ACTION_STOP_WIFI -> coordinator.stopWifi()
@@ -121,16 +131,30 @@ class ScanService : Service() {
             // the scope; give it a moment so the stored wish matches what is running.
             kotlinx.coroutines.delay(500)
             heartbeat.wanted(coordinator.wifiRequested.value, coordinator.bleRequested.value)
+            refreshSurfaces()
+        }
+    }
+
+    private fun refreshSurfaces() {
+        StatusWidget.refresh(this)
+        runCatching {
+            TileService.requestListeningState(this, ComponentName(this, ScanTileService::class.java))
         }
     }
 
     /** Heartbeat for the watchdog, a battery reading for the settings screen, retention. */
     private fun startHousekeeping() {
         scope.launch {
+            repository.activeAlerts().collect { alerts ->
+                heartbeat.setActiveAlerts(alerts.size)
+                refreshSurfaces()
+            }
+        }
+        scope.launch {
             repository.safeZones.collect { zones ->
-                val models = zones.map { it.toModel() }
                 coordinator.isKnownPlace = { lat, lon ->
-                    models.any { PathLoss.haversineMeters(it.latitude, it.longitude, lat, lon) <= it.radiusMeters }
+                    val now = System.currentTimeMillis()
+                    zones.any { it.activeAt(now) && PathLoss.haversineMeters(it.latitude, it.longitude, lat, lon) <= it.radiusMeters }
                 }
             }
         }
@@ -147,6 +171,9 @@ class ScanService : Service() {
 
     override fun onDestroy() {
         coordinator.stopAll()
+        // Let the widget and tile show "stopped" straight away rather than after the beat goes stale.
+        heartbeat.setAlive(false)
+        refreshSurfaces()
         // The service scope is about to be cancelled; the last batch still has to land.
         CoroutineScope(Dispatchers.IO + NonCancellable).launch { flush() }
         scope.cancel()
@@ -209,7 +236,7 @@ class ScanService : Service() {
                 flush()
                 val fresh = runCatching {
                     repository.refreshTrackerAlerts(
-                        config = current.sensitivity.config(),
+                        config = current.effectiveSensitivity().config(),
                         includeWifi = current.wifiFollowAlerts,
                     )
                 }.getOrDefault(emptyList())
@@ -337,6 +364,7 @@ class ScanService : Service() {
         const val ACTION_STOP_BLE = "io.aubergine.ambit.STOP_BLE"
         const val ACTION_STOP = "io.aubergine.ambit.STOP"
         const val ACTION_RESUME = "io.aubergine.ambit.RESUME"
+        const val ACTION_SCAN_NOW = "io.aubergine.ambit.SCAN_NOW"
 
         private const val FLUSH_INTERVAL_MS = 3_000L
         private const val HEARTBEAT_INTERVAL_MS = 60_000L

@@ -64,6 +64,10 @@ fun SettingsScreen(
     importedMap: MbTiles.Metadata?,
     reliability: ReliabilityInfo,
     onRefreshReliability: () -> Unit,
+    onOpenExpert: () -> Unit,
+    onStartTravel: (Int) -> Unit,
+    onEndTravel: () -> Unit,
+    onMarkTemporaryPlace: () -> Unit,
     onPrune: () -> Unit,
     onClearAll: () -> Unit,
     modifier: Modifier = Modifier,
@@ -203,7 +207,28 @@ fun SettingsScreen(
         }
 
         item {
+            Column(Modifier.padding(horizontal = 10.dp)) {
+                TravelPanel(
+                    travelUntil = state.settings.travelUntil,
+                    now = System.currentTimeMillis(),
+                    onStart = onStartTravel,
+                    onEnd = onEndTravel,
+                    onMarkTemporary = onMarkTemporaryPlace,
+                )
+            }
+        }
+
+        item {
             Column(Modifier.padding(horizontal = 10.dp)) { ReliabilityPanel(reliability, onRefreshReliability) }
+        }
+
+        item {
+            Column(Modifier.padding(horizontal = 10.dp)) {
+                AmbitPanel(title = stringResource(R.string.panel_expert)) {
+                    SettingNote(stringResource(R.string.expert_note))
+                    AmbitOutlineButton(stringResource(R.string.action_open_expert), onOpenExpert, modifier = Modifier.fillMaxWidth())
+                }
+            }
         }
 
         item {
@@ -388,6 +413,13 @@ private fun SafeZoneRow(
                 style = MaterialTheme.typography.bodySmall,
                 color = AmbitColors.TextDim,
             )
+            zone.expiresAt?.let {
+                Text(
+                    stringResource(R.string.known_place_until, TRUSTED_TIME.format(Instant.ofEpochMilli(it))),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = AmbitColors.Warn,
+                )
+            }
         }
         Column(Modifier.clickable(onClick = onDelete)) {
             AmbitChip(label = stringResource(R.string.chip_remove), color = AmbitColors.Danger)

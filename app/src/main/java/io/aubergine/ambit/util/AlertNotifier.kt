@@ -71,6 +71,13 @@ class AlertNotifier @Inject constructor(
             .setVisibility(if (discreet) NotificationCompat.VISIBILITY_SECRET else NotificationCompat.VISIBILITY_PRIVATE)
             // A distinct pattern so the alert can be recognised by touch alone.
             .setVibrate(TRACKER_VIBRATION)
+            .apply {
+                // Actions also appear on a paired watch, which mirrors phone notifications.
+                if (!discreet) {
+                    if (alert.family.isBluetooth) addAction(0, context.getString(R.string.action_locate), deepLink(MainActivity.ACTION_OPEN_LOCATE, alert))
+                    addAction(0, context.getString(R.string.action_evidence_short), deepLink(MainActivity.ACTION_OPEN_EVIDENCE, alert))
+                }
+            }
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setAutoCancel(true)
@@ -79,6 +86,17 @@ class AlertNotifier @Inject constructor(
 
         runCatching { manager.notify(alert.signatureKey.hashCode(), notification) }
     }
+
+    private fun deepLink(action: String, alert: TrackerCorrelator.Alert): PendingIntent = PendingIntent.getActivity(
+        context,
+        (action + alert.signatureKey).hashCode(),
+        Intent(context, MainActivity::class.java)
+            .setAction(action)
+            .putExtra(MainActivity.EXTRA_KEY, alert.signatureKey)
+            .putExtra(MainActivity.EXTRA_FAMILY, alert.family.name)
+            .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+    )
 
     /** Opt-in. Worded as a possibility, since the same Bluetooth IDs cover headsets and controllers. */
     fun notifyGlasses(discreet: Boolean = false) {

@@ -496,4 +496,40 @@ Written to be pasted into a language model of your choosing, or read as-is.</str
     <string name="oem_motorola">Motorola: Settings › Apps › Ambit › App battery usage › Unrestricted.</string>
     <string name="oem_google">Pixel: Settings › Apps › Ambit › App battery usage › Unrestricted.</string>
     <string name="oem_generic">Set Ambit\'s battery use to Unrestricted or Don\'t optimise in the app\'s settings. Some phones also have an Autostart or App launch setting that must allow Ambit. The site dontkillmyapp.com lists steps for most brands.</string>
+
+    <!-- Travel mode. -->
+    <string name="panel_travel">TRAVEL MODE</string>
+    <string name="travel_note">For trips: alerts switch to High sensitivity, and you can mark a hotel or a friend\'s place as known just for the trip. On planes, trains and buses other passengers\' trackers travel with you too, so expect more alerts on those legs.</string>
+    <string name="travel_until">On until</string>
+    <string name="travel_days">%1$d DAYS</string>
+    <string name="action_end_travel">END TRAVEL MODE</string>
+    <string name="action_mark_temporary_place">MARK HERE AS KNOWN FOR THIS TRIP</string>
+    <string name="default_temporary_place_label">Trip</string>
+    <string name="known_place_until">Until %1$s</string>
+
+    <!-- Home-screen widget and Quick Settings tile. -->
+    <string name="widget_label">Ambit status</string>
+    <string name="widget_description">Shows whether scanning is on and how many alerts are open.</string>
+    <string name="widget_scanning">Scanning</string>
+    <string name="widget_stopped">Not scanning</string>
+    <string name="widget_no_alerts">No open alerts</string>
+    <string name="widget_scan_now">SCAN NOW</string>
+    <string name="tile_label">Ambit scan</string>
+    <string name="action_evidence_short">Evidence</string>
+
+    <!-- Expert view: live log of raw Bluetooth advertisements. -->
+    <string name="panel_expert">EXPERT: PACKET LOG</string>
+    <string name="expert_note">A live log of the raw Bluetooth advertisements Ambit receives: manufacturer data, service UUIDs and service data, with what Ambit made of each one.</string>
+    <string name="action_open_expert">OPEN PACKET LOG</string>
+    <string name="expert_counts">Showing %1$d of %2$d packets received</string>
+    <string name="expert_start_ble">Start Bluetooth scanning to see packets.</string>
+    <string name="expert_filter">Filter: address, company ID, UUID, bytes</string>
+    <string name="expert_trackers_only">Only packets recognised as trackers</string>
+    <string name="action_pause">PAUSE</string>
+    <string name="action_resume">RESUME</string>
+    <string name="action_clear_log">CLEAR</string>
+    <plurals name="widget_alerts">
+        <item quantity="one">%1$d open alert</item>
+        <item quantity="other">%1$d open alerts</item>
+    </plurals>
 </resources>

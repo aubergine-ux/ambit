@@ -170,6 +170,29 @@ class SettingsViewModel @Inject constructor(
 
     fun deleteSafeZone(id: Long) = launch { repository.deleteSafeZone(id) }
 
+    fun startTravel(days: Int) = launch {
+        settingsRepository.setTravelUntil(System.currentTimeMillis() + days * 24L * 60 * 60 * 1000)
+    }
+
+    fun endTravel() = launch {
+        settingsRepository.setTravelUntil(0L)
+        repository.deleteTemporarySafeZones()
+    }
+
+    /** A known place that lasts only for the trip: the hotel, a friend's flat. */
+    fun markTemporaryPlace(label: String) {
+        val fix = locationSource.current()
+        if (fix == null) {
+            message.value = context.getString(R.string.toast_no_fix_yet)
+            return
+        }
+        launch {
+            val until = state.value.settings.travelUntil
+            repository.addSafeZone(label, fix.latitude, fix.longitude, SAFE_ZONE_RADIUS_M, expiresAt = until)
+            message.value = context.getString(R.string.toast_known_place_saved, label)
+        }
+    }
+
     fun pruneNow() {
         launch {
             _busy.value = true
