@@ -29,7 +29,11 @@ class AlertNotifier @Inject constructor(
             ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) ==
             PackageManager.PERMISSION_GRANTED
 
-    fun notifyTracker(alert: TrackerCorrelator.Alert) {
+    /**
+     * @param discreet shows a neutral title and text and hides the notification on the lock
+     * screen, for someone whose phone may be looked at by the person tracking them.
+     */
+    fun notifyTracker(alert: TrackerCorrelator.Alert, discreet: Boolean = false) {
         if (!canNotify()) return
         val manager = ContextCompat.getSystemService(context, NotificationManager::class.java) ?: return
 
@@ -53,11 +57,20 @@ class AlertNotifier @Inject constructor(
             context.getString(R.string.alert_wifi_body, alert.distinctLocations, alert.spreadMeters.roundToInt())
         }
 
+        val title = if (discreet) {
+            context.getString(R.string.notification_discreet_alert_title)
+        } else {
+            context.getString(R.string.alert_tracker_title, context.getString(alert.family.labelRes()))
+        }
+        val text = if (discreet) context.getString(R.string.notification_discreet_alert_body) else body
         val notification = NotificationCompat.Builder(context, ScanService.CHANNEL_ALERTS)
             .setSmallIcon(R.drawable.ic_stat_alert)
-            .setContentTitle(context.getString(R.string.alert_tracker_title, context.getString(alert.family.labelRes())))
-            .setContentText(body)
-            .setStyle(NotificationCompat.BigTextStyle().bigText(body))
+            .setContentTitle(title)
+            .setContentText(text)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .setVisibility(if (discreet) NotificationCompat.VISIBILITY_SECRET else NotificationCompat.VISIBILITY_PRIVATE)
+            // A distinct pattern so the alert can be recognised by touch alone.
+            .setVibrate(TRACKER_VIBRATION)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setAutoCancel(true)
@@ -68,13 +81,14 @@ class AlertNotifier @Inject constructor(
     }
 
     /** Opt-in. Worded as a possibility, since the same Bluetooth IDs cover headsets and controllers. */
-    fun notifyGlasses() {
+    fun notifyGlasses(discreet: Boolean = false) {
         if (!canNotify()) return
         val manager = ContextCompat.getSystemService(context, NotificationManager::class.java) ?: return
-        val body = context.getString(R.string.alert_glasses_body)
+        val body = context.getString(if (discreet) R.string.notification_discreet_alert_body else R.string.alert_glasses_body)
         val notification = NotificationCompat.Builder(context, ScanService.CHANNEL_ALERTS)
             .setSmallIcon(R.drawable.ic_stat_alert)
-            .setContentTitle(context.getString(R.string.alert_glasses_title))
+            .setVisibility(if (discreet) NotificationCompat.VISIBILITY_SECRET else NotificationCompat.VISIBILITY_PRIVATE)
+            .setContentTitle(context.getString(if (discreet) R.string.notification_discreet_alert_title else R.string.alert_glasses_title))
             .setContentText(body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -85,5 +99,6 @@ class AlertNotifier @Inject constructor(
 
     private companion object {
         const val GLASSES_NOTIFICATION_ID = 0x61A5
+        val TRACKER_VIBRATION = longArrayOf(0, 400, 200, 400, 200, 800)
     }
 }

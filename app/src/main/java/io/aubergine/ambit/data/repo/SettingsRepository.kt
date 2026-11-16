@@ -11,6 +11,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import io.aubergine.ambit.analysis.Sensitivity
 import io.aubergine.ambit.scan.WifiScanner
+import io.aubergine.ambit.security.PinHasher
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -40,6 +41,15 @@ class SettingsRepository @Inject constructor(
         val sensitivity: Sensitivity = Sensitivity.STANDARD,
         val wifiFollowAlerts: Boolean = true,
         val glassesAlerts: Boolean = false,
+        val appLock: Boolean = false,
+        val pinHash: String? = null,
+        val pinSalt: String? = null,
+        val biometricUnlock: Boolean = false,
+        val hideInRecents: Boolean = false,
+        val disguised: Boolean = false,
+        val quickExitButton: Boolean = false,
+        val shakeToExit: Boolean = false,
+        val discreetNotifications: Boolean = false,
     )
 
     val settings: Flow<Settings> = context.settingsStore.data.map { p ->
@@ -60,6 +70,15 @@ class SettingsRepository @Inject constructor(
                 ?: Sensitivity.STANDARD,
             wifiFollowAlerts = p[KEY_WIFI_FOLLOW] ?: true,
             glassesAlerts = p[KEY_GLASSES] ?: false,
+            appLock = p[KEY_APP_LOCK] ?: false,
+            pinHash = p[KEY_PIN_HASH],
+            pinSalt = p[KEY_PIN_SALT],
+            biometricUnlock = p[KEY_BIOMETRIC] ?: false,
+            hideInRecents = p[KEY_HIDE_RECENTS] ?: false,
+            disguised = p[KEY_DISGUISED] ?: false,
+            quickExitButton = p[KEY_QUICK_EXIT] ?: false,
+            shakeToExit = p[KEY_SHAKE_EXIT] ?: false,
+            discreetNotifications = p[KEY_DISCREET] ?: false,
         )
     }
 
@@ -78,6 +97,33 @@ class SettingsRepository @Inject constructor(
     suspend fun setSensitivity(value: Sensitivity) = put(KEY_SENSITIVITY, value.name)
     suspend fun setWifiFollowAlerts(value: Boolean) = put(KEY_WIFI_FOLLOW, value)
     suspend fun setGlassesAlerts(value: Boolean) = put(KEY_GLASSES, value)
+    suspend fun setBiometricUnlock(value: Boolean) = put(KEY_BIOMETRIC, value)
+    suspend fun setHideInRecents(value: Boolean) = put(KEY_HIDE_RECENTS, value)
+    suspend fun setDisguised(value: Boolean) = put(KEY_DISGUISED, value)
+    suspend fun setQuickExitButton(value: Boolean) = put(KEY_QUICK_EXIT, value)
+    suspend fun setShakeToExit(value: Boolean) = put(KEY_SHAKE_EXIT, value)
+    suspend fun setDiscreetNotifications(value: Boolean) = put(KEY_DISCREET, value)
+
+    /** Turns the lock on with a new PIN, or off when [stored] is null. */
+    suspend fun setAppLock(stored: PinHasher.Stored?) {
+        context.settingsStore.edit {
+            if (stored == null) {
+                it[KEY_APP_LOCK] = false
+                it.remove(KEY_PIN_HASH)
+                it.remove(KEY_PIN_SALT)
+                it[KEY_BIOMETRIC] = false
+            } else {
+                it[KEY_APP_LOCK] = true
+                it[KEY_PIN_HASH] = stored.hash
+                it[KEY_PIN_SALT] = stored.salt
+            }
+        }
+    }
+
+    /** Settings are the user's choices too; a full wipe resets them. */
+    suspend fun clear() {
+        context.settingsStore.edit { it.clear() }
+    }
 
     private suspend fun <T> put(key: Preferences.Key<T>, value: T) {
         context.settingsStore.edit { it[key] = value }
@@ -113,5 +159,14 @@ class SettingsRepository @Inject constructor(
         private val KEY_SENSITIVITY = stringPreferencesKey("sensitivity")
         private val KEY_WIFI_FOLLOW = booleanPreferencesKey("wifi_follow_alerts")
         private val KEY_GLASSES = booleanPreferencesKey("glasses_alerts")
+        private val KEY_APP_LOCK = booleanPreferencesKey("app_lock")
+        private val KEY_PIN_HASH = stringPreferencesKey("pin_hash")
+        private val KEY_PIN_SALT = stringPreferencesKey("pin_salt")
+        private val KEY_BIOMETRIC = booleanPreferencesKey("biometric_unlock")
+        private val KEY_HIDE_RECENTS = booleanPreferencesKey("hide_in_recents")
+        private val KEY_DISGUISED = booleanPreferencesKey("disguised")
+        private val KEY_QUICK_EXIT = booleanPreferencesKey("quick_exit_button")
+        private val KEY_SHAKE_EXIT = booleanPreferencesKey("shake_to_exit")
+        private val KEY_DISCREET = booleanPreferencesKey("discreet_notifications")
     }
 }

@@ -6,4 +6,5 @@
     <color name="civ_accent_dim">#FF1B7A87</color>
     <color name="civ_text">#FFDCEAEE</color>
     <color name="ic_launcher_background">#FF05080C</color>
+    <color name="disguise_background">#FFF5EBC8</color>
 </resources>

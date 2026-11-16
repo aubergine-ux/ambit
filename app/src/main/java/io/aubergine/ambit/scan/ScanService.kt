@@ -123,7 +123,7 @@ class ScanService : Service() {
         val now = observation.timestamp
         if (now - lastGlassesAlertAt < GLASSES_ALERT_INTERVAL_MS) return
         lastGlassesAlertAt = now
-        alertNotifier.notifyGlasses()
+        alertNotifier.notifyGlasses(latestSettings.discreetNotifications)
     }
 
     /**
@@ -159,7 +159,7 @@ class ScanService : Service() {
                         includeWifi = current.wifiFollowAlerts,
                     )
                 }.getOrDefault(emptyList())
-                fresh.forEach { alert -> alertNotifier.notifyTracker(alert) }
+                fresh.forEach { alert -> alertNotifier.notifyTracker(alert, current.discreetNotifications) }
                 if (fresh.isNotEmpty() && current.audioAlerts) {
                     withContext(Dispatchers.Main) { audioAlerts.play(AudioAlerts.Cue.TRACKER) }
                 }
@@ -201,10 +201,11 @@ class ScanService : Service() {
             if (wifi) add(getString(R.string.radio_wifi))
             if (ble) add(getString(R.string.radio_ble))
         }
-        val text = if (radios.isEmpty()) {
-            getString(R.string.notification_idle)
-        } else {
-            getString(R.string.notification_active, radios.joinToString(" + "))
+        val discreet = latestSettings.discreetNotifications
+        val text = when {
+            discreet -> getString(R.string.notification_discreet_text)
+            radios.isEmpty() -> getString(R.string.notification_idle)
+            else -> getString(R.string.notification_active, radios.joinToString(" + "))
         }
 
         val open = PendingIntent.getActivity(
@@ -222,7 +223,8 @@ class ScanService : Service() {
         )
 
         return NotificationCompat.Builder(this, CHANNEL_SCAN)
-            .setContentTitle(getString(R.string.notification_title))
+            .setContentTitle(getString(if (discreet) R.string.notification_discreet_title else R.string.notification_title))
+            .setVisibility(if (discreet) NotificationCompat.VISIBILITY_SECRET else NotificationCompat.VISIBILITY_PRIVATE)
             .setContentText(text)
             .setSmallIcon(R.drawable.ic_stat_scan)
             .setOngoing(true)
