@@ -44,6 +44,24 @@ class Heartbeat @Inject constructor(context: Context) {
         prefs.edit().putLong(KEY_BEAT, now).apply()
     }
 
+    /** For the widget and tile, which cannot query the database. */
+    fun setActiveAlerts(count: Int) {
+        prefs.edit().putInt(KEY_ALERTS, count).apply()
+    }
+
+    fun activeAlerts(): Int = prefs.getInt(KEY_ALERTS, 0)
+
+    /** Set by the service as it starts and stops, so surfaces update without waiting for a beat. */
+    fun setAlive(alive: Boolean) {
+        prefs.edit().putBoolean(KEY_ALIVE, alive).apply()
+    }
+
+    /** Running as far as the widget is concerned: alive, wanted, and beating recently. */
+    fun runningNow(now: Long = System.currentTimeMillis()): Boolean {
+        val s = snapshot()
+        return prefs.getBoolean(KEY_ALIVE, false) && s.wanted && now - s.lastBeat < 3 * 60 * 1000L
+    }
+
     fun stoppedByUser() {
         prefs.edit().putBoolean(KEY_STOPPED, true).putBoolean(KEY_WIFI, false).putBoolean(KEY_BLE, false).apply()
     }
@@ -54,6 +72,8 @@ class Heartbeat @Inject constructor(context: Context) {
         private const val KEY_BLE = "want_ble"
         private const val KEY_BEAT = "last_beat"
         private const val KEY_STOPPED = "stopped_by_user"
+        private const val KEY_ALERTS = "active_alerts"
+        private const val KEY_ALIVE = "alive"
 
         /** A session that should be running but has not beaten for this long was killed. */
         const val STALE_AFTER_MILLIS = 10 * 60 * 1000L
