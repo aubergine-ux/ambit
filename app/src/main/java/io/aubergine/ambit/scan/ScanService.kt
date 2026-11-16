@@ -17,10 +17,15 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.aubergine.ambit.MainActivity
 import io.aubergine.ambit.R
 import io.aubergine.ambit.analysis.DeviceHints
+import io.aubergine.ambit.analysis.PathLoss
+import io.aubergine.ambit.data.db.toModel
 import io.aubergine.ambit.data.repo.ObservationRepository
 import io.aubergine.ambit.data.repo.SettingsRepository
 import io.aubergine.ambit.model.DeviceHint
 import io.aubergine.ambit.model.Observation
+import io.aubergine.ambit.reliability.BatteryLog
+import io.aubergine.ambit.reliability.Heartbeat
+import io.aubergine.ambit.reliability.Watchdog
 import io.aubergine.ambit.util.AlertNotifier
 import io.aubergine.ambit.util.AudioAlerts
 import javax.inject.Inject
@@ -53,6 +58,8 @@ class ScanService : Service() {
     @Inject lateinit var settings: SettingsRepository
     @Inject lateinit var alertNotifier: AlertNotifier
     @Inject lateinit var audioAlerts: AudioAlerts
+    @Inject lateinit var heartbeat: Heartbeat
+    @Inject lateinit var batteryLog: BatteryLog
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val pending = ArrayDeque<Observation>()
@@ -70,25 +77,72 @@ class ScanService : Service() {
         collectObservations()
         startFlushLoop()
         startCorrelatorLoop()
+        startHousekeeping()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_STOP -> {
+                heartbeat.stoppedByUser()
                 coordinator.stopAll()
                 stopSelf()
                 return START_NOT_STICKY
             }
-            ACTION_START_WIFI -> scope.launch {
-                coordinator.startWifi(scope, settings.settings.first().wifiIntervalMs)
-            }
+            ACTION_START_WIFI -> startWifi()
             ACTION_START_BLE -> coordinator.startBle(scope)
             ACTION_STOP_BLE -> coordinator.stopBle()
             ACTION_STOP_WIFI -> coordinator.stopWifi()
+            // A null intent is the system restarting us after killing the process.
+            ACTION_RESUME, null -> resume()
         }
-        // Restarting with no intent would resume scanning the user did not ask for, so we
-        // do not redeliver. A killed session stays stopped until the user starts it again.
-        return START_NOT_STICKY
+        rememberWanted()
+        // Sticky only while the user wants scanning on, so a killed session comes back but
+        // a stopped one stays stopped.
+        return if (heartbeat.snapshot().wanted) START_STICKY else START_NOT_STICKY
+    }
+
+    private fun startWifi() {
+        scope.launch { coordinator.startWifi(scope, settings.settings.first().wifiIntervalMs) }
+    }
+
+    private fun resume() {
+        val wanted = heartbeat.snapshot()
+        if (!wanted.wanted) {
+            stopSelf()
+            return
+        }
+        if (wanted.wantWifi) startWifi()
+        if (wanted.wantBle) coordinator.startBle(scope)
+    }
+
+    private fun rememberWanted() {
+        scope.launch {
+            // The coordinator flips its flags synchronously except Wi-Fi, which starts on
+            // the scope; give it a moment so the stored wish matches what is running.
+            kotlinx.coroutines.delay(500)
+            heartbeat.wanted(coordinator.wifiRequested.value, coordinator.bleRequested.value)
+        }
+    }
+
+    /** Heartbeat for the watchdog, a battery reading for the settings screen, retention. */
+    private fun startHousekeeping() {
+        scope.launch {
+            repository.safeZones.collect { zones ->
+                val models = zones.map { it.toModel() }
+                coordinator.isKnownPlace = { lat, lon ->
+                    models.any { PathLoss.haversineMeters(it.latitude, it.longitude, lat, lon) <= it.radiusMeters }
+                }
+            }
+        }
+        scope.launch {
+            var tick = 0L
+            while (true) {
+                heartbeat.beat()
+                if (tick % BATTERY_EVERY_TICKS == 0L) runCatching { batteryLog.record(scanning = coordinator.running.value) }
+                tick++
+                kotlinx.coroutines.delay(HEARTBEAT_INTERVAL_MS)
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -177,15 +231,24 @@ class ScanService : Service() {
         runCatching { repository.record(batch) }
     }
 
+    /**
+     * Location type first; if the system refuses it (started from the background without
+     * background location access), fall back to connectedDevice so Bluetooth logging still
+     * runs, just without positions. If even that is refused, tell the user and stop.
+     */
     private fun startForegroundCompat() {
-        val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION or
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
-        } else {
-            0
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            runCatching { startForeground(NOTIFICATION_ID, buildNotification()) }
+            return
         }
-        runCatching {
-            ServiceCompat.startForeground(this, NOTIFICATION_ID, buildNotification(), type)
+        val withLocation = ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION or ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
+        val ok = runCatching { ServiceCompat.startForeground(this, NOTIFICATION_ID, buildNotification(), withLocation) }.isSuccess ||
+            runCatching {
+                ServiceCompat.startForeground(this, NOTIFICATION_ID, buildNotification(), ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE)
+            }.isSuccess
+        if (!ok) {
+            Watchdog.notifyStopped(this)
+            stopSelf()
         }
     }
 
@@ -273,13 +336,19 @@ class ScanService : Service() {
         const val ACTION_START_BLE = "io.aubergine.ambit.START_BLE"
         const val ACTION_STOP_BLE = "io.aubergine.ambit.STOP_BLE"
         const val ACTION_STOP = "io.aubergine.ambit.STOP"
+        const val ACTION_RESUME = "io.aubergine.ambit.RESUME"
 
         private const val FLUSH_INTERVAL_MS = 3_000L
+        private const val HEARTBEAT_INTERVAL_MS = 60_000L
+        private const val BATTERY_EVERY_TICKS = 15L
 
         fun send(context: Context, action: String) {
             val intent = Intent(context, ScanService::class.java).setAction(action)
             ContextCompat.startForegroundService(context, intent)
         }
+
+        /** Restarts whatever the user last had running. */
+        fun resume(context: Context) = send(context, ACTION_RESUME)
 
         fun stop(context: Context) {
             context.startService(Intent(context, ScanService::class.java).setAction(ACTION_STOP))

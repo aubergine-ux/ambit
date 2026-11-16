@@ -38,6 +38,15 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!--
+      Optional. Without it, scanning that restarts after a reboot or a system kill runs
+      without positions until the app is opened, and the correlator needs positions.
+      Requested from settings, with an explanation, never at first launch.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!-- Resume a session that was running before a reboot. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <!-- Locate mode pulses faster as the signal gets stronger. -->
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -121,6 +130,19 @@
             android:name=".scan.ScanService"
             android:exported="false"
             android:foregroundServiceType="location|connectedDevice" />
+
+        <receiver
+            android:name=".reliability.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".reliability.WatchdogReceiver"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

@@ -22,6 +22,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import io.aubergine.ambit.data.repo.SettingsRepository
+import io.aubergine.ambit.scan.ScanService
 import io.aubergine.ambit.security.AppLock
 import io.aubergine.ambit.security.Disguise
 import io.aubergine.ambit.security.QuickExit
@@ -72,6 +73,9 @@ class MainActivity : FragmentActivity() {
         }
 
         val startOnAlerts = intent?.action == ACTION_SHOW_ALERTS
+        // From the watchdog's "scanning stopped" notification: the tap is the user action
+        // Android needs before a foreground service may start again.
+        if (intent?.action == ACTION_RESUME_SCANNING) ScanService.resume(this)
         val settingsOrNull = settings.settings
             .map<SettingsRepository.Settings, SettingsRepository.Settings?> { it }
             .distinctUntilChanged()
@@ -147,5 +151,6 @@ class MainActivity : FragmentActivity() {
 
     companion object {
         const val ACTION_SHOW_ALERTS = "io.aubergine.ambit.SHOW_ALERTS"
+        const val ACTION_RESUME_SCANNING = "io.aubergine.ambit.RESUME_SCANNING"
     }
 }
