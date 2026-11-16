@@ -17,8 +17,8 @@ android {
         applicationId = "io.aubergine.ambit"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
-        versionName = "2.0-beta1"
+        versionCode = 3
+        versionName = "3.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -50,6 +50,8 @@ android {
             isMinifyEnabled = false
         }
         release {
+            // Reproducible builds: no embedded git state that would differ between builders.
+            vcsInfo.include = false
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -74,6 +76,13 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+    // F-Droid and IzzyOnDroid reject the encrypted dependency blob Google Play uses, and it
+    // would make the APK differ from an independent rebuild.
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
     }
 
     packaging {

@@ -1,0 +1,29 @@
+Ambit listens for the Wi-Fi and Bluetooth broadcasts around you and warns you when a tracker seems to be following you from place to place. Everything runs on your phone. The app has no internet permission, so nothing can leave the device unless you share a file yourself.
+
+<b>Tracker detection</b>
+<ul>
+<li>Recognises Apple Find My (AirTag and accessories), Samsung SmartTag, Google Find Hub tags (Chipolo, Pebblebee, Motorola, eufy and others), Tile, Chipolo, Pebblebee and any tracker using the IETF DULT standard.</li>
+<li>Reads each tracker's own "away from owner" state, so tags travelling with their owners are ignored.</li>
+<li>Alerts only when a tracker was with you at three or more places and moved with you between them.</li>
+<li>Every alert comes with a 0–100 score and a plain-language list of why it was raised.</li>
+<li>Your paired headphones, watch and car are never flagged, and you can trust your own tags.</li>
+<li>Optional alerts for Wi-Fi networks that travel with you and for possible camera glasses nearby.</li>
+</ul>
+
+<b>Finding a tracker</b>
+<ul>
+<li>Locate mode: a hot/cold signal meter with vibration and beeps that speed up as you get closer.</li>
+<li>Play sound on AirTags, Find My accessories, Find Hub tags and Pebblebee, only after you confirm.</li>
+<li>Offline guides: what each tracker looks like, where they are usually hidden and how to disable one safely.</li>
+</ul>
+
+<b>Evidence and safety</b>
+<ul>
+<li>PDF evidence report with a map, timeline and every sighting, written for police or a support worker.</li>
+<li>Offline maps: a built-in world outline, or your own MBTiles file for street detail.</li>
+<li>PIN or fingerprint lock, disguised "Notes" icon, quick exit, and discreet notifications.</li>
+<li>Encrypted database, password-protected backups and a one-step full wipe.</li>
+</ul>
+
+<b>What Ambit cannot do</b>
+It only sees devices that are broadcasting. It cannot find switched-off trackers, GPS trackers that use only the mobile network, cameras that record to a memory card, or spyware on your phone. It shows signal strength, never direction. No alert does not mean no tracker.

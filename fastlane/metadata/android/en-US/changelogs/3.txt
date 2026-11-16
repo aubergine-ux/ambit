@@ -1,0 +1,9 @@
+Ambit 3.0.0
+• New: Locate mode, Play sound, and offline guides for every tracker family.
+• New: DULT, Find Hub, Pebblebee and Chipolo support; Wi-Fi follow alerts; camera glasses hints.
+• New: confidence score with reasons, trusted devices, travel mode and sensitivity levels.
+• New: PDF evidence report, offline maps, GPX and KML export.
+• New: app lock, disguise, quick exit, discreet notifications, help page.
+• New: encrypted database, password-protected backup, full wipe.
+• New: widget, Quick Settings tile, packet log, Albanian translation.
+• Fixed: alerts now work in the background and with the screen off; several misdetected tracker types.

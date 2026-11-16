@@ -1,0 +1,1 @@
+Finds Bluetooth trackers following you. Offline, no internet permission.
