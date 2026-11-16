@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -8,11 +10,11 @@ plugins {
 }
 
 android {
-    namespace = "io.aubergine.civops"
+    namespace = "io.aubergine.ambit"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "io.aubergine.civops"
+        applicationId = "io.aubergine.ambit"
         minSdk = 26
         targetSdk = 36
         versionCode = 2
@@ -22,13 +24,22 @@ android {
     }
 
     signingConfigs {
+        // Release signing reads from keystore.properties (gitignored) or AMBIT_* environment
+        // variables. With neither present the release build is produced unsigned.
         create("release") {
-            val storePath = file("civops-release.jks")
-            if (storePath.exists()) {
+            val props = Properties().apply {
+                val f = rootProject.file("keystore.properties")
+                if (f.exists()) f.inputStream().use { load(it) }
+            }
+            fun secret(key: String, env: String): String? =
+                props.getProperty(key) ?: System.getenv(env)
+
+            val storePath = secret("storeFile", "AMBIT_STORE_FILE")?.let { rootProject.file(it) }
+            if (storePath != null && storePath.exists()) {
                 storeFile = storePath
-                storePassword = "civops-beta"
-                keyAlias = "civops"
-                keyPassword = "civops-beta"
+                storePassword = secret("storePassword", "AMBIT_STORE_PASSWORD")
+                keyAlias = secret("keyAlias", "AMBIT_KEY_ALIAS")
+                keyPassword = secret("keyPassword", "AMBIT_KEY_PASSWORD")
             }
         }
     }

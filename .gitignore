@@ -1,12 +1,22 @@
-
-# local signing key and SDK path stay out of version control
-app/civops-release.jks
+# Signing material and machine-local config stay out of version control
+*.jks
+*.keystore
+keystore.properties
 local.properties
+
+# Build output and caches
 .gradle/
+.kotlin/
 build/
 app/build/
+app/release/
+captures/
+*.apk
+*.aab
+
+# IDE and OS clutter
 *.iml
 .idea/
-.kotlin/
+.vscode/
 .directory
-CLAUDE.md
+.DS_Store
