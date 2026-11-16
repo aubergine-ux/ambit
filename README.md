@@ -116,9 +116,11 @@ that way.
 <tr>
 <td valign="top">
 
-### 🧭 Known places
-Mark home, work or anywhere else you trust. Sightings inside a known place never count toward
-an alert, which keeps a housemate's earbuds from looking like a stalker.
+### 🧭 Fewer false alarms
+Your own paired headphones, watch and car never count. Tap **This is mine** to trust a tag,
+and mark home or work as known places. A tag also has to *move with you* from place to place,
+not just turn up where you happen to be twice. Every alert comes with a 0–100 score and a
+plain-language list of why it was flagged.
 
 </td>
 <td valign="top">
@@ -156,11 +158,15 @@ flowchart LR
     A[BLE advertisement] --> B{"Tag says it's<br/>near its owner?"}
     B -- yes --> X[Ignore<br/><sub>every AirTag on a<br/>passer-by's keyring</sub>]
     B -- no --> C["Identity<br/><sub>separated-mode key ·<br/>linked rotations · fixed address</sub>"]
-    C --> D{"≥ 3 GPS fixes,<br/>spatially separated,<br/>with a real time gap?"}
+    C --> T{Yours?<br/><sub>paired or trusted</sub>}
+    T -- yes --> X
+    T -- no --> D{"≥ 3 GPS fixes,<br/>spatially separated,<br/>with a real time gap?"}
     D -- no --> E[Keep watching]
     D -- yes --> F{Inside a<br/>known place?}
     F -- yes --> E
-    F -- no --> G[⚠️ Tracker alert]
+    F -- no --> H{"Moved with you<br/>between places?"}
+    H -- no --> E
+    H -- yes --> G["⚠️ Alert<br/><sub>with a 0–100 score<br/>and the reasons</sub>"]
 ```
 
 | Family | Recognized by | Owner state | Identity while separated |
@@ -178,6 +184,11 @@ Beacons that don't match a known family are still correlated by address. A beaco
 its address without saying how can't build up places, so it can't cause a false alarm.
 Vendors change these formats between firmware generations, so treat a family label as a best
 guess.
+
+**Travelling together.** A move from one place to the next only counts if the tag was heard
+shortly before you left and shortly after you arrived (within 2 hours on Standard). A
+colleague's tag that you pass at the office, the canteen and the gym on separate trips
+doesn't qualify.
 
 **Sensitivity.** *Relaxed*, *Standard* and *High* change how far apart the places must be
 (400 / 250 / 150 m), how long the trail must last (45 / 20 / 10 min), and, for Relaxed only,
