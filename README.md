@@ -271,6 +271,22 @@ ever reads a screen position.
 </details>
 
 <details>
+<summary><b>Battery and staying alive</b></summary>
+
+<br>
+
+Scanning follows what you're doing. While you're moving, Bluetooth scans continuously. When
+you're still, it runs 30-second bursts every two minutes, and only 20 seconds every five minutes
+at a known place. Battery Saver halves that again, and GPS slows down to match. The goal is
+under 3% of the battery a day on Standard.
+
+Phone makers' battery managers often kill background apps anyway. Ambit records a heartbeat,
+notices when it has been stopped, restarts itself after a reboot, and tells you the exact
+setting to change for your brand of phone.
+
+</details>
+
+<details>
 <summary><b>Foreground service typing</b></summary>
 
 <br>
@@ -288,9 +304,13 @@ granted.
 |---|---|
 | `ACCESS_FINE_LOCATION` / `COARSE` | Android returns **no** scan results without it. It also geotags sightings for the correlator. |
 | `ACCESS_WIFI_STATE` / `CHANGE_WIFI_STATE` | Read and request Wi-Fi scans. |
-| `BLUETOOTH_SCAN` / `BLUETOOTH_CONNECT` | Receive BLE advertisements. |
+| `BLUETOOTH_SCAN` | Receive BLE advertisements. |
+| `BLUETOOTH_CONNECT` | Play sound on a tracker (only after you confirm), and recognize your own paired devices. |
+| `ACCESS_BACKGROUND_LOCATION` | Optional. Keeps positions coming when scanning restarts after a reboot. Requested from settings, never at first launch. |
 | `FOREGROUND_SERVICE_*` | Keep logging with the screen off. |
+| `RECEIVE_BOOT_COMPLETED` | Resume a session that was running before a restart. |
 | `POST_NOTIFICATIONS` | The ongoing-session notification and tracker alerts. |
+| `VIBRATE` | Locate mode's pulses. |
 
 `BLUETOOTH_SCAN` is declared **without** `neverForLocation`. That flag would look better on a
 privacy checklist, but it strips location out of BLE results, and location is what the correlator
