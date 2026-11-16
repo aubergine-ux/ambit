@@ -39,6 +39,8 @@ import kotlin.math.roundToInt
 fun EvidenceScreen(
     state: EvidenceViewModel.UiState,
     onExportPdf: () -> Unit,
+    onExportGpx: () -> Unit,
+    onExportKml: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -108,6 +110,16 @@ fun EvidenceScreen(
                         onClick = onExportPdf,
                         enabled = !state.exporting,
                         modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
+                    )
+                    AmbitOutlineButton(
+                        stringResource(R.string.action_export_trail_gpx),
+                        onExportGpx,
+                        modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
+                    )
+                    AmbitOutlineButton(
+                        stringResource(R.string.action_export_trail_kml),
+                        onExportKml,
+                        modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
                     )
                     if (state.failed) {
                         Text(stringResource(R.string.evidence_export_failed), color = AmbitColors.Warn, style = MaterialTheme.typography.bodySmall)

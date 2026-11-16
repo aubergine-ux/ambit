@@ -1,5 +1,6 @@
 package io.aubergine.ambit.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -45,6 +46,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import io.aubergine.ambit.MainActivity
 import io.aubergine.ambit.R
+import io.aubergine.ambit.backup.AppRestart
 import io.aubergine.ambit.model.TrackerFamily
 import io.aubergine.ambit.ui.alerts.AlertsScreen
 import io.aubergine.ambit.ui.common.AmbitChip
@@ -230,6 +232,8 @@ fun AmbitApp(
                     onExportDeviceCsv = opsViewModel::exportDevicesCsv,
                     onExportLogCsv = opsViewModel::exportObservationsCsv,
                     onExportJson = opsViewModel::exportJson,
+                    onExportGpx = opsViewModel::exportGpx,
+                    onExportKml = opsViewModel::exportKml,
                     onExportDebrief = { opsViewModel.exportDebrief() },
                     onPreviewDebrief = opsViewModel::previewDebrief,
                     onShareLast = opsViewModel::shareLastExport,
@@ -257,6 +261,10 @@ fun AmbitApp(
                 val settingsViewModel: SettingsViewModel = hiltViewModel()
                 val settingsState by settingsViewModel.state.collectAsStateWithLifecycle()
                 val settingsBusy by settingsViewModel.busy.collectAsStateWithLifecycle()
+                val restartNeeded by settingsViewModel.restartNeeded.collectAsStateWithLifecycle()
+                LaunchedEffect(restartNeeded) {
+                    if (restartNeeded) (context as? Activity)?.let(AppRestart::restart)
+                }
 
                 LaunchedEffect(settingsState.message) {
                     settingsState.message?.let {
@@ -303,6 +311,10 @@ fun AmbitApp(
                     reliability = settingsViewModel.reliability.collectAsStateWithLifecycle().value,
                     onRefreshReliability = settingsViewModel::refreshReliability,
                     onOpenExpert = { navController.navigate(Routes.EXPERT) },
+                    encryption = settingsViewModel.encryption,
+                    onBackup = settingsViewModel::backup,
+                    onRestore = settingsViewModel::restore,
+                    onWipe = settingsViewModel::wipeEverything,
                     onStartTravel = settingsViewModel::startTravel,
                     onEndTravel = settingsViewModel::endTravel,
                     onMarkTemporaryPlace = {
@@ -373,6 +385,8 @@ fun AmbitApp(
                 EvidenceScreen(
                     state = evidenceState,
                     onExportPdf = evidenceViewModel::exportPdf,
+                    onExportGpx = { evidenceViewModel.exportTrail(gpx = true) },
+                    onExportKml = { evidenceViewModel.exportTrail(gpx = false) },
                     onBack = { navController.popBackStack() },
                     contentPadding = padding,
                 )

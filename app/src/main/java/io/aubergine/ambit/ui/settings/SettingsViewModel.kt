@@ -12,6 +12,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import io.aubergine.ambit.R
 import io.aubergine.ambit.analysis.Sensitivity
+import io.aubergine.ambit.backup.BackupCodec
+import io.aubergine.ambit.backup.BackupManager
+import io.aubergine.ambit.backup.Wipe
+import io.aubergine.ambit.data.db.EncryptedDatabase
+import io.aubergine.ambit.data.db.EncryptionStatus
 import io.aubergine.ambit.data.db.SafeZoneEntity
 import io.aubergine.ambit.data.db.TrustedEntity
 import io.aubergine.ambit.data.repo.ObservationRepository
@@ -39,6 +44,8 @@ import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    private val backups: BackupManager,
+    private val wipe: Wipe,
     private val offlineMaps: OfflineMaps,
     private val heartbeat: Heartbeat,
     private val batteryLog: BatteryLog,
@@ -147,7 +154,11 @@ class SettingsViewModel @Inject constructor(
     fun setGlassesAlerts(value: Boolean) = launch { settingsRepository.setGlassesAlerts(value) }
     fun setKeepScreenOn(value: Boolean) = launch { settingsRepository.setKeepScreenOn(value) }
     fun setListLimit(value: Int) = launch { settingsRepository.setListLimit(value) }
-    fun setRetentionDays(value: Int) = launch { settingsRepository.setRetentionDays(value) }
+    /** Takes effect at once, not at the next scheduled prune. */
+    fun setRetentionDays(value: Int) = launch {
+        settingsRepository.setRetentionDays(value)
+        repository.pruneBefore(System.currentTimeMillis() - value * 24L * 60 * 60 * 1000)
+    }
     fun setBleAutoStart(value: Boolean) = launch { settingsRepository.setBleAutoStart(value) }
     fun setWifiAutoStart(value: Boolean) = launch { settingsRepository.setWifiAutoStart(value) }
     fun setRadarRim(value: Int) = launch { settingsRepository.setRadarRim(value) }
@@ -202,6 +213,38 @@ class SettingsViewModel @Inject constructor(
             message.value = context.getString(R.string.toast_pruned, removed, days)
             _busy.value = false
         }
+    }
+
+    /** Set when the database has been replaced or deleted and the app must start afresh. */
+    private val _restartNeeded = MutableStateFlow(false)
+    val restartNeeded: StateFlow<Boolean> = _restartNeeded.asStateFlow()
+
+    val encryption: EncryptionStatus get() = EncryptedDatabase.status
+
+    fun backup(password: CharArray, target: Uri) = launch {
+        _busy.value = true
+        val result = runCatching { backups.export(password, target) }
+        _busy.value = false
+        message.value = context.getString(if (result.isSuccess) R.string.toast_backup_saved else R.string.toast_backup_failed)
+    }
+
+    fun restore(password: CharArray, source: Uri) = launch {
+        _busy.value = true
+        val result = runCatching { backups.restore(password, source) }
+        _busy.value = false
+        val error = result.exceptionOrNull()
+        when {
+            error == null -> _restartNeeded.value = true
+            error is BackupCodec.WrongPasswordOrDamaged -> message.value = context.getString(R.string.toast_restore_wrong_password)
+            error is BackupManager.TooNew -> message.value = context.getString(R.string.toast_restore_too_new)
+            else -> message.value = context.getString(R.string.toast_restore_failed)
+        }
+    }
+
+    fun wipeEverything() = launch {
+        _busy.value = true
+        runCatching { wipe.everything() }
+        _restartNeeded.value = true
     }
 
     fun clearAll() {

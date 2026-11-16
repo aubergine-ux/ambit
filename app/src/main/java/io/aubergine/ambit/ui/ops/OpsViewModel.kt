@@ -13,6 +13,7 @@ import io.aubergine.ambit.data.repo.SettingsRepository
 import io.aubergine.ambit.export.CsvExporter
 import io.aubergine.ambit.export.DebriefBuilder
 import io.aubergine.ambit.export.ExportManager
+import io.aubergine.ambit.export.GeoExporter
 import io.aubergine.ambit.export.JsonExporter
 import io.aubergine.ambit.model.Device
 import io.aubergine.ambit.model.DeviceCategory
@@ -23,6 +24,7 @@ import io.aubergine.ambit.scan.ScanService
 import io.aubergine.ambit.scan.WifiScanner
 import io.aubergine.ambit.util.AlertNotifier
 import io.aubergine.ambit.util.AudioAlerts
+import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,7 +36,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 /**
  * State for the primary readout.
@@ -50,6 +51,7 @@ class OpsViewModel @Inject constructor(
     private val coordinator: ScanCoordinator,
     private val csvExporter: CsvExporter,
     private val jsonExporter: JsonExporter,
+    private val geoExporter: GeoExporter,
     private val debriefBuilder: DebriefBuilder,
     private val exportManager: ExportManager,
     private val audioAlerts: AudioAlerts,
@@ -230,6 +232,14 @@ class OpsViewModel @Inject constructor(
             observations = repository.observationsSince(sessionWindowStart()),
             appVersion = BuildConfig.VERSION_NAME,
         )
+    }
+
+    fun exportGpx() = export(ExportManager.Kind.GPX, "AMBIT sightings (GPX)") {
+        geoExporter.gpx(repository.observationsSince(sessionWindowStart()), "Ambit sightings", asTrack = false)
+    }
+
+    fun exportKml() = export(ExportManager.Kind.KML, "AMBIT sightings (KML)") {
+        geoExporter.kml(repository.observationsSince(sessionWindowStart()), "Ambit sightings", asTrack = false)
     }
 
     fun exportDebrief(label: String? = null) =

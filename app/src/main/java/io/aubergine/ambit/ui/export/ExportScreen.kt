@@ -42,6 +42,8 @@ fun ExportScreen(
     onExportDeviceCsv: () -> Unit,
     onExportLogCsv: () -> Unit,
     onExportJson: () -> Unit,
+    onExportGpx: () -> Unit,
+    onExportKml: () -> Unit,
     onExportDebrief: () -> Unit,
     onPreviewDebrief: () -> Unit,
     onShareLast: () -> Unit,
@@ -80,6 +82,8 @@ fun ExportScreen(
                         onExportJson,
                         enabled = !busy,
                     )
+                    AmbitButton(stringResource(R.string.action_export_gpx), onExportGpx, enabled = !busy)
+                    AmbitButton(stringResource(R.string.action_export_kml), onExportKml, enabled = !busy)
                 }
             }
         }

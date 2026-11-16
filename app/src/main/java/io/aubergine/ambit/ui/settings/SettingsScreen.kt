@@ -1,5 +1,6 @@
 package io.aubergine.ambit.ui.settings
 
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import io.aubergine.ambit.BuildConfig
 import io.aubergine.ambit.R
 import io.aubergine.ambit.analysis.Sensitivity
+import io.aubergine.ambit.data.db.EncryptionStatus
 import io.aubergine.ambit.data.db.SafeZoneEntity
 import io.aubergine.ambit.data.db.TrustedEntity
 import io.aubergine.ambit.data.repo.SettingsRepository
@@ -65,6 +67,10 @@ fun SettingsScreen(
     reliability: ReliabilityInfo,
     onRefreshReliability: () -> Unit,
     onOpenExpert: () -> Unit,
+    encryption: EncryptionStatus,
+    onBackup: (CharArray, Uri) -> Unit,
+    onRestore: (CharArray, Uri) -> Unit,
+    onWipe: () -> Unit,
     onStartTravel: (Int) -> Unit,
     onEndTravel: () -> Unit,
     onMarkTemporaryPlace: () -> Unit,
@@ -220,6 +226,10 @@ fun SettingsScreen(
 
         item {
             Column(Modifier.padding(horizontal = 10.dp)) { ReliabilityPanel(reliability, onRefreshReliability) }
+        }
+
+        item {
+            Column(Modifier.padding(horizontal = 10.dp)) { BackupPanel(encryption, onBackup, onRestore, onWipe) }
         }
 
         item {

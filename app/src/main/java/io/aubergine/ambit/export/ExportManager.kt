@@ -83,6 +83,8 @@ class ExportManager @Inject constructor(
         JSON("export", "json", "application/json"),
         DEBRIEF("debrief", "txt", "text/plain"),
         EVIDENCE_PDF("evidence", "pdf", "application/pdf"),
+        GPX("sightings", "gpx", "application/gpx+xml"),
+        KML("sightings", "kml", "application/vnd.google-earth.kml+xml"),
     }
 
     private companion object {

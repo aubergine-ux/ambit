@@ -16,8 +16,10 @@ import io.aubergine.ambit.data.repo.ObservationRepository
 import io.aubergine.ambit.evidence.EvidencePdfWriter
 import io.aubergine.ambit.evidence.EvidenceReport
 import io.aubergine.ambit.export.ExportManager
+import io.aubergine.ambit.export.GeoExporter
 import io.aubergine.ambit.map.OfflineMaps
 import io.aubergine.ambit.ui.map.mapAttribution
+import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +27,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class EvidenceViewModel @Inject constructor(
@@ -34,6 +35,7 @@ class EvidenceViewModel @Inject constructor(
     private val repository: ObservationRepository,
     private val exports: ExportManager,
     private val maps: OfflineMaps,
+    private val geo: GeoExporter,
 ) : ViewModel() {
 
     data class UiState(
@@ -76,6 +78,22 @@ class EvidenceViewModel @Inject constructor(
             }
             _state.update { it.copy(exporting = false, failed = result.isFailure) }
             result.getOrNull()?.let { shares.send(exports.shareIntent(it, context.getString(R.string.evidence_share_subject))) }
+        }
+    }
+
+    /** The alert's trail as a track, for opening in any map app. */
+    fun exportTrail(gpx: Boolean) {
+        val alert = _state.value.alert ?: return
+        viewModelScope.launch {
+            val title = context.getString(R.string.evidence_share_subject)
+            val artifact = runCatching {
+                if (gpx) {
+                    exports.write(geo.gpx(alert.sightings, title, asTrack = true), ExportManager.Kind.GPX)
+                } else {
+                    exports.write(geo.kml(alert.sightings, title, asTrack = true), ExportManager.Kind.KML)
+                }
+            }.getOrNull() ?: return@launch
+            shares.send(exports.shareIntent(artifact, title))
         }
     }
 
