@@ -4,9 +4,9 @@
       The observation log is a record of where the user has physically been. It stays on
       the device rather than syncing to a cloud backup they did not ask for.
     -->
-    <exclude domain="database" path="civops.db" />
-    <exclude domain="database" path="civops.db-shm" />
-    <exclude domain="database" path="civops.db-wal" />
+    <exclude domain="database" path="ambit.db" />
+    <exclude domain="database" path="ambit.db-shm" />
+    <exclude domain="database" path="ambit.db-wal" />
     <exclude domain="file" path="datastore/" />
     <exclude domain="external" path="." />
 </full-backup-content>

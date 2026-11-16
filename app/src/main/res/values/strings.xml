@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CIVOPS</string>
+    <string name="app_name">AMBIT</string>
 
     <string name="radio_wifi">Wi-Fi</string>
     <string name="radio_ble">BLE</string>
 
     <!-- Foreground service -->
-    <string name="notification_title">CIVOPS observation active</string>
+    <string name="notification_title">AMBIT observation active</string>
     <string name="notification_active">Scanning: %1$s</string>
     <string name="notification_idle">Idle - no radio running</string>
     <string name="channel_scan">Observation session</string>
@@ -17,7 +17,7 @@
 
     <!-- Tracker notification -->
     <string name="alert_tracker_title">Possible tracker: %1$s</string>
-    <string name="alert_tracker_body">Seen at %1$d separate places under %2$d rotating addresses, spread over %3$d m. Open CIVOPS to review the evidence.</string>
+    <string name="alert_tracker_body">Seen at %1$d separate places under %2$d rotating addresses, spread over %3$d m. Open AMBIT to review the evidence.</string>
 
     <!-- Radar panel -->
     <string name="panel_radar">RADAR</string>

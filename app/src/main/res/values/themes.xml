@@ -5,7 +5,7 @@
       background and system bars dark from the very first frame, so launching does not
       flash white on a night drive.
     -->
-    <style name="Theme.CivOps" parent="android:Theme.Material.NoActionBar">
+    <style name="Theme.Ambit" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowBackground">@color/civ_background</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>

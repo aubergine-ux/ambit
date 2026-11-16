@@ -20,5 +20,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "CivOps"
+rootProject.name = "Ambit"
 include(":app")
