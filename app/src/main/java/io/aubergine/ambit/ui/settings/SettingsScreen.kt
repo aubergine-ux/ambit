@@ -31,6 +31,7 @@ import io.aubergine.ambit.ui.common.AmbitOutlineButton
 import io.aubergine.ambit.ui.common.AmbitPanel
 import io.aubergine.ambit.ui.common.EmptyNote
 import io.aubergine.ambit.ui.common.FieldLine
+import io.aubergine.ambit.ui.common.ToggleRow
 import io.aubergine.ambit.ui.theme.AmbitColors
 
 @Composable
@@ -243,39 +244,6 @@ private fun <T> ChoiceRow(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun ToggleRow(
-    label: String,
-    checked: Boolean,
-    onChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 2.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = AmbitColors.TextPrimary,
-            modifier = Modifier.weight(1f),
-        )
-        Switch(
-            checked = checked,
-            onCheckedChange = onChange,
-            colors = SwitchDefaults.colors(
-                checkedThumbColor = AmbitColors.Background,
-                checkedTrackColor = AmbitColors.Accent,
-                uncheckedThumbColor = AmbitColors.TextDim,
-                uncheckedTrackColor = AmbitColors.Panel,
-                uncheckedBorderColor = AmbitColors.Divider,
-            ),
-        )
     }
 }
 

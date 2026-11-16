@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -187,4 +189,37 @@ fun EmptyNote(text: String, modifier: Modifier = Modifier) {
         color = AmbitColors.TextDim,
         modifier = modifier.padding(vertical = 6.dp),
     )
+}
+
+@Composable
+fun ToggleRow(
+    label: String,
+    checked: Boolean,
+    onChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = AmbitColors.TextPrimary,
+            modifier = Modifier.weight(1f),
+        )
+        Switch(
+            checked = checked,
+            onCheckedChange = onChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = AmbitColors.Background,
+                checkedTrackColor = AmbitColors.Accent,
+                uncheckedThumbColor = AmbitColors.TextDim,
+                uncheckedTrackColor = AmbitColors.Panel,
+                uncheckedBorderColor = AmbitColors.Divider,
+            ),
+        )
+    }
 }
