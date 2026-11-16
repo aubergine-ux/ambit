@@ -78,6 +78,25 @@ you can read, archive or paste wherever you like. Files leave the phone only whe
 <tr>
 <td valign="top">
 
+### 🔎 Locate mode
+A hot/cold finder for a flagged tracker: a large signal meter, vibration and beeps that speed
+up as the signal gets stronger, and **Play sound** for AirTags, Find My accessories and Find
+Hub tags, but only after you confirm. Offline guides cover what each tracker looks like,
+where they're usually hidden, and how to switch one off safely.
+
+</td>
+<td valign="top">
+
+### 🛡️ Built to stay quiet
+Ambit only listens. Its single exception is Play sound, which opens a short Bluetooth
+connection to the tracker and only runs after you confirm. Nothing ever goes over the
+internet.
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
 ### 🧭 Known places
 Mark home, work or anywhere else you trust. Sightings inside a known place never count toward
 an alert, which keeps a housemate's earbuds from looking like a stalker.
@@ -100,6 +119,8 @@ list ever disagree, trust the list.
 |---|---|
 | **OPS** | Radar, live Wi-Fi readout, BLE controls and one-tap exports, all in one vertical scroll. Nothing is hidden behind a tab, because a tab is hard to reach on a dashboard mount. |
 | **ALERTS** | Tracker verdicts, plus the evidence and method behind each one. |
+| **LOCATE** | Hot/cold signal meter with vibration and beeps, plus Play sound on supported trackers. |
+| **GUIDE** | Offline, per-family guide: what it looks like, where it hides, how to disable it safely. |
 | **EXPORT** | Every export format, with a preview of the debrief. |
 | **SETTINGS** | Scan interval, alert sounds, known places, data retention. |
 | **Device detail** | Opens from any row: identity, RSSI trace over time, sighting history. |
@@ -151,7 +172,10 @@ guess.
 - ❌ It **can't** find a camera that records to an SD card without transmitting.
 - ❌ It **can't** identify people or vehicles.
 - ❌ It **doesn't** intercept traffic. It reads advertisement and beacon metadata only.
-- ❌ It **can't** give a bearing. A phone has one antenna and no direction finding.
+- ❌ It **can't** give a bearing. A phone has one antenna and no direction finding. Locate
+  mode shows signal strength only: *warmer* or *colder*, never "3 m to the left".
+- ❌ It **can't** make every tracker beep. Tile, SmartTag and Chipolo's own network don't let
+  other people make their tags beep, and any tag stays silent while it's near its owner.
 - ❌ A vendor label describes the **manufacturer**, not the owner or the purpose. A "fleet"
   cellular router might belong to a food truck.
 
