@@ -97,6 +97,25 @@ internet.
 <tr>
 <td valign="top">
 
+### 🚌 Wi-Fi that follows you
+Phone hotspots, car Wi-Fi and portable cameras are flagged when the same access point turns up
+at three places you go, using the same rules as Bluetooth trackers. The alert says plainly that
+it's often just someone on the same bus.
+
+</td>
+<td valign="top">
+
+### 📷 Possible cameras, nearby
+Wi-Fi networks named like a camera or gadget in setup mode, hardware from camera makers, and
+the Bluetooth IDs used by Meta and Luxottica camera glasses all get a note. There's also an
+optional alert for glasses at close range. These are pattern matches, and the app labels them
+that way.
+
+</td>
+</tr>
+<tr>
+<td valign="top">
+
 ### 🧭 Known places
 Mark home, work or anywhere else you trust. Sightings inside a known place never count toward
 an alert, which keeps a housemate's earbuds from looking like a stalker.
@@ -151,11 +170,18 @@ flowchart LR
 | Google Find Hub | Service data `0xFEAA`, frame `0x40`/`0x41` | `0x41` = separated | Ephemeral ID, held ~24 h |
 | Tile | Service `0xFEED` | Not advertised | Fixed address |
 | Chipolo | Company `0x08C3`, service `0xFE33`/`0xFE65` | Not advertised | Fixed address |
+| Pebblebee | Service `0xFA25` | Not advertised | Fixed address |
+| Any DULT tracker | Service data `0xFCB2` (IETF draft) | Near-owner bit | Address, held while separated |
+| Wi-Fi network | BSSID, from Wi-Fi scans | — | BSSID (real hardware) |
 
 Beacons that don't match a known family are still correlated by address. A beacon that rotates
 its address without saying how can't build up places, so it can't cause a false alarm.
 Vendors change these formats between firmware generations, so treat a family label as a best
 guess.
+
+**Sensitivity.** *Relaxed*, *Standard* and *High* change how far apart the places must be
+(400 / 250 / 150 m), how long the trail must last (45 / 20 / 10 min), and, for Relaxed only,
+require a fourth place. Every level needs at least three.
 
 > [!NOTE]
 > **Why three places?** One sighting is noise, and two is usually coincidence. The
@@ -169,7 +195,8 @@ guess.
 > Ambit only sees devices that are **actively broadcasting**. Please don't rely on it for more
 > than that.
 
-- ❌ It **can't** find a camera that records to an SD card without transmitting.
+- ❌ It **can't** find a camera that records to an SD card without transmitting. Camera notes
+  are pattern matches on network names, maker IDs and Bluetooth IDs, not detections.
 - ❌ It **can't** identify people or vehicles.
 - ❌ It **doesn't** intercept traffic. It reads advertisement and beacon metadata only.
 - ❌ It **can't** give a bearing. A phone has one antenna and no direction finding. Locate
