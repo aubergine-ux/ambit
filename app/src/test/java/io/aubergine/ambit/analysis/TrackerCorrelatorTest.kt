@@ -319,6 +319,19 @@ class TrackerCorrelatorTest {
     }
 
     @Test
+    fun `a tag heard continuously on a drive is flagged`() {
+        // A sighting every 30 s for 40 minutes while moving about 4.5 km in a straight line.
+        // The v4 clustering folded every fix into the first place because each new one was
+        // only seconds after the last.
+        val drive = (0 until 80).map { i ->
+            sighting(0, now - (40 * minute) + i * 30_000L).copy(latitude = 51.5 + i * 0.0005)
+        }
+        val alert = correlator.analyse(drive, now = now).singleOrNull()
+        assertNotNull("continuous trail produced no alert", alert)
+        assertTrue((alert?.distinctLocations ?: 0) >= 3)
+    }
+
+    @Test
     fun `an empty log produces no alerts`() {
         assertTrue(correlator.analyse(emptyList(), now = now).isEmpty())
     }

@@ -235,9 +235,10 @@ class TrackerCorrelator @Inject constructor(
 
     /**
      * Greedy single-pass clustering. Fixes within [Config.locationSeparationMeters] of an
-     * existing cluster join it; anything else opens a new one, but only if enough time has
-     * passed since that cluster was last touched. The time guard stops a walk across a car
-     * park from registering as three separate places.
+     * existing cluster join it; anything else opens a new one, but only once enough time has
+     * passed since the latest place was first entered. The time guard stops a walk across a
+     * car park from registering as three separate places, while a tag heard continuously on
+     * a drive still opens a new place every few minutes of travel.
      */
     private fun clusterByPlace(observations: List<Observation>, config: Config): Placement {
         val clusters = mutableListOf<MutableEncounter>()
@@ -254,14 +255,14 @@ class TrackerCorrelator @Inject constructor(
                 continue
             }
             val tooSoon = clusters.any {
-                o.timestamp - it.lastSeen < config.minGapBetweenLocationsMillis
+                o.timestamp - it.openedAt < config.minGapBetweenLocationsMillis
             }
             if (tooSoon) {
-                // Treat it as continued presence at the most recent place rather than a
-                // new sighting, so transit between two points is not counted twice.
-                val recent = clusters.indices.maxByOrNull { clusters[it].lastSeen }
+                // Continued presence at the most recent place, not a new one. The fix is far
+                // from that place, so it extends the time span without moving the centre.
+                val recent = clusters.indices.maxByOrNull { clusters[it].openedAt }
                 if (recent != null) {
-                    clusters[recent].absorb(o, lat, lon)
+                    clusters[recent].absorb(o, lat, lon, moveCentre = false)
                     visits += recent to o.timestamp
                 }
                 continue
@@ -314,11 +315,15 @@ class TrackerCorrelator @Inject constructor(
         val addresses: MutableSet<String>,
         var count: Int = 1,
     ) {
-        fun absorb(o: Observation, obsLat: Double, obsLon: Double) {
-            // Running mean keeps the cluster centre from being pinned to its first fix.
-            count += 1
-            lat += (obsLat - lat) / count
-            lon += (obsLon - lon) / count
+        val openedAt: Long = firstSeen
+
+        fun absorb(o: Observation, obsLat: Double, obsLon: Double, moveCentre: Boolean = true) {
+            if (moveCentre) {
+                // Running mean keeps the cluster centre from being pinned to its first fix.
+                count += 1
+                lat += (obsLat - lat) / count
+                lon += (obsLon - lon) / count
+            }
             firstSeen = minOf(firstSeen, o.timestamp)
             lastSeen = maxOf(lastSeen, o.timestamp)
             bestRssi = maxOf(bestRssi, o.rssi)
