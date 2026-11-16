@@ -43,7 +43,7 @@
 <tr>
 <td width="50%" valign="top">
 
-### 📡 Passive observation
+### 📡 Passive scanning
 Wi-Fi access points and BLE advertisements are logged with signal strength, a timestamp and a
 GPS fix. A foreground service keeps logging while the screen is off, so you can walk a building
 with the phone in your pocket.
@@ -51,7 +51,7 @@ with the phone in your pocket.
 </td>
 <td width="50%" valign="top">
 
-### 🏷️ Honest vendor lookup
+### 🏷️ Vendor lookup
 A bundled copy of the IEEE MA-L registry (about 40,000 assignments) names the manufacturer
 behind real hardware addresses. Randomized BLE addresses are labeled *randomized*. Ambit
 doesn't make up an "unknown device".
@@ -61,7 +61,7 @@ doesn't make up an "unknown device".
 <tr>
 <td valign="top">
 
-### 🛰️ Tracker correlation
+### 🛰️ Tracker detection
 Ambit reads each tag's own "away from owner" state and follows AirTags, SmartTags, Find Hub
 tags, Tiles and Chipolos through their address rotations. It runs in the background with the
 screen off, and alerts only after a tag has been seen at **three separate places**.
@@ -69,7 +69,7 @@ screen off, and alerts only after a tag has been seen at **three separate places
 </td>
 <td valign="top">
 
-### 📄 Evidence you can hand over
+### 📄 Evidence reports
 Each alert has a map and a timeline, plus a **PDF report** written for police or a support
 worker. It includes every sighting with local and UTC times, the method used and its limits,
 and a SHA-256 fingerprint of the data. CSV, JSON and a plain-text debrief are also available.
@@ -89,7 +89,7 @@ where they're usually hidden, and how to switch one off safely.
 </td>
 <td valign="top">
 
-### 🛡️ Safety first
+### 🛡️ Safety features
 Lock the app with a PIN or your fingerprint. You can disguise its icon as "Notes", leave
 instantly with a button or a shake, and keep alerts discreet on the lock screen. An offline
 help page explains how to get support and keep evidence, without assuming which country
@@ -100,7 +100,7 @@ you're in.
 <tr>
 <td valign="top">
 
-### 🚌 Wi-Fi that follows you
+### 🚌 Wi-Fi networks that follow you
 Phone hotspots, car Wi-Fi and portable cameras are flagged when the same access point turns up
 at three places you go, using the same rules as Bluetooth trackers. The alert says plainly that
 it's often just someone on the same bus.
@@ -108,7 +108,7 @@ it's often just someone on the same bus.
 </td>
 <td valign="top">
 
-### 📷 Possible cameras, nearby
+### 📷 Camera hints
 Wi-Fi networks named like a camera or gadget in setup mode, hardware from camera makers, and
 the Bluetooth IDs used by Meta and Luxottica camera glasses all get a note. There's also an
 optional alert for glasses at close range. These are pattern matches, and the app labels them
@@ -128,7 +128,7 @@ plain-language list of why it was flagged.
 </td>
 <td valign="top">
 
-### 🗺️ Maps that never download
+### 🗺️ Offline maps
 Sightings are drawn on a bundled world outline (Natural Earth). For street detail, import
 your own MBTiles file. No map tiles are ever fetched.
 
@@ -137,10 +137,11 @@ your own MBTiles file. No map tiles are ever fetched.
 <tr>
 <td colspan="2" valign="top">
 
-### 🎯 A radar that admits it's decorative
-Distance comes from log-distance path loss and means roughly *near / mid / far*. The angle is a
-stable hash of the device's identity and carries no bearing information. If the radar and the
-list ever disagree, trust the list.
+### 🎯 Radar view
+Shows each device at a rough distance worked out from signal strength (near, mid or far). A
+phone can't tell which direction a signal comes from, so a device's position around the circle
+has no meaning; it's fixed per device so dots don't jump around. The device list is the
+accurate view.
 
 </td>
 </tr>
@@ -258,7 +259,7 @@ hardware addresses. For BLE, a device's identity is its `TrackerSignature`, neve
 </details>
 
 <details>
-<summary><b>The radar is decorative</b></summary>
+<summary><b>The radar shows distance, not direction</b></summary>
 
 <br>
 

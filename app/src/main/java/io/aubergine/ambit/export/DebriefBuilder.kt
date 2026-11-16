@@ -241,7 +241,7 @@ class DebriefBuilder @Inject constructor() {
             "Vendor labels come from the IEEE OUI registry and describe a manufacturer,",
             "  not a device's owner or purpose.",
             "RSSI is a coarse proximity hint. Indoors it is worth several metres of error.",
-            "Radar bearings are decorative. One antenna gives distance estimates, not direction.",
+            "The radar shows rough distance only. One antenna cannot tell direction.",
             "Android throttles Wi-Fi scans to 4 per 2 minutes, so refresh is slower than it looks.",
         )
 

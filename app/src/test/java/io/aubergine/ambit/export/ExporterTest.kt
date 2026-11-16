@@ -152,7 +152,7 @@ class DebriefBuilderTest {
         val text = builder.build(DebriefBuilder.Input(devices = emptyList(), sessionStart = 0L))
         assertTrue(text.contains("No traffic was intercepted"))
         assertTrue(text.contains("cannot identify people or vehicles"))
-        assertTrue(text.contains("Radar bearings are decorative"))
+        assertTrue(text.contains("The radar shows rough distance only"))
     }
 
     @Test
