@@ -24,6 +24,7 @@ data class Device(
     val lastLongitude: Double? = null,
     /** True when the address has the locally-administered bit set, i.e. it is not real hardware. */
     val randomizedAddress: Boolean = false,
+    val hint: DeviceHint? = null,
 ) {
     val displayName: String
         get() = when {

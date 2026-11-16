@@ -65,6 +65,7 @@ data class DeviceEntity(
     @ColumnInfo(name = "last_longitude") val lastLongitude: Double?,
     /** Set by the user to keep a known-yours device out of the alert path. */
     @ColumnInfo(name = "ignored") val ignored: Boolean = false,
+    @ColumnInfo(name = "hint") val hint: String? = null,
 )
 
 /** A place the user has marked as theirs. Suppresses correlation inside the radius. */

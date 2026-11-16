@@ -27,7 +27,14 @@ object Migrations {
         }
     }
 
-    val ALL = arrayOf(MIGRATION_1_2)
+    /** v3 keeps a per-device hint: camera glasses, camera or gadget setup networks. */
+    val MIGRATION_2_3 = object : Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE devices ADD COLUMN hint TEXT")
+        }
+    }
+
+    val ALL = arrayOf(MIGRATION_1_2, MIGRATION_2_3)
 
     private const val SAMSUNG_COMPANY_ID = 0x0075
     private const val AIR_WEIGH_COMPANY_ID = 0x0A30

@@ -25,6 +25,7 @@ import io.aubergine.ambit.model.RadioType
 import io.aubergine.ambit.scan.WifiScanner
 import io.aubergine.ambit.ui.common.FieldLine
 import io.aubergine.ambit.ui.common.SignalBars
+import io.aubergine.ambit.ui.common.descriptionRes
 import io.aubergine.ambit.ui.theme.AmbitColors
 import io.aubergine.ambit.ui.theme.color
 
@@ -79,6 +80,14 @@ fun DeviceRow(
             value = device.category.label,
             valueColor = AmbitColors.Ok,
         )
+
+        device.hint?.let { hint ->
+            FieldLine(
+                label = stringResource(R.string.field_note),
+                value = stringResource(hint.descriptionRes()),
+                valueColor = AmbitColors.Warn,
+            )
+        }
 
         // A randomized address has no manufacturer behind it, and saying "unknown vendor"
         // there would imply a lookup failure rather than a design choice by the device.

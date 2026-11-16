@@ -28,6 +28,7 @@ import io.aubergine.ambit.ui.common.AmbitOutlineButton
 import io.aubergine.ambit.ui.common.AmbitPanel
 import io.aubergine.ambit.ui.common.EmptyNote
 import io.aubergine.ambit.ui.common.FieldLine
+import io.aubergine.ambit.ui.common.descriptionRes
 import io.aubergine.ambit.ui.theme.AmbitColors
 import io.aubergine.ambit.ui.theme.color
 import java.time.Instant
@@ -136,6 +137,13 @@ fun DetailScreen(
                         stringResource(R.string.field_last_seen),
                         stringResource(R.string.value_seconds_ago, device.ageSeconds(now).toInt()),
                     )
+                    device.hint?.let { hint ->
+                        FieldLine(
+                            stringResource(R.string.field_note),
+                            stringResource(hint.descriptionRes()),
+                            valueColor = AmbitColors.Warn,
+                        )
+                    }
                     if (device.radio == RadioType.BLE) {
                         AmbitButton(
                             label = stringResource(R.string.action_locate),

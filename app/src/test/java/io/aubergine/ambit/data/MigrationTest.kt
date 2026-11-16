@@ -96,6 +96,29 @@ class MigrationTest {
         }
     }
 
+    @Test
+    fun `v2 devices survive the move to the current schema`() {
+        createAtVersion(2) { db ->
+            db.execSQL(
+                """
+                INSERT INTO devices (address, radio, name, vendor, category, randomized, last_rssi, best_rssi,
+                    first_seen, last_seen, observation_count, ignored)
+                VALUES ('00:11:22:33:44:55', 'WIFI', 'cafe', 'Netgear', 'RESIDENTIAL', 0, -50, -40, 1, 2, 7, 0)
+                """.trimIndent(),
+            )
+        }
+
+        openCurrent { db ->
+            db.query("SELECT name, observation_count, hint FROM devices").use { c ->
+                assertEquals(1, c.count)
+                c.moveToFirst()
+                assertEquals("cafe", c.getString(0))
+                assertEquals(7, c.getInt(1))
+                assertTrue(c.isNull(2))
+            }
+        }
+    }
+
     private fun createAtVersion(version: Int, seed: (SQLiteDatabase) -> Unit) {
         val schema = Json.parseToJsonElement(schemaFile(version).readText())
             .jsonObject.getValue("database").jsonObject

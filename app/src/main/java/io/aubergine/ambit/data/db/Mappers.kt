@@ -3,6 +3,7 @@ package io.aubergine.ambit.data.db
 import io.aubergine.ambit.analysis.TrackerCorrelator
 import io.aubergine.ambit.model.Device
 import io.aubergine.ambit.model.DeviceCategory
+import io.aubergine.ambit.model.DeviceHint
 import io.aubergine.ambit.model.Observation
 import io.aubergine.ambit.model.RadioType
 
@@ -82,6 +83,7 @@ fun DeviceEntity.toModel(): Device = Device(
     lastLatitude = lastLatitude,
     lastLongitude = lastLongitude,
     randomizedAddress = randomized,
+    hint = hint?.let { runCatching { DeviceHint.valueOf(it) }.getOrNull() },
 )
 
 fun SafeZoneEntity.toModel(): TrackerCorrelator.SafeZone = TrackerCorrelator.SafeZone(
