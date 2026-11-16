@@ -99,20 +99,38 @@ class BleScanner @Inject constructor(
             return@callbackFlow
         }
 
-        val callback = object : ScanCallback() {
+        // Both scans deliver the same advertisement while the screen is on.
+        val recent = object : LinkedHashMap<String, Unit>(DEDUPE_CAPACITY, 0.75f, false) {
+            override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, Unit>?) =
+                size > DEDUPE_CAPACITY
+        }
+        fun deliver(result: ScanResult) {
+            val key = "${result.device?.address}|${result.timestampNanos}"
+            val fresh = synchronized(recent) { recent.put(key, Unit) == null }
+            if (fresh) handle(result) { obs -> trySend(obs) }
+        }
+
+        fun callback(fatal: Boolean) = object : ScanCallback() {
             override fun onScanResult(callbackType: Int, result: ScanResult?) {
-                result?.let { handle(it) { obs -> trySend(obs) } }
+                result?.let(::deliver)
             }
 
             override fun onBatchScanResults(results: MutableList<ScanResult>?) {
-                results?.forEach { r -> handle(r) { obs -> trySend(obs) } }
+                results?.forEach(::deliver)
             }
 
             override fun onScanFailed(errorCode: Int) {
-                _status.value = _status.value.copy(scanning = false, failureCode = errorCode)
-                close()
+                _status.value = _status.value.copy(scanning = !fatal && _status.value.scanning, failureCode = errorCode)
+                if (fatal) close()
             }
         }
+
+        // Android pauses scans without filters while the screen is off (8.1+), which would
+        // silently stop tracker detection in a pocket. The filtered scan keeps tracker
+        // families coming through; the unfiltered one fills in everything else whenever
+        // the screen is on.
+        val environment = callback(fatal = true)
+        val trackers = callback(fatal = false)
 
         val settings = ScanSettings.Builder()
             .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
@@ -133,7 +151,10 @@ class BleScanner @Inject constructor(
             .build()
 
         val started = runCatching {
-            scanner.startScan(emptyList<ScanFilter>(), settings, callback)
+            scanner.startScan(emptyList<ScanFilter>(), settings, environment)
+        }.isSuccess
+        val trackerScanStarted = started && runCatching {
+            scanner.startScan(TrackerScanFilters.all(), settings, trackers)
         }.isSuccess
 
         _status.value = _status.value.copy(
@@ -149,7 +170,8 @@ class BleScanner @Inject constructor(
         }
 
         awaitClose {
-            runCatching { scanner.stopScan(callback) }
+            runCatching { scanner.stopScan(environment) }
+            if (trackerScanStarted) runCatching { scanner.stopScan(trackers) }
             _status.value = _status.value.copy(scanning = false)
         }
     }
@@ -190,6 +212,14 @@ class BleScanner @Inject constructor(
                     ?.mapNotNull { it?.uuid?.toString()?.lowercase() }
                     .orEmpty(),
                 manufacturerDataHex = payload,
+                serviceData = record?.serviceData
+                    ?.mapNotNull { (uuid, bytes) ->
+                        val key = uuid?.uuid?.toString()?.lowercase() ?: return@mapNotNull null
+                        key to (bytes?.toHex() ?: "")
+                    }
+                    ?.toMap()
+                    .orEmpty(),
+                advertiseFlags = record?.advertiseFlags?.takeIf { it >= 0 },
                 txPower = record?.txPowerLevel?.takeIf { it != Int.MIN_VALUE },
                 latitude = location?.latitude,
                 longitude = location?.longitude,
@@ -209,6 +239,7 @@ class BleScanner @Inject constructor(
     }
 
     private companion object {
+        const val DEDUPE_CAPACITY = 512
         val HEX = "0123456789ABCDEF".toCharArray()
     }
 }
