@@ -48,6 +48,8 @@ fun AlertsScreen(
     onLocate: (TrackerAlertEntity) -> Unit,
     onGuide: (String) -> Unit,
     onTrust: (TrackerAlertEntity) -> Unit,
+    onEvidence: (TrackerAlertEntity) -> Unit,
+    onHelp: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -73,6 +75,11 @@ fun AlertsScreen(
                             label = stringResource(R.string.action_run_correlation),
                             onClick = onRunNow,
                             enabled = !busy,
+                        )
+                        AmbitOutlineButton(
+                            label = stringResource(R.string.action_help),
+                            onClick = onHelp,
+                            modifier = Modifier.padding(top = 6.dp),
                         )
                         AmbitOutlineButton(
                             label = stringResource(R.string.action_guides),
@@ -112,6 +119,7 @@ fun AlertsScreen(
                     onLocate = { onLocate(alert) },
                     onGuide = { onGuide(alert.family) },
                     onTrust = { onTrust(alert) },
+                    onEvidence = { onEvidence(alert) },
                 )
             }
         }
@@ -125,6 +133,7 @@ private fun AlertCard(
     onLocate: () -> Unit,
     onGuide: () -> Unit,
     onTrust: () -> Unit,
+    onEvidence: () -> Unit,
 ) {
     val severity = runCatching { TrackerCorrelator.Severity.valueOf(alert.severity) }
         .getOrDefault(TrackerCorrelator.Severity.LOW)
@@ -210,6 +219,7 @@ private fun AlertCard(
 
         Column(Modifier.padding(top = 8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             if (family.isBluetooth) AmbitButton(label = stringResource(R.string.action_locate), onClick = onLocate)
+            AmbitOutlineButton(label = stringResource(R.string.action_evidence), onClick = onEvidence)
             AmbitOutlineButton(label = stringResource(R.string.action_open_guide), onClick = onGuide)
             AmbitOutlineButton(label = stringResource(R.string.action_trust), onClick = onTrust, color = AmbitColors.Ok)
             AmbitOutlineButton(

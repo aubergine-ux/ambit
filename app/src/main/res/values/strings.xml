@@ -353,4 +353,111 @@ Written to be pasted into a language model of your choosing, or read as-is.</str
     <string name="trusted_paired">Your %1$d paired Bluetooth devices (headphones, watch, car) are never flagged.</string>
     <string name="trusted_rotation_note">Apple and Google tags change their identity about once a day, so trusting one of them only lasts about a day.</string>
     <string name="trusted_added">Trusted %1$s</string>
+
+    <!-- Offline maps. -->
+    <string name="value_km">%1$d km</string>
+    <string name="map_description">Map of %1$d sightings</string>
+    <string name="map_attribution_basemap">Basemap: Natural Earth</string>
+    <string name="panel_offline_map">OFFLINE MAP</string>
+    <string name="settings_map_note">Maps never download anything. The built-in map shows coastlines, lakes and borders. For streets, import a raster MBTiles file you made or downloaded yourself.</string>
+    <string name="settings_map_current">Map</string>
+    <string name="settings_map_bundled">Built-in world outline</string>
+    <string name="settings_map_unnamed">Imported map</string>
+    <string name="settings_map_zoom">Zoom levels</string>
+    <string name="action_import_map">IMPORT MBTILES FILE</string>
+    <string name="action_remove_map">REMOVE IMPORTED MAP</string>
+    <string name="toast_map_imported">Map imported.</string>
+    <string name="toast_map_rejected">That file isn\'t a raster MBTiles map. Vector tiles aren\'t supported.</string>
+
+    <!-- Evidence view and PDF report. The PDF is meant to be handed to police or a support worker who has never heard of the app: plain, factual wording. -->
+    <string name="action_evidence">EVIDENCE AND MAP</string>
+    <string name="action_export_pdf">EXPORT PDF REPORT</string>
+    <string name="evidence_title">EVIDENCE: %1$s</string>
+    <string name="evidence_loading">Gathering the sightings…</string>
+    <string name="evidence_missing">The sightings behind this alert are no longer stored. They may have been removed by the data retention setting.</string>
+    <string name="alerts_confidence_short">Confidence</string>
+    <string name="evidence_sightings">Sightings</string>
+    <string name="evidence_map">WHERE IT WAS SEEN</string>
+    <string name="evidence_map_note">Numbers are the places in the order they were visited. Positions come from the phone\'s location fix and can be off by tens of metres.</string>
+    <string name="evidence_timeline">TIMELINE</string>
+    <string name="evidence_timeline_row">Place %1$d: %2$s to %3$s, strongest signal %4$d dBm</string>
+    <string name="evidence_report_title">REPORT FOR POLICE OR A SUPPORT WORKER</string>
+    <string name="evidence_report_body">A PDF with the timeline, every sighting, a map, and an explanation of how the data was collected and what it cannot prove. It stays on your phone until you choose where to send it.</string>
+    <string name="evidence_exporting">CREATING PDF…</string>
+    <string name="evidence_export_failed">The PDF couldn\'t be created.</string>
+    <string name="evidence_share_subject">Tracker evidence report</string>
+    <string name="evidence_pdf_title">Bluetooth tracker evidence report</string>
+    <string name="evidence_pdf_generated">Created %1$s (%2$s) by %3$s on %4$s.</string>
+    <string name="evidence_pdf_summary">Summary</string>
+    <string name="evidence_pdf_type">Tracker type</string>
+    <string name="evidence_pdf_identity">Identity used by the app</string>
+    <string name="evidence_pdf_first">First seen</string>
+    <string name="evidence_pdf_last">Last seen</string>
+    <string name="evidence_pdf_places">Separate places</string>
+    <string name="evidence_pdf_sightings">Sightings recorded</string>
+    <string name="evidence_pdf_addresses">Bluetooth addresses used</string>
+    <string name="evidence_pdf_spread">Distance between furthest places</string>
+    <string name="evidence_pdf_closest">Strongest signal</string>
+    <string name="evidence_pdf_confidence">Confidence score (app\'s weighting of the evidence, not a probability)</string>
+    <string name="evidence_pdf_map">Map of places</string>
+    <string name="evidence_pdf_places_heading">Places, in order</string>
+    <string name="evidence_pdf_place_row">%1$d. %2$s to %3$s at %4$s, strongest signal %5$d dBm</string>
+    <string name="evidence_pdf_sightings_heading">Every sighting</string>
+    <string name="evidence_pdf_sightings_columns">Local time           UTC                   Latitude   Longitude    ±m   dBm  Bluetooth address</string>
+    <string name="evidence_pdf_method_heading">How this data was collected</string>
+    <string name="evidence_pdf_method">The phone listened for Bluetooth Low Energy advertisements, the short public broadcasts that trackers send so their owner\'s network can find them. It did not connect to, decode the contents of, or interfere with the tracker. Each time the tracker was heard, the phone stored the time, the received signal strength and the phone\'s own GPS position. Trackers change their Bluetooth address regularly; the app grouped sightings using the identifier each tracker network keeps stable while the tracker is away from its owner. An alert is raised only when the same tracker is heard at three or more places at least 250 m apart and moved between them with the phone.</string>
+    <string name="evidence_pdf_limits_heading">What this report cannot show</string>
+    <string name="evidence_pdf_limits">It cannot identify the tracker\'s owner or who placed it. It cannot show where the tracker is now, or exactly how close it was: signal strength gives only a rough idea of distance. Positions are the phone\'s, not the tracker\'s, and can be off by tens of metres. A tracker carried by someone travelling the same way would produce a similar pattern. Tracker networks change their advertising formats, so the tracker type is the app\'s best match, not a certainty.</string>
+    <string name="evidence_pdf_integrity_heading">Integrity</string>
+    <string name="evidence_pdf_integrity">SHA-256 of the sightings table in canonical form: %1$s. Recomputing it from the same data gives the same value, which shows the table was not edited after this report was made. It does not prove anything about the data before that.</string>
+    <string name="evidence_pdf_footer">Page %1$d</string>
+
+    <!-- App lock. -->
+    <string name="lock_title">Enter PIN</string>
+    <string name="lock_wrong">Wrong PIN.</string>
+    <string name="lock_delete">Delete</string>
+    <string name="lock_enter">Enter</string>
+    <string name="lock_biometric">USE FINGERPRINT OR FACE</string>
+    <string name="lock_use_pin">Use PIN</string>
+    <string name="pin_dialog_title">Set a PIN</string>
+    <string name="pin_dialog_body">4 to 12 digits. If you forget it, you\'ll have to clear the app\'s data and lose its history.</string>
+    <string name="pin_dialog_pin">PIN</string>
+    <string name="pin_dialog_again">PIN again</string>
+    <string name="pin_dialog_set">Set PIN</string>
+
+    <!-- Safety settings for people who may be watched by the person tracking them. -->
+    <string name="panel_safety">SAFETY</string>
+    <string name="settings_app_lock">Lock the app with a PIN</string>
+    <string name="settings_app_lock_note">Asks for the PIN every time the app is opened. Tracking keeps running in the background.</string>
+    <string name="settings_biometric">Allow fingerprint or face unlock</string>
+    <string name="settings_hide_recents">Hide the app in recent apps</string>
+    <string name="settings_hide_recents_note">Also blocks screenshots of the app. Turn it off when you want to screenshot evidence.</string>
+    <string name="settings_disguise">Disguise the app icon as \"Notes\"</string>
+    <string name="settings_disguise_note">Changes the home-screen icon and name. The real name still shows in the phone\'s app list, settings and notification headers.</string>
+    <string name="settings_quick_exit">Show a quick exit button</string>
+    <string name="settings_shake_exit">Shake the phone to exit</string>
+    <string name="settings_quick_exit_note">Quick exit goes straight to the home screen and removes the app from recent apps.</string>
+    <string name="settings_discreet">Discreet notifications</string>
+    <string name="settings_discreet_note">Alerts say only \"Reminder\" and are hidden on the lock screen.</string>
+    <string name="action_quick_exit">EXIT</string>
+    <string name="action_help">HELP AND SUPPORT</string>
+    <string name="disguise_name">Notes</string>
+    <string name="notification_discreet_title">Running</string>
+    <string name="notification_discreet_text">Tap to open.</string>
+    <string name="notification_discreet_alert_title">Reminder</string>
+    <string name="notification_discreet_alert_body">Open the app when you have a moment.</string>
+
+    <!-- Offline help page. Deliberately names no country, service or phone number. -->
+    <string name="help_danger_title">IF YOU ARE IN DANGER NOW</string>
+    <string name="help_danger_body">Call your local emergency number. If it isn\'t safe to talk, many emergency services accept text messages or silent calls; check how yours works when you can.</string>
+    <string name="help_support_title">GET SUPPORT</string>
+    <string name="help_support_body">Services for people experiencing stalking or domestic abuse can help you understand your options and make a safety plan.\nMany run free, confidential helplines and chat services. Search for one in your country from a device the other person can\'t check.\nA doctor, a trusted friend, or a workplace or school welfare officer can also help you find support.</string>
+    <string name="help_evidence_title">KEEP EVIDENCE</string>
+    <string name="help_evidence_body">Export the PDF report from the alert\'s evidence screen and keep a copy somewhere the other person can\'t reach.\nPhotograph any tracker you find where you found it, before you touch it.\nWrite down dates, times and places of anything that worried you.\nThe police may want the tracker itself. Manufacturers can sometimes identify the owner when the police ask.</string>
+    <string name="help_phone_title">CHECK YOUR PHONE AND ACCOUNTS</string>
+    <string name="help_phone_body">Check location sharing in your maps, family and \"find my device\" apps.\nLook for apps you don\'t recognise, especially ones with location or device admin access.\nChange passwords for your main accounts from a safe device, and turn on two-step sign-in.\nCheck which devices are signed in to your accounts and remove ones you don\'t recognise.\nCheck your car\'s connected-car app, if it has one.</string>
+    <string name="help_plan_title">PLAN BEFORE YOU ACT</string>
+    <string name="help_plan_body">Removing a tracker or switching it off can show the person who placed it that it was found. Think about how they might react.\nA support service can help you decide when and how to act safely.\nYou don\'t have to do anything straight away. Ambit keeps recording in the background.</string>
+    <string name="help_app_title">WHAT AMBIT CAN AND CAN\'T DO</string>
+    <string name="help_app_body">Ambit can notice Bluetooth trackers and Wi-Fi networks that keep turning up wherever you go.\nIt can\'t find trackers that are switched off, GPS trackers that use only the mobile network, or spyware on your phone.\nNo alert does not mean no tracker. Trust your own judgement too.</string>
 </resources>

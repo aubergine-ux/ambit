@@ -1,6 +1,7 @@
 package io.aubergine.ambit.ui.settings
 
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,8 +12,11 @@ import io.aubergine.ambit.data.db.SafeZoneEntity
 import io.aubergine.ambit.data.db.TrustedEntity
 import io.aubergine.ambit.data.repo.ObservationRepository
 import io.aubergine.ambit.data.repo.SettingsRepository
+import io.aubergine.ambit.map.OfflineMaps
 import io.aubergine.ambit.scan.LocationSource
+import io.aubergine.ambit.security.PinHasher
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -20,9 +24,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    private val offlineMaps: OfflineMaps,
     @ApplicationContext private val context: Context,
     private val settingsRepository: SettingsRepository,
     private val repository: ObservationRepository,
@@ -65,6 +71,31 @@ class SettingsViewModel @Inject constructor(
     fun setAlertOnNewDevice(value: Boolean) = launch { settingsRepository.setAlertOnNewDevice(value) }
     fun setAlertOnPriority(value: Boolean) = launch { settingsRepository.setAlertOnPriority(value) }
     fun untrust(key: String) = launch { repository.untrust(key) }
+
+    val importedMap = offlineMaps.imported
+
+    init {
+        viewModelScope.launch { offlineMaps.refresh() }
+    }
+
+    fun setPin(pin: String) = launch {
+        if (PinHasher.isAcceptable(pin)) settingsRepository.setAppLock(withContext(Dispatchers.Default) { PinHasher.hash(pin) })
+    }
+
+    fun disableLock() = launch { settingsRepository.setAppLock(null) }
+    fun setBiometric(value: Boolean) = launch { settingsRepository.setBiometricUnlock(value) }
+    fun setHideInRecents(value: Boolean) = launch { settingsRepository.setHideInRecents(value) }
+    fun setDisguised(value: Boolean) = launch { settingsRepository.setDisguised(value) }
+    fun setQuickExit(value: Boolean) = launch { settingsRepository.setQuickExitButton(value) }
+    fun setShakeToExit(value: Boolean) = launch { settingsRepository.setShakeToExit(value) }
+    fun setDiscreet(value: Boolean) = launch { settingsRepository.setDiscreetNotifications(value) }
+
+    fun importMap(uri: Uri) = launch {
+        val result = offlineMaps.import(uri)
+        message.value = context.getString(if (result != null) R.string.toast_map_imported else R.string.toast_map_rejected)
+    }
+
+    fun removeMap() = launch { offlineMaps.remove() }
     fun setTrackerAlerts(value: Boolean) = launch { settingsRepository.setTrackerAlerts(value) }
     fun setSensitivity(value: Sensitivity) = launch { settingsRepository.setSensitivity(value) }
     fun setWifiFollowAlerts(value: Boolean) = launch { settingsRepository.setWifiFollowAlerts(value) }

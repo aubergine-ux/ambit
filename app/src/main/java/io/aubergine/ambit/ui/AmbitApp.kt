@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -46,16 +47,21 @@ import io.aubergine.ambit.R
 import io.aubergine.ambit.model.TrackerFamily
 import io.aubergine.ambit.ui.alerts.AlertsScreen
 import io.aubergine.ambit.ui.common.AmbitChip
+import io.aubergine.ambit.ui.common.AmbitOutlineButton
 import io.aubergine.ambit.ui.detail.DetailScreen
 import io.aubergine.ambit.ui.detail.DetailViewModel
+import io.aubergine.ambit.ui.evidence.EvidenceScreen
+import io.aubergine.ambit.ui.evidence.EvidenceViewModel
 import io.aubergine.ambit.ui.export.ExportScreen
 import io.aubergine.ambit.ui.guide.GuideScreen
+import io.aubergine.ambit.ui.help.HelpScreen
 import io.aubergine.ambit.ui.locate.LocateScreen
 import io.aubergine.ambit.ui.locate.LocateViewModel
 import io.aubergine.ambit.ui.onboarding.OnboardingScreen
 import io.aubergine.ambit.ui.onboarding.Permissions
 import io.aubergine.ambit.ui.ops.OpsScreen
 import io.aubergine.ambit.ui.ops.OpsViewModel
+import io.aubergine.ambit.ui.settings.SafetyCallbacks
 import io.aubergine.ambit.ui.settings.SettingsScreen
 import io.aubergine.ambit.ui.settings.SettingsViewModel
 import io.aubergine.ambit.ui.theme.AmbitColors
@@ -69,6 +75,8 @@ private object Routes {
     const val DETAIL = "detail/{address}"
     const val LOCATE = "locate?key={key}&family={family}&address={address}"
     const val GUIDE = "guide/{family}"
+    const val EVIDENCE = "evidence?key={key}"
+    const val HELP = "help"
 
     fun detail(address: String) = "detail/$address"
 
@@ -77,6 +85,8 @@ private object Routes {
     fun locateAddress(address: String) = "locate?key=&family=&address=${Uri.encode(address)}"
 
     fun guide(family: String) = "guide/$family"
+
+    fun evidence(key: String) = "evidence?key=${Uri.encode(key)}"
 }
 
 /**
@@ -87,7 +97,7 @@ private object Routes {
  * always reached from a row, never browsed to.
  */
 @Composable
-fun AmbitApp(startOnAlerts: Boolean = false) {
+fun AmbitApp(startOnAlerts: Boolean = false, onQuickExit: (() -> Unit)? = null) {
     val context = LocalContext.current
     val navController = rememberNavController()
     val snackbar = remember { SnackbarHostState() }
@@ -136,6 +146,7 @@ fun AmbitApp(startOnAlerts: Boolean = false) {
     Scaffold(
         containerColor = AmbitColors.Background,
         snackbarHost = { SnackbarHost(snackbar) },
+        topBar = { onQuickExit?.let { QuickExitBar(it) } },
         bottomBar = {
             val entry by navController.currentBackStackEntryAsState()
             val route = entry?.destination?.route
@@ -218,6 +229,8 @@ fun AmbitApp(startOnAlerts: Boolean = false) {
                     onLocate = { navController.navigate(Routes.locateTracker(it.signatureKey, it.family)) },
                     onGuide = { navController.navigate(Routes.guide(it)) },
                     onTrust = { opsViewModel.trustAlert(it.signatureKey, it.family) },
+                    onEvidence = { navController.navigate(Routes.evidence(it.signatureKey)) },
+                    onHelp = { navController.navigate(Routes.HELP) },
                     contentPadding = padding,
                 )
             }
@@ -255,6 +268,20 @@ fun AmbitApp(startOnAlerts: Boolean = false) {
                     },
                     onDeleteSafeZone = settingsViewModel::deleteSafeZone,
                     onUntrust = settingsViewModel::untrust,
+                    safety = SafetyCallbacks(
+                        onSetPin = settingsViewModel::setPin,
+                        onDisableLock = settingsViewModel::disableLock,
+                        onBiometric = settingsViewModel::setBiometric,
+                        onHideInRecents = settingsViewModel::setHideInRecents,
+                        onDisguise = settingsViewModel::setDisguised,
+                        onQuickExit = settingsViewModel::setQuickExit,
+                        onShakeToExit = settingsViewModel::setShakeToExit,
+                        onDiscreet = settingsViewModel::setDiscreet,
+                        onImportMap = settingsViewModel::importMap,
+                        onRemoveMap = settingsViewModel::removeMap,
+                        onOpenHelp = { navController.navigate(Routes.HELP) },
+                    ),
+                    importedMap = settingsViewModel.importedMap.collectAsStateWithLifecycle().value,
                     onPrune = settingsViewModel::pruneNow,
                     onClearAll = settingsViewModel::clearAll,
                     contentPadding = padding,
@@ -303,8 +330,30 @@ fun AmbitApp(startOnAlerts: Boolean = false) {
                 GuideScreen(
                     initialFamily = family,
                     onBack = { navController.popBackStack() },
+                    onHelp = { navController.navigate(Routes.HELP) },
                     contentPadding = padding,
                 )
+            }
+
+            composable(
+                route = Routes.EVIDENCE,
+                arguments = listOf(navArgument(EvidenceViewModel.ARG_KEY) { defaultValue = "" }),
+            ) {
+                val evidenceViewModel: EvidenceViewModel = hiltViewModel()
+                val evidenceState by evidenceViewModel.state.collectAsStateWithLifecycle()
+                LaunchedEffect(evidenceViewModel) {
+                    evidenceViewModel.shareRequests.collect { context.startActivity(it) }
+                }
+                EvidenceScreen(
+                    state = evidenceState,
+                    onExportPdf = evidenceViewModel::exportPdf,
+                    onBack = { navController.popBackStack() },
+                    contentPadding = padding,
+                )
+            }
+
+            composable(Routes.HELP) {
+                HelpScreen(onBack = { navController.popBackStack() }, contentPadding = padding)
             }
         }
     }
@@ -357,5 +406,23 @@ private fun Tab(
     val color = tint ?: if (selected) AmbitColors.Accent else AmbitColors.TextDim
     Box(modifier = Modifier.clickable(onClick = onClick)) {
         AmbitChip(label = label, color = color)
+    }
+}
+
+/** One tap back to the home screen. Shown only when the user turned it on. */
+@Composable
+private fun QuickExitBar(onExit: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .windowInsetsPadding(WindowInsets.statusBars)
+            .padding(horizontal = 10.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.End,
+    ) {
+        AmbitOutlineButton(
+            label = stringResource(R.string.action_quick_exit),
+            onClick = onExit,
+            color = AmbitColors.TextSecondary,
+        )
     }
 }

@@ -26,6 +26,7 @@ import io.aubergine.ambit.analysis.Sensitivity
 import io.aubergine.ambit.data.db.SafeZoneEntity
 import io.aubergine.ambit.data.db.TrustedEntity
 import io.aubergine.ambit.data.repo.SettingsRepository
+import io.aubergine.ambit.map.MbTiles
 import io.aubergine.ambit.model.TrackerFamily
 import io.aubergine.ambit.scan.WifiScanner
 import io.aubergine.ambit.ui.common.AmbitButton
@@ -59,6 +60,8 @@ fun SettingsScreen(
     onMarkSafeZone: () -> Unit,
     onDeleteSafeZone: (Long) -> Unit,
     onUntrust: (String) -> Unit,
+    safety: SafetyCallbacks,
+    importedMap: MbTiles.Metadata?,
     onPrune: () -> Unit,
     onClearAll: () -> Unit,
     modifier: Modifier = Modifier,
@@ -194,6 +197,16 @@ fun SettingsScreen(
                     SettingNote(stringResource(R.string.trusted_rotation_note))
                     if (state.trusted.isEmpty()) EmptyNote(stringResource(R.string.trusted_empty))
                 }
+            }
+        }
+
+        item {
+            Column(Modifier.padding(horizontal = 10.dp)) { SafetyPanel(state.settings, safety) }
+        }
+
+        item {
+            Column(Modifier.padding(horizontal = 10.dp)) {
+                OfflineMapPanel(importedMap, safety.onImportMap, safety.onRemoveMap)
             }
         }
 

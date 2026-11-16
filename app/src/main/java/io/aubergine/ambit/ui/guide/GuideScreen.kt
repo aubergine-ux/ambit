@@ -85,6 +85,7 @@ fun TrackerFamily.label(): String = stringResource(labelRes())
 fun GuideScreen(
     initialFamily: TrackerFamily,
     onBack: () -> Unit,
+    onHelp: () -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -106,6 +107,12 @@ fun GuideScreen(
             titleColor = AmbitColors.Warn,
         ) {
             Body(stringResource(R.string.guide_safety_body))
+            AmbitOutlineButton(
+                label = stringResource(R.string.action_help),
+                onClick = onHelp,
+                color = AmbitColors.Warn,
+                modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
+            )
         }
 
         AmbitPanel(title = guide.family.label()) {
