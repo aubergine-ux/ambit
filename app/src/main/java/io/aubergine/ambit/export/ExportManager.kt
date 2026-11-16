@@ -4,14 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.core.content.FileProvider
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.OutputStream
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Writes export payloads to app-private storage and hands out share URIs.
@@ -36,6 +37,19 @@ class ExportManager @Inject constructor(
         prune(dir)
         val file = File(dir, "ambit_${kind.slug}_${stamp(at)}.${kind.extension}")
         file.writeText(content)
+        Artifact(file, kind.mimeType, file.length())
+    }
+
+    /** For binary formats such as the PDF evidence report. */
+    suspend fun writeStream(
+        kind: Kind,
+        at: Long = System.currentTimeMillis(),
+        body: (OutputStream) -> Unit,
+    ): Artifact = withContext(Dispatchers.IO) {
+        val dir = File(context.cacheDir, EXPORT_DIR).apply { mkdirs() }
+        prune(dir)
+        val file = File(dir, "ambit_${kind.slug}_${stamp(at)}.${kind.extension}")
+        file.outputStream().use(body)
         Artifact(file, kind.mimeType, file.length())
     }
 
@@ -68,6 +82,7 @@ class ExportManager @Inject constructor(
         OBSERVATIONS_CSV("log", "csv", "text/csv"),
         JSON("export", "json", "application/json"),
         DEBRIEF("debrief", "txt", "text/plain"),
+        EVIDENCE_PDF("evidence", "pdf", "application/pdf"),
     }
 
     private companion object {

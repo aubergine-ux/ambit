@@ -7,6 +7,7 @@ import io.aubergine.ambit.analysis.TrackerCorrelator
 import io.aubergine.ambit.data.db.AppDatabase
 import io.aubergine.ambit.data.db.DeviceEntity
 import io.aubergine.ambit.data.db.SafeZoneEntity
+import io.aubergine.ambit.data.db.TrackerAlertEntity
 import io.aubergine.ambit.data.db.TrustedEntity
 import io.aubergine.ambit.data.db.toEntity
 import io.aubergine.ambit.data.db.toModel
@@ -146,6 +147,32 @@ class ObservationRepository @Inject constructor(
             trustedKeys = db.trusted().keys().toSet(),
             ownAddresses = bondedDevices.addresses(),
         )
+    }
+
+    suspend fun alert(key: String): TrackerAlertEntity? = db.trackerAlerts().find(key)
+
+    /**
+     * Rebuilds the full alert behind a stored one, with every sighting, for the evidence
+     * view and report. Uses loose thresholds over exactly the alert's time window: the
+     * point is to gather what was seen, not to decide again whether to alert.
+     */
+    suspend fun evidenceFor(key: String): TrackerCorrelator.Alert? {
+        val stored = db.trackerAlerts().find(key) ?: return null
+        val margin = 60 * 60 * 1000L
+        val from = stored.firstSeen - margin
+        val to = stored.lastSeen + margin
+        val config = TrackerCorrelator.Config(
+            minDistinctLocations = 1,
+            minTimeSpanMillis = 0,
+            minAccompaniedTransitions = 0,
+            lookbackMillis = to - from,
+        )
+        val observations = db.observations()
+            .geotaggedSince(from, listOf(RadioType.BLE.name, RadioType.WIFI.name))
+            .filter { it.timestamp <= to }
+            .map { it.toModel() }
+        return correlator.analyse(observations = observations, now = to, config = config)
+            .firstOrNull { key in it.keys }
     }
 
     fun trusted(): Flow<List<TrustedEntity>> = db.trusted().all()
