@@ -19,8 +19,10 @@ espresso = "3.6.1"
 turbine = "1.2.0"
 robolectric = "4.14.1"
 biometric = "1.1.0"
+sqlcipher = "4.20.0"
 
 [libraries]
+sqlcipher-android = { group = "net.zetetic", name = "sqlcipher-android", version.ref = "sqlcipher" }
 androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
