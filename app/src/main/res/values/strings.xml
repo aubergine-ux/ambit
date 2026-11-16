@@ -32,7 +32,7 @@
     <string name="wifi_waiting">Waiting for the first scan to return.</string>
     <string name="wifi_idle">Not scanning. Press START WI-FI to begin.</string>
     <string name="showing_top">Showing top %1$d of %2$d</string>
-    <string name="wifi_throttled_hint">Scan throttling active. Android caps startScan at 4 calls per 2 minutes. Turn off "Wi-Fi scan throttling" in Developer Options for a faster refresh.</string>
+    <string name="wifi_throttled_hint">Scan throttling active. Android caps startScan at 4 calls per 2 minutes. Turn off \"Wi-Fi scan throttling\" in Developer Options for a faster refresh.</string>
     <string name="action_start_wifi">START WI-FI</string>
     <string name="action_stop_wifi">STOP WI-FI</string>
 
@@ -55,7 +55,7 @@
     <string name="action_export_csv">CSV EXPORT</string>
     <string name="action_export_json">JSON EXPORT</string>
     <string name="action_export_debrief">DEBRIEF EXPORT</string>
-    <string name="export_offline_note">Built on-device. The debrief is plain text you can paste into any model you choose - the app never sends it anywhere itself.</string>
+    <string name="export_offline_note">Created on the phone. Exports are plain files that stay here until you choose to share one; the app never sends anything itself.</string>
 
     <!-- Scope panel -->
     <string name="panel_scope">WHAT THIS DOES AND DOES NOT DO</string>
@@ -69,9 +69,9 @@ No camera. No microphone. No network calls. No accounts.</string>
     <!-- Alerts -->
     <string name="alerts_banner">%1$d TRACKER ALERT(S) - REVIEW</string>
     <string name="panel_method">CORRELATION METHOD</string>
-    <string name="alerts_method_body">Bluetooth trackers rotate their address every few minutes, so the address is useless as identity. Instead each advertisement is reduced to a signature: company ID, service UUIDs, payload shape, and the payload bytes that stay fixed across a key rotation.
-A signature is flagged only when it turns up at three or more spatially separated GPS fixes, with a real time gap between them, outside any place you have marked as known.
-The threshold is deliberately high. Two locations is usually a coincidence, and an alert that cries wolf gets ignored.</string>
+    <string name="alerts_method_body">Trackers change their Bluetooth address often, but they also say whether they are with their owner, and while they are away from the owner they keep one identity for about a day. Ambit ignores tags that say their owner is nearby, and follows the rest by that identity.
+A tracker is flagged only when it was with you at three or more places at least 250 m apart, moved with you between them, and none of those places is one you marked as known.
+The bar is deliberately high. Two places is usually a coincidence, and an alert that cries wolf gets ignored.</string>
     <string name="action_run_correlation">RUN CORRELATION NOW</string>
     <string name="panel_no_alerts">NO ALERTS</string>
     <string name="alerts_empty_body">Nothing has met the threshold. This is the expected state.
@@ -91,7 +91,7 @@ Correlation needs GPS fixes at several separate places over time, so a session t
     <!-- Settings -->
     <string name="panel_scan_settings">SCAN</string>
     <string name="settings_interval_label">Wi-Fi scan interval</string>
-    <string name="settings_interval_warning">Below 30s, Android will refuse most of these requests and serve cached results instead. Turn off "Wi-Fi scan throttling" in Developer Options to make it real.</string>
+    <string name="settings_interval_warning">Below 30s, Android will refuse most of these requests and serve cached results instead. Turn off \"Wi-Fi scan throttling\" in Developer Options to make it real.</string>
     <string name="settings_list_limit_label">Devices shown in list</string>
     <string name="settings_keep_screen_on">Keep screen on while open</string>
     <string name="panel_alerts_settings">ALERTS</string>
@@ -471,7 +471,7 @@ Readable as-is, or pasted wherever you need it.</string>
     <string name="reliability_drain">Phone battery use while scanning</string>
     <string name="reliability_drain_pending">Not enough data yet. Check back after a few hours of scanning off the charger.</string>
     <string name="reliability_duty">Bluetooth radio active</string>
-    <string name="reliability_battery_note">Ambit aims to use under 3% of the battery a day on Standard. Android doesn\'t let an app measure its own share, so this figure is the whole phone\'s use while Ambit was scanning; your phone\'s Battery settings show Ambit\'s share.</string>
+    <string name="reliability_battery_note" formatted="false">Ambit aims to use under 3% of the battery a day on Standard. Android doesn\'t let an app measure its own share, so this figure is the whole phone\'s use while Ambit was scanning; your phone\'s Battery settings show Ambit\'s share.</string>
     <string name="value_allowed">Allowed</string>
     <string name="value_not_allowed">Not allowed</string>
     <string name="value_unrestricted">Not restricted</string>
