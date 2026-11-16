@@ -1,11 +1,14 @@
 package io.aubergine.ambit.ui
 
 import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,12 +36,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import io.aubergine.ambit.R
+import io.aubergine.ambit.model.TrackerFamily
 import io.aubergine.ambit.ui.alerts.AlertsScreen
 import io.aubergine.ambit.ui.common.AmbitChip
 import io.aubergine.ambit.ui.detail.DetailScreen
-import io.aubergine.ambit.ui.export.ExportScreen
 import io.aubergine.ambit.ui.detail.DetailViewModel
+import io.aubergine.ambit.ui.export.ExportScreen
+import io.aubergine.ambit.ui.guide.GuideScreen
+import io.aubergine.ambit.ui.locate.LocateScreen
+import io.aubergine.ambit.ui.locate.LocateViewModel
 import io.aubergine.ambit.ui.onboarding.OnboardingScreen
 import io.aubergine.ambit.ui.onboarding.Permissions
 import io.aubergine.ambit.ui.ops.OpsScreen
@@ -46,13 +59,6 @@ import io.aubergine.ambit.ui.ops.OpsViewModel
 import io.aubergine.ambit.ui.settings.SettingsScreen
 import io.aubergine.ambit.ui.settings.SettingsViewModel
 import io.aubergine.ambit.ui.theme.AmbitColors
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 
 private object Routes {
     const val ONBOARDING = "onboarding"
@@ -61,8 +67,16 @@ private object Routes {
     const val EXPORT = "export"
     const val SETTINGS = "settings"
     const val DETAIL = "detail/{address}"
+    const val LOCATE = "locate?key={key}&family={family}&address={address}"
+    const val GUIDE = "guide/{family}"
 
     fun detail(address: String) = "detail/$address"
+
+    fun locateTracker(key: String, family: String) = "locate?key=${Uri.encode(key)}&family=$family&address="
+
+    fun locateAddress(address: String) = "locate?key=&family=&address=${Uri.encode(address)}"
+
+    fun guide(family: String) = "guide/$family"
 }
 
 /**
@@ -201,6 +215,8 @@ fun AmbitApp(startOnAlerts: Boolean = false) {
                     busy = busy,
                     onRunNow = opsViewModel::runCorrelatorNow,
                     onDismiss = opsViewModel::dismissAlert,
+                    onLocate = { navController.navigate(Routes.locateTracker(it.signatureKey, it.family)) },
+                    onGuide = { navController.navigate(Routes.guide(it)) },
                     contentPadding = padding,
                 )
             }
@@ -246,6 +262,41 @@ fun AmbitApp(startOnAlerts: Boolean = false) {
                 DetailScreen(
                     state = detailState,
                     now = opsState.nowMillis,
+                    onBack = { navController.popBackStack() },
+                    onLocate = { navController.navigate(Routes.locateAddress(it)) },
+                    contentPadding = padding,
+                )
+            }
+
+            composable(
+                route = Routes.LOCATE,
+                arguments = listOf(
+                    navArgument(LocateViewModel.ARG_KEY) { defaultValue = "" },
+                    navArgument(LocateViewModel.ARG_FAMILY) { defaultValue = "" },
+                    navArgument(LocateViewModel.ARG_ADDRESS) { defaultValue = "" },
+                ),
+            ) {
+                val locateViewModel: LocateViewModel = hiltViewModel()
+                val locateState by locateViewModel.state.collectAsStateWithLifecycle()
+                LocateScreen(
+                    state = locateState,
+                    onVisible = locateViewModel::setVisible,
+                    onHaptics = locateViewModel::setHaptics,
+                    onAudio = locateViewModel::setAudio,
+                    onPlaySound = locateViewModel::playSound,
+                    onStopSound = locateViewModel::stopSound,
+                    onOpenGuide = { navController.navigate(Routes.guide(locateState.family.name)) },
+                    onBack = { navController.popBackStack() },
+                    contentPadding = padding,
+                )
+            }
+
+            composable(Routes.GUIDE) { entry ->
+                val family = entry.arguments?.getString("family")
+                    ?.let { runCatching { TrackerFamily.valueOf(it) }.getOrNull() }
+                    ?: TrackerFamily.UNKNOWN
+                GuideScreen(
+                    initialFamily = family,
                     onBack = { navController.popBackStack() },
                     contentPadding = padding,
                 )

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generic outline of a typical tag-shaped tracker. Tinted at runtime. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M17,8 h14 a9,9 0 0,1 9,9 v14 a9,9 0 0,1 -9,9 h-14 a9,9 0 0,1 -9,-9 v-14 a9,9 0 0,1 9,-9 z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M12,15 a3,3 0 1,0 6,0 a3,3 0 1,0 -6,0 z" />
+</vector>

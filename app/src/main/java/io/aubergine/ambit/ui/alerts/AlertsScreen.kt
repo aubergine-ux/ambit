@@ -22,6 +22,7 @@ import io.aubergine.ambit.ui.common.AmbitButton
 import io.aubergine.ambit.ui.common.AmbitOutlineButton
 import io.aubergine.ambit.ui.common.AmbitPanel
 import io.aubergine.ambit.ui.common.FieldLine
+import io.aubergine.ambit.ui.guide.label
 import io.aubergine.ambit.ui.theme.AmbitColors
 import java.time.Instant
 import java.time.ZoneId
@@ -41,6 +42,8 @@ fun AlertsScreen(
     busy: Boolean,
     onRunNow: () -> Unit,
     onDismiss: (String) -> Unit,
+    onLocate: (TrackerAlertEntity) -> Unit,
+    onGuide: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -66,6 +69,11 @@ fun AlertsScreen(
                             label = stringResource(R.string.action_run_correlation),
                             onClick = onRunNow,
                             enabled = !busy,
+                        )
+                        AmbitOutlineButton(
+                            label = stringResource(R.string.action_guides),
+                            onClick = { onGuide(TrackerFamily.APPLE_FIND_MY.name) },
+                            modifier = Modifier.padding(top = 6.dp),
                         )
                     }
                 }
@@ -94,14 +102,24 @@ fun AlertsScreen(
 
         items(alerts, key = { it.signatureKey }) { alert ->
             Column(Modifier.padding(horizontal = 10.dp)) {
-                AlertCard(alert = alert, onDismiss = { onDismiss(alert.signatureKey) })
+                AlertCard(
+                    alert = alert,
+                    onDismiss = { onDismiss(alert.signatureKey) },
+                    onLocate = { onLocate(alert) },
+                    onGuide = { onGuide(alert.family) },
+                )
             }
         }
     }
 }
 
 @Composable
-private fun AlertCard(alert: TrackerAlertEntity, onDismiss: () -> Unit) {
+private fun AlertCard(
+    alert: TrackerAlertEntity,
+    onDismiss: () -> Unit,
+    onLocate: () -> Unit,
+    onGuide: () -> Unit,
+) {
     val severity = runCatching { TrackerCorrelator.Severity.valueOf(alert.severity) }
         .getOrDefault(TrackerCorrelator.Severity.LOW)
     val family = runCatching { TrackerFamily.valueOf(alert.family) }
@@ -113,7 +131,7 @@ private fun AlertCard(alert: TrackerAlertEntity, onDismiss: () -> Unit) {
     }
 
     AmbitPanel(
-        title = "${family.label}  [${severity.label}]",
+        title = "${family.label()}  [${severity.label}]",
         borderColor = tint,
         titleColor = tint,
     ) {
@@ -146,7 +164,9 @@ private fun AlertCard(alert: TrackerAlertEntity, onDismiss: () -> Unit) {
             modifier = Modifier.padding(top = 6.dp),
         )
 
-        Column(Modifier.padding(top = 8.dp)) {
+        Column(Modifier.padding(top = 8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            AmbitButton(label = stringResource(R.string.action_locate), onClick = onLocate)
+            AmbitOutlineButton(label = stringResource(R.string.action_open_guide), onClick = onGuide)
             AmbitOutlineButton(
                 label = stringResource(R.string.action_dismiss),
                 onClick = onDismiss,

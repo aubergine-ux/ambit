@@ -32,6 +32,9 @@ class AudioAlerts @Inject constructor() {
 
         /** Scanning started or stopped. */
         STATE_CHANGE(ToneGenerator.TONE_PROP_ACK, 70, 1),
+
+        /** One Locate pulse. Short enough to repeat several times a second. */
+        LOCATE_TICK(ToneGenerator.TONE_PROP_BEEP, 35, 1),
     }
 
     @MainThread

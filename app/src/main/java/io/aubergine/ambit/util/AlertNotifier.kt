@@ -13,6 +13,7 @@ import io.aubergine.ambit.MainActivity
 import io.aubergine.ambit.R
 import io.aubergine.ambit.analysis.TrackerCorrelator
 import io.aubergine.ambit.scan.ScanService
+import io.aubergine.ambit.ui.guide.labelRes
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.roundToInt
@@ -50,7 +51,7 @@ class AlertNotifier @Inject constructor(
 
         val notification = NotificationCompat.Builder(context, ScanService.CHANNEL_ALERTS)
             .setSmallIcon(R.drawable.ic_stat_alert)
-            .setContentTitle(context.getString(R.string.alert_tracker_title, alert.family.label))
+            .setContentTitle(context.getString(R.string.alert_tracker_title, context.getString(alert.family.labelRes())))
             .setContentText(body)
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
             .setPriority(NotificationCompat.PRIORITY_HIGH)

@@ -21,7 +21,9 @@ import androidx.compose.ui.unit.dp
 import io.aubergine.ambit.R
 import io.aubergine.ambit.analysis.PathLoss
 import io.aubergine.ambit.model.Observation
+import io.aubergine.ambit.model.RadioType
 import io.aubergine.ambit.scan.WifiScanner
+import io.aubergine.ambit.ui.common.AmbitButton
 import io.aubergine.ambit.ui.common.AmbitOutlineButton
 import io.aubergine.ambit.ui.common.AmbitPanel
 import io.aubergine.ambit.ui.common.EmptyNote
@@ -39,6 +41,7 @@ fun DetailScreen(
     state: DetailViewModel.UiState,
     now: Long,
     onBack: () -> Unit,
+    onLocate: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -133,6 +136,20 @@ fun DetailScreen(
                         stringResource(R.string.field_last_seen),
                         stringResource(R.string.value_seconds_ago, device.ageSeconds(now).toInt()),
                     )
+                    if (device.radio == RadioType.BLE) {
+                        AmbitButton(
+                            label = stringResource(R.string.action_locate),
+                            onClick = { onLocate(device.address) },
+                            modifier = Modifier.padding(top = 8.dp),
+                        )
+                        if (device.randomizedAddress) {
+                            Text(
+                                text = stringResource(R.string.locate_address_may_rotate),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = AmbitColors.TextDim,
+                            )
+                        }
+                    }
                 }
             }
         }

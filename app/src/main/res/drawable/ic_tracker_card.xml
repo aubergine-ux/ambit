@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generic outline of a typical card-shaped tracker. Tinted at runtime. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M8,13 h32 a3,3 0 0,1 3,3 v16 a3,3 0 0,1 -3,3 h-32 a3,3 0 0,1 -3,-3 v-16 a3,3 0 0,1 3,-3 z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M8.5,19 a2.5,2.5 0 1,0 5.0,0 a2.5,2.5 0 1,0 -5.0,0 z" />
+</vector>

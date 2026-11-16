@@ -212,4 +212,86 @@ Written to be pasted into a language model of your choosing, or read as-is.</str
     <string name="action_share_last">SHARE LAST EXPORT</string>
     <string name="export_nothing_yet">Nothing exported yet this session.</string>
     <string name="tab_export">EXPORT</string>
+
+    <!-- Tracker family names. Product and network names, usually left untranslated. -->
+    <string name="family_apple">Apple Find My</string>
+    <string name="family_samsung">Samsung SmartTag</string>
+    <string name="family_google">Google Find Hub</string>
+    <string name="family_tile">Tile</string>
+    <string name="family_chipolo">Chipolo</string>
+    <string name="family_unknown">Unrecognized tracker</string>
+
+    <!-- Locate mode: a hot/cold finder driven by Bluetooth signal strength. It never shows direction or distance; keep wording to "signal" and "stronger/weaker". -->
+    <string name="locate_title">LOCATE: %1$s</string>
+    <string name="locate_disclaimer">This shows signal strength, not direction or distance. Move slowly and watch whether the signal gets stronger or weaker.</string>
+    <string name="locate_listening_short">LISTENING</string>
+    <string name="locate_lost_short">NO SIGNAL</string>
+    <string name="locate_listening">Listening for this tracker. Walk around slowly.</string>
+    <string name="locate_lost">Signal lost. Go back to where it was strongest.</string>
+    <string name="locate_heard_ago">Last heard %1$d s ago</string>
+    <string name="locate_current_address">Current address</string>
+    <string name="locate_feedback_title">FEEDBACK</string>
+    <string name="locate_toggle_haptics">Vibrate faster as the signal gets stronger</string>
+    <string name="locate_toggle_audio">Beep faster as the signal gets stronger</string>
+    <string name="locate_tips">Your body blocks Bluetooth. Turn in place slowly: the signal is usually strongest when you face the tracker. Readings settle over a second or two.</string>
+
+    <!-- Hot/cold proximity bands, shown large in the meter. Short words; they describe signal, not distance. -->
+    <string name="proximity_cold">COLD</string>
+    <string name="proximity_cool">COOL</string>
+    <string name="proximity_warm">WARM</string>
+    <string name="proximity_hot">HOT</string>
+    <string name="proximity_very_hot">VERY HOT</string>
+    <string name="trend_stronger">Getting stronger</string>
+    <string name="trend_steady">Steady</string>
+    <string name="trend_weaker">Getting weaker</string>
+
+    <!-- Play sound: connects to a tracker over Bluetooth and asks it to beep. This is the only time the app transmits. -->
+    <string name="locate_sound_title">PLAY SOUND</string>
+    <string name="locate_sound_explainer">Ask the tracker to beep so you can hear where it is. Works only while the tracker is away from its owner.</string>
+    <string name="locate_sound_unsupported">This tracker\'s network doesn\'t let other people make it beep. Use the signal meter and the search tips instead.</string>
+    <string name="locate_sound_needs_signal">The tracker has to be in range first.</string>
+    <string name="locate_sound_connecting">Connecting to the tracker…</string>
+    <string name="locate_sound_playing">Asked the tracker to beep. Listen for it.</string>
+    <string name="locate_sound_finished">Done. You can try again if you didn\'t hear it.</string>
+    <string name="locate_sound_confirm_title">Make the tracker beep?</string>
+    <string name="locate_sound_confirm_body">Ambit will connect to this tracker over Bluetooth and ask it to play its sound. This is the only time Ambit sends anything. Nothing goes over the internet.\n\nThe tracker only beeps while it is away from its owner. Its owner might be able to tell that someone connected to it.</string>
+    <string name="locate_sound_confirm_yes">Connect and beep</string>
+    <string name="action_play_sound">PLAY SOUND ON TRACKER</string>
+    <string name="action_stop_sound">STOP</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_locate">LOCATE</string>
+    <string name="locate_address_may_rotate">This address is randomized and may change while you search. Locate from a tracker alert follows rotations; this view can\'t.</string>
+    <string name="action_open_guide">HOW TO FIND AND DISABLE IT</string>
+    <string name="action_guides">TRACKER GUIDES</string>
+    <string name="sound_fail_permission">Bluetooth connect permission is needed. Grant it in the app\'s settings.</string>
+    <string name="sound_fail_bluetooth_off">Bluetooth is off.</string>
+    <string name="sound_fail_connect">Couldn\'t connect. Move closer and try again.</string>
+    <string name="sound_fail_no_service">This tracker doesn\'t offer a sound we can trigger.</string>
+    <string name="sound_fail_refused">The tracker refused. It may be near its owner right now.</string>
+    <string name="sound_fail_timeout">No answer from the tracker. Move closer and try again.</string>
+
+    <!-- Tracker guides: offline help for finding and disabling a tracker. Each line in a multi-line string becomes one numbered step; keep the line breaks. -->
+    <string name="guide_safety_title">BEFORE YOU SWITCH IT OFF</string>
+    <string name="guide_safety_body">If you think someone is tracking you on purpose, think about your safety first. Switching the tracker off may show the person who placed it that it was found.\n\nBefore you disable it, photograph it where you found it and note the date, time and place. Keep Ambit\'s alert. If you report it, the police may want the tracker itself; manufacturers can sometimes identify the owner when the police ask.\n\nLocal support services for stalking or domestic abuse can help you plan what to do next.</string>
+    <string name="guide_illustration_description">Typical shape of a %1$s tracker</string>
+    <string name="guide_illustration_caption">Typical shape only. Designs change between models.</string>
+    <string name="guide_looks_heading">What it looks like</string>
+    <string name="guide_disable_heading">How to disable it</string>
+    <string name="guide_other_families">OTHER TRACKERS</string>
+    <string name="guide_apple_looks">AirTag: a white disc about 3 cm across, slightly domed, with a polished metal back. Other Find My accessories come as cards, key fobs and bike mounts, and look like ordinary products.</string>
+    <string name="guide_apple_disable">AirTag: press down on the polished metal back and turn it anticlockwise until it stops.\nLift off the cover and remove the round coin-cell battery.\nOther Find My accessories: look for a battery door or a slot that takes a coin. Sealed cards can\'t be switched off; keep them away from you or hand them to the police.</string>
+    <string name="guide_samsung_looks">A small rounded square, about 4 cm wide, with a hole in one corner for a key ring. Usually black, white or a pastel colour.</string>
+    <string name="guide_samsung_disable">Original SmartTag and SmartTag+: prise the case apart at the small notch on the edge.\nSmartTag2: open the battery cover on the back.\nRemove the coin-cell battery.</string>
+    <string name="guide_google_looks">Made by several companies (for example Chipolo, Pebblebee, Motorola and eufy). Shapes include discs, rounded squares, key fobs and wallet-sized cards.</string>
+    <string name="guide_google_disable">Look for a twist-off or slide-off back hiding a coin-cell battery.\nCard-shaped and rechargeable models are often sealed and can\'t be opened.\nIf your phone has unknown tracker alerts in its safety settings, it may show the maker\'s own instructions.</string>
+    <string name="guide_tile_looks">Usually a rounded square with a hole for a key ring (Mate, Pro), a thin card (Slim) or a small adhesive disc (Sticker).</string>
+    <string name="guide_tile_disable">Mate and Pro: open the case at the seam to reach the battery. Some newer models twist open.\nSlim and Sticker are sealed and can\'t be switched off. Keep them away from you or hand them to the police.</string>
+    <string name="guide_chipolo_looks">Round or rounded-square tags with a hole for a key ring, or a thin card. Often brightly coloured.</string>
+    <string name="guide_chipolo_disable">Round models: twist the cover to reach the coin-cell battery.\nCard models are sealed and can\'t be switched off.</string>
+    <string name="guide_unknown_looks">Ambit couldn\'t match this signal to a known tracker network. It may be a tracker, a fitness band, a beacon or something else that broadcasts over Bluetooth.</string>
+    <string name="guide_unknown_disable">Use the signal meter to find where it is strongest.\nLook for anything small you don\'t recognise.\nIf you find a device, look for a battery door or a power button.</string>
+    <string name="guide_hiding_title">WHERE TRACKERS ARE HIDDEN</string>
+    <string name="guide_hiding_body">Bags: inner pockets, the lining, under the base panel, wallets.\nCoats: pockets and hoods, sometimes sewn into the lining.\nCars: under seats, between seat cushions, in the glovebox, door pockets, the boot or trunk lining, under the spare wheel.\nOutside the car: wheel wells, behind bumpers, under the chassis, often in a magnetic case.\nBikes and scooters: under the saddle, inside the frame tube, in lights or bells.\nGifts and shared items: toys, phone cases, keyrings, children\'s belongings.</string>
+    <string name="guide_search_title">HOW TO SEARCH</string>
+    <string name="guide_search_body">Start Locate mode and walk slowly around the area where the alert happened.\nWhen the signal is HOT, stop and check everything within about an arm\'s length.\nCheck one item at a time: move a bag or coat away, then see if the signal follows it.\nIf the tracker supports it, use Play sound and listen.\nNo signal does not prove there is no tracker. Some only broadcast now and then.</string>
 </resources>

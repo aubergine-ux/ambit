@@ -38,6 +38,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CONNECTED_DEVICE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Locate mode pulses faster as the signal gets stronger. -->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <!--
       android.permission.INTERNET is absent, and its absence is the design.
