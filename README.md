@@ -135,6 +135,25 @@ your own MBTiles file. No map tiles are ever fetched.
 </td>
 </tr>
 <tr>
+<td valign="top">
+
+### ✈️ Everyday use
+A home-screen widget and a Quick Settings tile show whether scanning is on and start it with
+one tap. Travel mode raises sensitivity for a trip and lets you mark a hotel as known until
+you get home. Alerts show up on a paired watch through normal notification mirroring,
+with Locate and Evidence actions.
+
+</td>
+<td valign="top">
+
+### 🔬 Expert view
+A live log of every Bluetooth advertisement: manufacturer data, service UUIDs, service data and
+flags, plus the identity and owner state Ambit read from each one. You can filter it and pause
+it.
+
+</td>
+</tr>
+<tr>
 <td colspan="2" valign="top">
 
 ### 🎯 Radar view
@@ -154,6 +173,9 @@ accurate view.
 | **OPS** | Radar, live Wi-Fi readout, BLE controls and one-tap exports, all in one vertical scroll. Nothing is hidden behind a tab, because a tab is hard to reach on a dashboard mount. |
 | **ALERTS** | Tracker verdicts, plus the evidence and method behind each one. |
 | **LOCATE** | Hot/cold signal meter with vibration and beeps, plus Play sound on supported trackers. |
+| **EVIDENCE** | Map and timeline for an alert, and the PDF report. |
+| **HELP** | Offline guidance on getting support, keeping evidence and checking your phone. |
+| **PACKET LOG** | Raw advertisements as they arrive, for researchers. |
 | **GUIDE** | Offline, per-family guide: what it looks like, where it hides, how to disable it safely. |
 | **EXPORT** | Every export format, with a preview of the debrief. |
 | **SETTINGS** | Scan interval, alert sounds, known places, data retention. |
