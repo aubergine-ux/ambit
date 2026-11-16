@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="docs/banner.svg" alt="AMBIT, a passive radio-environment observer for Android" width="100%">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/banner-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/banner-light.svg">
+    <img src="docs/banner-dark.svg" alt="AMBIT, a passive radio-environment observer for Android" width="100%">
+  </picture>
 </p>
 
 <p align="center">
@@ -288,4 +292,16 @@ translated.
 
 ## ✦ License
 
-[Apache License 2.0](LICENSE). Vendor names come from the public IEEE MA-L registry.
+[Apache License 2.0](LICENSE).
+
+---
+
+<p align="center">
+  <sub>
+    Vendor names from the public <a href="https://standards.ieee.org/products-programs/regauth/">IEEE MA-L registry</a> ·
+    detection threshold inspired by <a href="https://github.com/seemoo-lab/AirGuard">AirGuard</a> research ·
+    built with Kotlin and Jetpack Compose
+  </sub>
+  <br><br>
+  <a href="https://github.com/aubergine-ux"><img alt="aubergine-ux on GitHub" src="https://img.shields.io/badge/made%20by-aubergine--ux-33D6E8?style=flat-square&logo=github&labelColor=05080C"></a>
+</p>
