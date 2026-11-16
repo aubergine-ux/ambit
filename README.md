@@ -62,9 +62,9 @@ doesn't make up an "unknown device".
 <td valign="top">
 
 ### 🛰️ Tracker correlation
-Ambit matches advertisement payloads rather than addresses, so it can follow AirTags,
-SmartTags, Tiles and similar beacons through their address rotations. It raises an alert
-only after a beacon has been seen at **three separate places**.
+Ambit reads each tag's own "away from owner" state and follows AirTags, SmartTags, Find Hub
+tags, Tiles and Chipolos through their address rotations. It runs in the background with the
+screen off, and alerts only after a tag has been seen at **three separate places**.
 
 </td>
 <td valign="top">
@@ -106,13 +106,16 @@ list ever disagree, trust the list.
 
 ## ✦ How tracker detection works
 
-Most Bluetooth trackers rotate their MAC address about every 15 minutes, so the address alone
-can't tell you that the same tracker is still nearby. Ambit uses the advertisement itself instead:
+Tracker networks rotate their addresses so that strangers can't follow *the owner*. They also
+tell the world whether the tag is with its owner, because that's how the networks themselves
+warn about unwanted tracking. Ambit reads that state and keys on what each tag holds steady
+while it's away from its owner:
 
 ```mermaid
 flowchart LR
-    A[BLE advertisement] --> B["Signature<br/><sub>company ID · service UUIDs ·<br/>payload length · stable bytes</sub>"]
-    B --> C[Bucket sightings<br/>by signature]
+    A[BLE advertisement] --> B{"Tag says it's<br/>near its owner?"}
+    B -- yes --> X[Ignore<br/><sub>every AirTag on a<br/>passer-by's keyring</sub>]
+    B -- no --> C["Identity<br/><sub>separated-mode key ·<br/>linked rotations · fixed address</sub>"]
     C --> D{"≥ 3 GPS fixes,<br/>spatially separated,<br/>with a real time gap?"}
     D -- no --> E[Keep watching]
     D -- yes --> F{Inside a<br/>known place?}
@@ -120,17 +123,18 @@ flowchart LR
     F -- no --> G[⚠️ Tracker alert]
 ```
 
-| Family | What Ambit matches on |
-|---|---|
-| Apple Find My | Manufacturer data, company `0x004C`, offline-finding type |
-| Samsung SmartTag | Manufacturer data, company `0x0075` |
-| Tile | Service UUID `0xFEED` |
-| Google Find My Device | Service UUID `0xFEAA` |
-| Chipolo | Manufacturer data, Chipolo company ID |
+| Family | Recognized by | Owner state | Identity while separated |
+|---|---|---|---|
+| Apple Find My | Manufacturer data `0x004C`, type `0x12` | Full-key form = separated | Public key, held ~24 h |
+| Samsung SmartTag | Service data `0xFD5A` | State bits in byte 0 | Privacy ID, rotations stitched by aging counter |
+| Google Find Hub | Service data `0xFEAA`, frame `0x40`/`0x41` | `0x41` = separated | Ephemeral ID, held ~24 h |
+| Tile | Service `0xFEED` | Not advertised | Fixed address |
+| Chipolo | Company `0x08C3`, service `0xFE33`/`0xFE65` | Not advertised | Fixed address |
 
-Beacons that don't match a known family are still correlated. Ambit just reports them without a
-name. Vendors change these formats between firmware generations, so treat a family label as a
-best guess.
+Beacons that don't match a known family are still correlated by address. A beacon that rotates
+its address without saying how can't build up places, so it can't cause a false alarm.
+Vendors change these formats between firmware generations, so treat a family label as a best
+guess.
 
 > [!NOTE]
 > **Why three places?** One sighting is noise, and two is usually coincidence. The
