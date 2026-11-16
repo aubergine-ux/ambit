@@ -87,6 +87,11 @@ android {
 
     testOptions {
         unitTests.isReturnDefaultValues = true
+        unitTests.all {
+            // README screenshots are rendered by a test that only runs when asked:
+            // ./gradlew testDebugUnitTest --tests '*ReadmeScreenshots*' -Pambit.screenshots
+            it.systemProperty("ambit.screenshots", if (project.hasProperty("ambit.screenshots")) rootDir.resolve("docs/screenshots").path else "")
+        }
         // Robolectric reads the bundled OUI registry out of merged assets; without this
         // the asset manager sees an empty tree and the registry tests fail spuriously.
         unitTests.isIncludeAndroidResources = true
