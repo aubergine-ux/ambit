@@ -46,15 +46,11 @@ class SignatureExtractorTest {
         ble(serviceData = mapOf(uuid16("feaa") to frame + eid + "5C"), flags = flags)
 
     @Test
-    fun `wifi observations produce no signature`() {
-        val wifi = Observation(
-            radio = RadioType.WIFI,
-            address = "00:11:22:33:44:55",
-            name = "cafe",
-            rssi = -50,
-            timestamp = 1_000L,
-        )
-        assertNull(extractor.extract(wifi))
+    fun `a wifi access point is identified by its bssid`() {
+        fun ap(bssid: String) = Observation(radio = RadioType.WIFI, address = bssid, name = "cafe", rssi = -50, timestamp = 1_000L)
+        val sig = extractor.extract(ap("00:11:22:33:44:55"))
+        assertEquals(TrackerFamily.WIFI_NETWORK, sig?.family)
+        assertNotEquals(sig?.key, extractor.extract(ap("00:11:22:33:44:66"))?.key)
     }
 
     @Test
@@ -171,6 +167,35 @@ class SignatureExtractorTest {
         assertEquals(TrackerFamily.CHIPOLO, extractor.extract(ble(companyId = 0x08C3, payload = "0102"))?.family)
         assertEquals(TrackerFamily.CHIPOLO, extractor.extract(ble(serviceData = mapOf(uuid16("fe33") to "0001")))?.family)
         assertNotEquals(TrackerFamily.CHIPOLO, extractor.extract(ble(companyId = 0x0A30, payload = "0102"))?.family)
+    }
+
+    @Test
+    fun `dult trackers report the near-owner bit`() {
+        fun dult(state: String, address: String = "C0:00:00:00:00:01") =
+            ble(address = address, serviceData = mapOf(uuid16("fcb2") to "07$state" + "AB".repeat(8)))
+        val separated = extractor.extract(dult("00"))
+        assertEquals(TrackerFamily.DULT, separated?.family)
+        assertEquals(OwnerState.SEPARATED, separated?.ownerState)
+        assertEquals(OwnerState.NEAR_OWNER, extractor.extract(dult("01"))?.ownerState)
+        // The proprietary payload rotates with the address, so the address is the identity.
+        assertNotEquals(separated?.key, extractor.extract(dult("00", address = "C0:00:00:00:00:02"))?.key)
+    }
+
+    @Test
+    fun `find hub wins over dult when a tag advertises both`() {
+        val both = ble(
+            serviceData = mapOf(
+                uuid16("feaa") to "41" + "AB".repeat(20) + "5C",
+                uuid16("fcb2") to "0700" + "CD".repeat(8),
+            ),
+            flags = 0x06,
+        )
+        assertEquals(TrackerFamily.GOOGLE_FIND_MY, extractor.extract(both)?.family)
+    }
+
+    @Test
+    fun `pebblebee is recognised by its own service uuid`() {
+        assertEquals(TrackerFamily.PEBBLEBEE, extractor.extract(ble(uuids = listOf(uuid16("fa25"))))?.family)
     }
 
     @Test

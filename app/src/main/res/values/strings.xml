@@ -294,4 +294,39 @@ Written to be pasted into a language model of your choosing, or read as-is.</str
     <string name="guide_hiding_body">Bags: inner pockets, the lining, under the base panel, wallets.\nCoats: pockets and hoods, sometimes sewn into the lining.\nCars: under seats, between seat cushions, in the glovebox, door pockets, the boot or trunk lining, under the spare wheel.\nOutside the car: wheel wells, behind bumpers, under the chassis, often in a magnetic case.\nBikes and scooters: under the saddle, inside the frame tube, in lights or bells.\nGifts and shared items: toys, phone cases, keyrings, children\'s belongings.</string>
     <string name="guide_search_title">HOW TO SEARCH</string>
     <string name="guide_search_body">Start Locate mode and walk slowly around the area where the alert happened.\nWhen the signal is HOT, stop and check everything within about an arm\'s length.\nCheck one item at a time: move a bag or coat away, then see if the signal follows it.\nIf the tracker supports it, use Play sound and listen.\nNo signal does not prove there is no tracker. Some only broadcast now and then.</string>
+
+    <!-- Additional tracker families. -->
+    <string name="family_dult">DULT-compatible tracker</string>
+    <string name="family_pebblebee">Pebblebee</string>
+    <string name="family_wifi">Wi-Fi network</string>
+    <string name="guide_dult_looks">A tracker that follows the IETF DULT standard for detecting unwanted trackers. Any brand can support it, so it may be a disc, a square tag, a card or something built into another product.</string>
+    <string name="guide_dult_disable">Use Play sound to hear where it is.\nLook for a battery door, a twist-off back or a slot that takes a coin.\nSealed or rechargeable trackers may not switch off. Keep them away from you or hand them to the police.</string>
+    <string name="guide_pebblebee_looks">Small rounded tags and key fobs, and wallet-sized cards. Many are rechargeable.</string>
+    <string name="guide_pebblebee_disable">Use Play sound to hear where it is.\nRechargeable models have no battery to remove. Some can be switched off with a long press on the button; otherwise keep it away from you or hand it to the police.</string>
+    <string name="guide_wifi_looks">A Wi-Fi network that appeared at several places you went. Most often it is a phone hotspot of someone travelling the same way, or the Wi-Fi of a bus, train or car. It could also be a portable camera or a tracker with Wi-Fi.</string>
+    <string name="guide_wifi_disable">Check whether the network name belongs to a vehicle you used or a person you travelled with.\nIf you can\'t explain it, search your car and bags as you would for a Bluetooth tracker.\nWi-Fi trackers usually have a power button or a battery pack.</string>
+
+    <!-- Device hints: pattern matches that make a device worth a second look. Always worded as a possibility. -->
+    <string name="field_note">Note</string>
+    <string name="hint_camera_glasses">Possible camera glasses (Meta or Luxottica Bluetooth). Could also be a VR headset or other Meta hardware.</string>
+    <string name="hint_camera_setup">Named like a camera in setup mode. It may be a camera someone is setting up nearby.</string>
+    <string name="hint_iot_setup">Named like a smart-home gadget in setup mode.</string>
+    <string name="hint_camera_vendor">Made by a company that mainly sells cameras. Its network or hotspot may belong to a camera.</string>
+
+    <!-- Detection settings. -->
+    <string name="settings_sensitivity_label">Tracker alert sensitivity</string>
+    <string name="sensitivity_relaxed">RELAXED</string>
+    <string name="sensitivity_standard">STANDARD</string>
+    <string name="sensitivity_high">HIGH</string>
+    <string name="sensitivity_relaxed_note">Waits for 4 places spread over a wider area and at least 45 minutes. Fewest false alarms; slowest to warn.</string>
+    <string name="sensitivity_standard_note">3 places at least 250 m apart over 20 minutes or more. A balance between speed and false alarms.</string>
+    <string name="sensitivity_high_note">3 places at least 150 m apart over 10 minutes or more. Warns sooner on short trips, but more likely to flag someone who simply travels the same way.</string>
+    <string name="settings_wifi_follow">Alert on Wi-Fi networks that travel with me</string>
+    <string name="settings_wifi_follow_note">Usually a phone hotspot or the Wi-Fi of a bus, train or car. Needs Wi-Fi scanning on.</string>
+    <string name="settings_glasses">Alert when camera glasses may be nearby</string>
+    <string name="settings_glasses_note">Matches Meta and Luxottica Bluetooth IDs at close range. VR headsets and controllers use the same IDs. At most one alert every 15 minutes.</string>
+    <string name="alert_glasses_title">Possible camera glasses nearby</string>
+    <string name="alert_glasses_body">A close-range Bluetooth device uses Meta or Luxottica IDs, as Ray-Ban Meta and similar glasses do. It could also be a VR headset or other Meta hardware.</string>
+    <string name="alert_wifi_body">Seen at %1$d separate places, spread over %2$d m. Often a hotspot on a nearby phone, or a bus, train or car network. Open Ambit to review.</string>
+    <string name="alerts_wifi_note">This network was seen at several places you went. It may be a hotspot on someone\'s phone nearby, or the Wi-Fi of a bus, train or car you rode in. Locate isn\'t available for Wi-Fi, because Android allows only a few Wi-Fi scans every two minutes.</string>
 </resources>

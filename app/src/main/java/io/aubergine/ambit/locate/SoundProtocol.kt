@@ -12,7 +12,7 @@ import java.util.UUID
  * accessory and AirTag services predate it and are still what older firmware answers to.
  *
  * Tile, SmartTag and Chipolo's own network do not let a non-owner ring the tag, so they
- * are left out on purpose rather than attempted and failed.
+ * are left out on purpose rather than attempted and failed. Wi-Fi networks have no sound.
  */
 enum class SoundProtocol(
     val service: UUID,
@@ -42,6 +42,15 @@ enum class SoundProtocol(
         start = byteArrayOf(0xAF.toByte()),
         stop = null,
         usesIndications = false,
+    ),
+
+    /** Pebblebee's own network, for tags that predate Find Hub. */
+    PEBBLEBEE(
+        service = UUID.fromString("0000fa25-0000-1000-8000-00805f9b34fb"),
+        characteristic = UUID.fromString("00002c02-0000-1000-8000-00805f9b34fb"),
+        start = byteArrayOf(0x01),
+        stop = byteArrayOf(0x02),
+        usesIndications = false,
     );
 
     companion object {
@@ -51,10 +60,13 @@ enum class SoundProtocol(
         fun candidatesFor(family: TrackerFamily): List<SoundProtocol> = when (family) {
             TrackerFamily.APPLE_FIND_MY -> listOf(DULT, FIND_MY_ACCESSORY, AIRTAG)
             TrackerFamily.GOOGLE_FIND_MY -> listOf(DULT)
+            TrackerFamily.DULT -> listOf(DULT)
+            TrackerFamily.PEBBLEBEE -> listOf(PEBBLEBEE, DULT)
             TrackerFamily.UNKNOWN -> listOf(DULT)
             TrackerFamily.SAMSUNG_SMARTTAG,
             TrackerFamily.TILE,
             TrackerFamily.CHIPOLO,
+            TrackerFamily.WIFI_NETWORK,
             -> emptyList()
         }
 

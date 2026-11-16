@@ -71,7 +71,16 @@ enum class TrackerFamily(val label: String) {
     APPLE_FIND_MY("Apple Find My"),
     SAMSUNG_SMARTTAG("Samsung SmartTag"),
     TILE("Tile"),
-    GOOGLE_FIND_MY("Google Find My Device"),
+    GOOGLE_FIND_MY("Google Find Hub"),
     CHIPOLO("Chipolo"),
+
+    /** Any tag following the IETF DULT draft, whatever network it belongs to. */
+    DULT("DULT-compatible tracker"),
+    PEBBLEBEE("Pebblebee"),
+
+    /** A Wi-Fi access point that moved with the user: a hotspot, car or vehicle Wi-Fi. */
+    WIFI_NETWORK("Wi-Fi network"),
     UNKNOWN("Unrecognised beacon");
+
+    val isBluetooth: Boolean get() = this != WIFI_NETWORK
 }

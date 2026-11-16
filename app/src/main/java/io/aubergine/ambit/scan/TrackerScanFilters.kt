@@ -27,5 +27,7 @@ internal object TrackerScanFilters {
         ScanFilter.Builder().setServiceData(uuid16("fe33"), byteArrayOf()).build(),
         ScanFilter.Builder().setServiceData(uuid16("fe65"), byteArrayOf()).build(),
         ScanFilter.Builder().setManufacturerData(0x08C3, byteArrayOf()).build(),
+        ScanFilter.Builder().setServiceData(uuid16("fcb2"), byteArrayOf()).build(),
+        ScanFilter.Builder().setServiceUuid(uuid16("fa25")).build(),
     )
 }

@@ -29,6 +29,7 @@ import javax.inject.Singleton
 class SignatureExtractor @Inject constructor() {
 
     fun extract(observation: Observation): TrackerSignature? {
+        if (observation.radio == RadioType.WIFI) return wifi(observation)
         if (observation.radio != RadioType.BLE) return null
 
         val company = observation.companyId
@@ -41,6 +42,10 @@ class SignatureExtractor @Inject constructor() {
         apple(company, manufacturer, uuids)?.let { return it }
         observation.serviceDataFor(UUID_SAMSUNG_TAG)?.let { samsung(it, uuids)?.let { s -> return s } }
         observation.serviceDataFor(UUID_GOOGLE_FMDN)?.let { google(it, uuids, observation)?.let { s -> return s } }
+        observation.serviceDataFor(UUID_DULT)?.let { dult(it, uuids, observation.address)?.let { s -> return s } }
+        if (uuids.any { it.startsWith(UUID_PEBBLEBEE) }) {
+            return fixedAddress(TrackerFamily.PEBBLEBEE, company, uuids, manufacturer, observation.address)
+        }
 
         // Tile and Chipolo's own network keep a fixed address, so the address is the identity.
         if (uuids.any { it.startsWith(UUID_TILE) }) {
@@ -138,6 +143,37 @@ class SignatureExtractor @Inject constructor() {
         )
     }
 
+    /**
+     * IETF DULT (draft-ietf-dult-accessory-protocol-01, 3.4.2): service data 0xFCB2,
+     * `[0]` network ID, `[1]` bit 0 set while near the owner, then a proprietary payload
+     * that rotates together with the address. The address is therefore the identity.
+     */
+    private fun dult(data: String, uuids: List<String>, address: String): TrackerSignature? {
+        val network = data.byteAt(0) ?: return null
+        val nearOwner = (data.byteAt(1) ?: return null) and 0x01 == 1
+        return TrackerSignature(
+            companyId = null,
+            serviceUuids = uuids,
+            payloadLength = data.length / 2,
+            stableBytes = "%02X".format(network) + address.replace(":", ""),
+            family = TrackerFamily.DULT,
+            ownerState = if (nearOwner) OwnerState.NEAR_OWNER else OwnerState.SEPARATED,
+        )
+    }
+
+    /**
+     * Wi-Fi access points are real hardware addresses, so the BSSID is the identity. One
+     * seen at three separated places has moved with the user: a phone hotspot, a car or
+     * bus network, or a portable camera.
+     */
+    private fun wifi(observation: Observation): TrackerSignature = TrackerSignature(
+        companyId = null,
+        serviceUuids = emptyList(),
+        payloadLength = 0,
+        stableBytes = observation.address.replace(":", ""),
+        family = TrackerFamily.WIFI_NETWORK,
+    )
+
     private fun fixedAddress(
         family: TrackerFamily,
         company: Int?,
@@ -175,5 +211,7 @@ class SignatureExtractor @Inject constructor() {
         const val UUID_SAMSUNG_TAG = "0000fd5a"
         const val UUID_CHIPOLO = "0000fe33"
         const val UUID_CHIPOLO_ALT = "0000fe65"
+        const val UUID_DULT = "0000fcb2"
+        const val UUID_PEBBLEBEE = "0000fa25"
     }
 }

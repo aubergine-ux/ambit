@@ -49,6 +49,9 @@ val TRACKER_GUIDES: List<TrackerGuide> = listOf(
     TrackerGuide(TrackerFamily.GOOGLE_FIND_MY, R.drawable.ic_tracker_card, R.string.guide_google_looks, R.string.guide_google_disable),
     TrackerGuide(TrackerFamily.TILE, R.drawable.ic_tracker_square, R.string.guide_tile_looks, R.string.guide_tile_disable),
     TrackerGuide(TrackerFamily.CHIPOLO, R.drawable.ic_tracker_round, R.string.guide_chipolo_looks, R.string.guide_chipolo_disable),
+    TrackerGuide(TrackerFamily.PEBBLEBEE, R.drawable.ic_tracker_card, R.string.guide_pebblebee_looks, R.string.guide_pebblebee_disable),
+    TrackerGuide(TrackerFamily.DULT, R.drawable.ic_tracker_generic, R.string.guide_dult_looks, R.string.guide_dult_disable),
+    TrackerGuide(TrackerFamily.WIFI_NETWORK, R.drawable.ic_tracker_generic, R.string.guide_wifi_looks, R.string.guide_wifi_disable),
     TrackerGuide(TrackerFamily.UNKNOWN, R.drawable.ic_tracker_generic, R.string.guide_unknown_looks, R.string.guide_unknown_disable),
 )
 
@@ -62,6 +65,9 @@ fun TrackerFamily.labelRes(): Int = when (this) {
     TrackerFamily.GOOGLE_FIND_MY -> R.string.family_google
     TrackerFamily.TILE -> R.string.family_tile
     TrackerFamily.CHIPOLO -> R.string.family_chipolo
+    TrackerFamily.DULT -> R.string.family_dult
+    TrackerFamily.PEBBLEBEE -> R.string.family_pebblebee
+    TrackerFamily.WIFI_NETWORK -> R.string.family_wifi
     TrackerFamily.UNKNOWN -> R.string.family_unknown
 }
 
