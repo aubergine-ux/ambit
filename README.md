@@ -1,32 +1,55 @@
 <p align="center">
+  <img src="docs/icon.png" alt="Ambit app icon" width="104">
+</p>
+
+<p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/banner-dark.svg">
     <source media="(prefers-color-scheme: light)" srcset="docs/banner-light.svg">
-    <img src="docs/banner-dark.svg" alt="AMBIT, a passive radio-environment observer for Android" width="100%">
+    <img src="docs/banner-dark.svg" alt="AMBIT: know when a tracker is following you" width="100%">
   </picture>
 </p>
 
+<h3 align="center">Know when a Bluetooth tracker is following you. Fully offline, open source, no Google required.</h3>
+
 <p align="center">
-  <a href="https://github.com/aubergine-ux/ambit/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/aubergine-ux/ambit/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/aubergine-ux/ambit/actions/workflows/ci.yml"><img alt="Build" src="https://img.shields.io/github/actions/workflow/status/aubergine-ux/ambit/ci.yml?branch=main&style=flat-square&label=build&labelColor=05080C"></a>
+  <a href="https://github.com/aubergine-ux/ambit/releases"><img alt="Latest release" src="https://img.shields.io/github/v/release/aubergine-ux/ambit?style=flat-square&label=release&color=33D6E8&labelColor=05080C&display_name=tag"></a>
   <a href="LICENSE"><img alt="License: Apache 2.0" src="https://img.shields.io/badge/license-Apache%202.0-33D6E8?style=flat-square&labelColor=05080C"></a>
   <img alt="Android 8.0+" src="https://img.shields.io/badge/Android-8.0%2B-33D6E8?style=flat-square&logo=android&logoColor=white&labelColor=05080C">
-  <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-Compose-33D6E8?style=flat-square&logo=kotlin&logoColor=white&labelColor=05080C">
-  <img alt="No INTERNET permission" src="https://img.shields.io/badge/network-none-5BE86B?style=flat-square&labelColor=05080C">
-  <img alt="No Google Play Services" src="https://img.shields.io/badge/Play%20Services-not%20required-5BE86B?style=flat-square&labelColor=05080C">
+  <img alt="No INTERNET permission" src="https://img.shields.io/badge/internet%20permission-none-5BE86B?style=flat-square&labelColor=05080C">
+  <img alt="No Google Play Services" src="https://img.shields.io/badge/Play%20Services-not%20needed-5BE86B?style=flat-square&labelColor=05080C">
+  <img alt="Languages: English, Albanian" src="https://img.shields.io/badge/languages-English%20%C2%B7%20Shqip-33D6E8?style=flat-square&labelColor=05080C">
+  <!-- Enable once the listings exist:
+  <a href="https://f-droid.org/packages/io.aubergine.ambit/"><img alt="F-Droid" src="https://img.shields.io/f-droid/v/io.aubergine.ambit?style=flat-square&labelColor=05080C"></a>
+  <a href="https://apt.izzysoft.de/fdroid/index/apk/io.aubergine.ambit"><img alt="IzzyOnDroid" src="https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/io.aubergine.ambit&style=flat-square&labelColor=05080C"></a>
+  <a href="https://hosted.weblate.org/engage/ambit/"><img alt="Translations" src="https://hosted.weblate.org/widget/ambit/svg-badge.svg"></a>
+  -->
 </p>
 
 <p align="center">
-  <b>See what's broadcasting around you, and notice when something keeps following you.</b><br>
-  Ambit logs Wi-Fi and Bluetooth broadcasts over time, names the manufacturer behind an address
-  where it honestly can, and warns when a Bluetooth tracker turns up at place after place with you.
+  <a href="https://github.com/aubergine-ux/ambit/releases/latest"><img alt="Get it on GitHub" src="https://img.shields.io/badge/Get%20it%20on-GitHub%20Releases-05080C?style=for-the-badge&logo=github&logoColor=white" height="54"></a>
+  <!-- Enable once the listings exist:
+  <a href="https://f-droid.org/packages/io.aubergine.ambit/"><img alt="Get it on F-Droid" src="https://f-droid.org/badge/get-it-on.png" height="80"></a>
+  <a href="https://apt.izzysoft.de/fdroid/index/apk/io.aubergine.ambit"><img alt="Get it on IzzyOnDroid" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80"></a>
+  -->
 </p>
+
+<table align="center">
+<tr>
+<td align="center"><img src="docs/screenshots/alerts.png" width="190" alt="An alert with its confidence score and reasons"><br><sub><b>Alert, with the reasons</b></sub></td>
+<td align="center"><img src="docs/screenshots/locate.png" width="190" alt="Locate mode showing a hot signal"><br><sub><b>Locate mode</b></sub></td>
+<td align="center"><img src="docs/screenshots/evidence.png" width="190" alt="Evidence screen with a map of the trail"><br><sub><b>Evidence and map</b></sub></td>
+<td align="center"><img src="docs/screenshots/radar.png" width="190" alt="Radar showing nearby devices by rough distance"><br><sub><b>Radar</b></sub></td>
+</tr>
+</table>
 
 <p align="center">
   <a href="#-features">Features</a> ·
-  <a href="#-how-tracker-detection-works">Tracker detection</a> ·
+  <a href="#-how-tracker-detection-works">How it works</a> ·
+  <a href="#-how-ambit-compares">Compared</a> ·
   <a href="#-what-ambit-is-not">Limits</a> ·
   <a href="#-build">Build</a> ·
-  <a href="#-architecture">Architecture</a> ·
   <a href="#-roadmap">Roadmap</a>
 </p>
 
@@ -34,8 +57,13 @@
 
 > [!IMPORTANT]
 > **Everything stays on your phone.** The manifest doesn't declare the `INTERNET` permission, so
-> Android itself blocks Ambit from opening a socket. That's enforced by the platform, not just
-> promised. There are no accounts, no analytics, no telemetry and no cloud.
+> Android itself blocks Ambit from opening a connection. There are no accounts, no analytics,
+> no telemetry and no cloud.
+
+> [!CAUTION]
+> **If you think you are in danger, contact your local emergency number.** Ambit is a tool for
+> noticing trackers. It isn't a substitute for help from people. The app's offline Help page
+> explains how to find support and keep evidence.
 
 ## ✦ Features
 
@@ -178,7 +206,7 @@ accurate view.
 
 | Screen | What it's for |
 |---|---|
-| **OPS** | Radar, live Wi-Fi readout, BLE controls and one-tap exports, all in one vertical scroll. Nothing is hidden behind a tab, because a tab is hard to reach on a dashboard mount. |
+| **OPS** | Radar, live Wi-Fi readout, Bluetooth controls and one-tap exports in one scroll. |
 | **ALERTS** | Tracker verdicts, plus the evidence and method behind each one. |
 | **LOCATE** | Hot/cold signal meter with vibration and beeps, plus Play sound on supported trackers. |
 | **EVIDENCE** | Map and timeline for an alert, and the PDF report. |
@@ -186,7 +214,7 @@ accurate view.
 | **PACKET LOG** | Raw advertisements as they arrive, for researchers. |
 | **GUIDE** | Offline, per-family guide: what it looks like, where it hides, how to disable it safely. |
 | **EXPORT** | Every export format, with a preview of the debrief. |
-| **SETTINGS** | Scan interval, alert sounds, known places, data retention. |
+| **SETTINGS** | Sensitivity, known places, trusted devices, travel mode, safety, reliability and battery, backups. |
 | **Device detail** | Opens from any row: identity, RSSI trace over time, sighting history. |
 
 ## ✦ How tracker detection works
@@ -242,6 +270,24 @@ require a fourth place. Every level needs at least three.
 > three-location threshold is a deliberate trade-off against false alarms, because an alert
 > that cries wolf teaches you to ignore the one that matters. `TrackerCorrelatorTest` asserts
 > the threshold so it can't be lowered quietly.
+
+## ✦ How Ambit compares
+
+There are good tracker detectors already. This is how they differ, as of November 2026.
+
+| | **Ambit** | [AirGuard](https://github.com/seemoo-lab/AirGuard) | [Tracker Detect](https://support.apple.com/en-us/119874) | [Android unknown tracker alerts](https://support.google.com/android/answer/13658562) |
+|---|---|---|---|---|
+| Trackers | Find My, SmartTag, Find Hub, Tile, Chipolo, Pebblebee, any DULT tag | Find My, SmartTag, Find Hub, Tile, Chipolo, Pebblebee | AirTag and Find My only | Find Hub tags, AirTags, headphones |
+| Background scanning | ✅ | ✅ | ❌ manual only | ✅ |
+| Locate by signal | ✅ | ✅ | not documented | ✅ Find Hub tags |
+| Play sound | Find My, Find Hub, Pebblebee, DULT | Find My, Find Hub, Pebblebee | ✅ | ✅ |
+| Wi-Fi awareness | ✅ | ❌ | ❌ | ❌ |
+| Evidence export | PDF, GPX, KML, CSV, JSON | PDF, CSV | ❌ | ❌ |
+| Works with no network | ✅ no `INTERNET` permission | detection yes; maps and opt-in study use the network | not documented | not documented |
+| Needs Google Play Services | ❌ | ❌ | not documented | ✅ |
+| Open source | ✅ Apache-2.0 | ✅ Apache-2.0 | ❌ | ❌ |
+
+<sub>Sources: AirGuard source at commit d515c53 and its <a href="https://f-droid.org/packages/de.seemoo.at_tracking_detection/">F-Droid listing</a>, <a href="https://support.apple.com/en-us/119874">Apple support</a>, <a href="https://support.google.com/android/answer/13658562">Android help</a>. AirGuard is the closest open alternative and has years of research and real-world testing behind it. Ambit 3.0's tracker formats come from published specifications and still need checking against more real trackers.</sub>
 
 ## ✦ What Ambit is not
 
@@ -330,6 +376,11 @@ granted.
 
 ## ✦ Permissions
 
+<details>
+<summary><b>What each permission is for</b></summary>
+
+<br>
+
 | Permission | Why |
 |---|---|
 | `ACCESS_FINE_LOCATION` / `COARSE` | Android returns **no** scan results without it. It also geotags sightings for the correlator. |
@@ -345,6 +396,8 @@ granted.
 `BLUETOOTH_SCAN` is declared **without** `neverForLocation`. That flag would look better on a
 privacy checklist, but it strips location out of BLE results, and location is what the correlator
 runs on. The onboarding screen explains this in plain words.
+
+</details>
 
 ## ✦ Build
 
@@ -362,6 +415,18 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 > **The emulator has no radios**, so every scan comes back empty there. Test on a real phone
 > over wireless debugging (`adb pair` / `adb connect`) so you can walk around untethered while
 > it logs.
+
+<details>
+<summary><b>Reproducible builds</b></summary>
+
+<br>
+
+Release builds leave out the version-control and dependency metadata blobs that would make two
+builds of the same commit differ. To check a published APK, build the tagged commit with the
+same JDK (Temurin 17) and compare everything except the signature, for example with
+`apksigcopier compare`. Each GitHub release also ships the APK's SHA-256.
+
+</details>
 
 <details>
 <summary><b>Signed release builds</b></summary>
@@ -386,38 +451,55 @@ unsigned APK.
 
 ## ✦ Architecture
 
-Kotlin · Jetpack Compose + Material 3 · Room · Hilt · DataStore · kotlinx-serialization ·
-platform `LocationManager` (no Google Play Services, so it can ship on F-Droid).
+<details>
+<summary><b>Stack and layout</b></summary>
+
+<br>
+
+Kotlin · Jetpack Compose + Material 3 · Room + SQLCipher · Hilt · DataStore ·
+kotlinx-serialization · platform `LocationManager` (no Google Play Services).
 
 ```text
 io.aubergine.ambit/
-├── scan/        Wi-Fi + BLE scanners → one Flow<Observation>, foreground service
-├── analysis/    OUI classifier, signature extraction, tracker correlator, path loss
-├── data/        Room database (real migrations, no destructive fallback), repositories
-├── export/      CSV, JSON and plain-text debrief
-├── model/       Observation, Device, TrackerSignature, RadioType
-├── ui/          OPS, alerts, detail, export, settings, onboarding, radar
-└── util/        notifications and audio cues
+├── scan/         Wi-Fi + BLE scanners, motion-aware scan policy, foreground service
+├── analysis/     signature extraction, tracker correlator, confidence, sensitivity, hints
+├── locate/       signal smoothing, target matching, GATT play sound
+├── evidence/     evidence report model and PDF writer
+├── map/          offline basemap, MBTiles reader, shared map renderer
+├── data/         Room database (encrypted, real migrations), repositories
+├── backup/       password-encrypted backup, restore, full wipe
+├── reliability/  heartbeat, watchdog, boot restart, battery readings
+├── security/     app lock, disguise, quick exit
+├── export/       CSV, JSON, GPX, KML, debrief
+├── widget/       home-screen widget and Quick Settings tile
+└── ui/           Compose screens
 ```
 
 - Composables only talk to the repository layer, never to DAOs or scanners directly.
-- All timestamps are UTC epoch millis and are formatted only for display.
-- Room migrations go back to the first schema, because people keep months of logs.
+- All timestamps are UTC epoch millis, formatted only for display.
+- Room migrations go back to the first schema, and every one has a test.
+
+</details>
 
 ## ✦ Roadmap
 
-- [x] Wi-Fi + BLE scanning, foreground service, Room persistence, OUI vendor names, CSV export
-- [x] Radar, per-device detail and sighting history, JSON + debrief export, audio cues
-- [x] Tracker correlator, alerts UI, known-place suppression
-- [ ] F-Droid packaging and reproducible builds
-- [ ] Translations via Weblate
+- [x] Wi-Fi and Bluetooth scanning, encrypted log, vendor lookup, exports
+- [x] Tracker detection with owner state, confidence scores and trusted devices
+- [x] Locate mode, play sound, offline guides, evidence reports, offline maps
+- [x] Safety features, travel mode, widget, Quick Settings tile, packet log
+- [x] Reproducible build settings, fastlane metadata, signed GitHub releases
+- [x] English and Albanian
+- [ ] Verify every tracker format against real hardware
+- [ ] F-Droid and IzzyOnDroid listings
+- [ ] Translations on Weblate
+- [ ] A watch app that works without Google Play Services
 
 ## ✦ Contributing
 
-Issues and pull requests are welcome. If you change the tracker correlator, add a test that
-feeds it a synthetic sequence of sightings. It's the part of the app with real logic, and the
-part most likely to regress silently. User-facing text goes in `strings.xml` so it can be
-translated.
+Issues and pull requests are welcome; see [CONTRIBUTING.md](CONTRIBUTING.md). Real-world
+captures of tracker advertisements are especially useful: the packet log under
+Settings › Expert shows the raw bytes. To report a security problem, see
+[SECURITY.md](SECURITY.md).
 
 ## ✦ License
 
@@ -427,9 +509,11 @@ translated.
 
 <p align="center">
   <sub>
-    Vendor names from the public <a href="https://standards.ieee.org/products-programs/regauth/">IEEE MA-L registry</a> ·
-    detection threshold inspired by <a href="https://github.com/seemoo-lab/AirGuard">AirGuard</a> research ·
-    built with Kotlin and Jetpack Compose
+    Vendor names from the <a href="https://standards.ieee.org/products-programs/regauth/">IEEE MA-L registry</a> ·
+    detection research by the <a href="https://github.com/seemoo-lab/AirGuard">AirGuard</a> team at SEEMOO, TU Darmstadt ·
+    tracker formats from the IETF <a href="https://datatracker.ietf.org/doc/draft-ietf-dult-accessory-protocol/">DULT</a> drafts ·
+    maps from <a href="https://www.naturalearthdata.com/">Natural Earth</a> ·
+    encryption by <a href="https://www.zetetic.net/sqlcipher/">SQLCipher</a>
   </sub>
   <br><br>
   <a href="https://github.com/aubergine-ux"><img alt="aubergine-ux on GitHub" src="https://img.shields.io/badge/made%20by-aubergine--ux-33D6E8?style=flat-square&logo=github&labelColor=05080C"></a>
