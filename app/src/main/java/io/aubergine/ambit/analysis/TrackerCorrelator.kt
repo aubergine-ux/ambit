@@ -43,6 +43,13 @@ class TrackerCorrelator @Inject constructor(
         val rotationToleranceMillis: Long = 5 * 60 * 1000L,
         /** Missed rotations we will bridge. Beyond an hour the guess gets too loose. */
         val maxLinkedRotations: Long = 4,
+        /**
+         * A move from one place to the next counts as "travelling with you" only if the tag
+         * was heard on both sides of it within this gap. Longer gaps look like crossing
+         * paths with the same person twice rather than being followed.
+         */
+        val maxAccompaniedGapMillis: Long = 2 * 60 * 60 * 1000L,
+        val minAccompaniedTransitions: Int = 2,
     )
 
     /** A place the user has told us to ignore — home, work, a regular haunt. */
@@ -75,20 +82,19 @@ class TrackerCorrelator @Inject constructor(
         /** Metres between the two furthest-apart encounters. */
         val spreadMeters: Double,
         val observationCount: Int,
+        /** Moves between places that the tag made with the user. */
+        val accompaniedTransitions: Int,
+        val confidence: Confidence,
+        /** Every sighting behind the alert, oldest first. Evidence reports are built from these. */
+        val sightings: List<Observation>,
+        /** Every identity key that was linked into this alert. */
+        val keys: Set<String>,
     ) {
         val distinctLocations: Int get() = encounters.size
         val timeSpanMillis: Long get() = lastSeen - firstSeen
 
-        /**
-         * A confidence band, not a probability. More separated places and more address
-         * rotations both make a coincidental explanation less comfortable.
-         */
-        val severity: Severity
-            get() = when {
-                distinctLocations >= 5 && addressesSeen.size >= 3 -> Severity.HIGH
-                distinctLocations >= 4 || addressesSeen.size >= 3 -> Severity.ELEVATED
-                else -> Severity.LOW
-            }
+        /** A band derived from [confidence], for colour and sorting. */
+        val severity: Severity get() = confidence.severity
     }
 
     enum class Severity(val label: String) {
@@ -106,6 +112,10 @@ class TrackerCorrelator @Inject constructor(
         safeZones: List<SafeZone> = emptyList(),
         now: Long = System.currentTimeMillis(),
         config: Config = Config(),
+        /** Identities the user marked as theirs or as trusted. */
+        trustedKeys: Set<String> = emptySet(),
+        /** Addresses of the phone's own paired devices: headphones, watch, car. */
+        ownAddresses: Set<String> = emptySet(),
     ): List<Alert> {
         val cutoff = now - config.lookbackMillis
         val buckets = LinkedHashMap<String, MutableList<Pair<TrackerSignature, Observation>>>()
@@ -118,6 +128,7 @@ class TrackerCorrelator @Inject constructor(
             val lon = o.longitude ?: continue
             if ((o.accuracyMeters ?: 0f) > config.maxAcceptableAccuracyMeters) continue
             if (safeZones.any { inZone(it, lat, lon) }) continue
+            if (o.address.uppercase() in ownAddresses) continue
 
             val sig = extractor.extract(o) ?: continue
             // A tag beside its owner's phone is the normal case for every tag the user
@@ -127,6 +138,7 @@ class TrackerCorrelator @Inject constructor(
         }
 
         return linkRotations(buckets.values.toList(), config)
+            .filterNot { entries -> entries.any { it.first.key in trustedKeys } }
             .mapNotNull { entries -> alertFor(entries, config) }
             .sortedWith(
                 compareByDescending<Alert> { it.severity.ordinal }
@@ -142,15 +154,32 @@ class TrackerCorrelator @Inject constructor(
         if (entries.size < config.minDistinctLocations) return null
 
         val sorted = entries.sortedBy { it.second.timestamp }
-        val clusters = clusterByPlace(sorted.map { it.second }, config)
+        val placed = clusterByPlace(sorted.map { it.second }, config)
+        val clusters = placed.encounters
         if (clusters.size < config.minDistinctLocations) return null
 
         val first = sorted.first().second.timestamp
         val last = sorted.last().second.timestamp
         if (last - first < config.minTimeSpanMillis) return null
 
+        val accompanied = placed.accompaniedTransitions(config.maxAccompaniedGapMillis)
+        if (accompanied < config.minAccompaniedTransitions) return null
+
         val signature = sorted.first().first
         val addresses = sorted.mapTo(LinkedHashSet()) { it.second.address }
+        val spread = spreadOf(clusters)
+        val confidence = ConfidenceScorer.score(
+            ConfidenceScorer.Evidence(
+                family = signature.family,
+                places = clusters.size,
+                accompaniedTransitions = accompanied,
+                spanMillis = last - first,
+                saidSeparated = sorted.any { it.first.ownerState == OwnerState.SEPARATED },
+                addresses = addresses.size,
+                closePlaces = clusters.count { it.bestRssi >= ConfidenceScorer.CLOSE_RSSI },
+                spreadMeters = spread,
+            ),
+        )
 
         return Alert(
             signatureKey = signature.key,
@@ -161,8 +190,12 @@ class TrackerCorrelator @Inject constructor(
             firstSeen = first,
             lastSeen = last,
             closestRssi = sorted.maxOf { it.second.rssi },
-            spreadMeters = spreadOf(clusters),
+            spreadMeters = spread,
             observationCount = sorted.size,
+            accompaniedTransitions = accompanied,
+            confidence = confidence,
+            sightings = sorted.map { it.second },
+            keys = sorted.mapTo(LinkedHashSet()) { it.first.key },
         )
     }
 
@@ -206,16 +239,18 @@ class TrackerCorrelator @Inject constructor(
      * passed since that cluster was last touched. The time guard stops a walk across a car
      * park from registering as three separate places.
      */
-    private fun clusterByPlace(observations: List<Observation>, config: Config): List<Encounter> {
+    private fun clusterByPlace(observations: List<Observation>, config: Config): Placement {
         val clusters = mutableListOf<MutableEncounter>()
+        val visits = mutableListOf<Pair<Int, Long>>()
         for (o in observations) {
             val lat = o.latitude ?: continue
             val lon = o.longitude ?: continue
-            val near = clusters.firstOrNull {
+            val near = clusters.indexOfFirst {
                 PathLoss.haversineMeters(it.lat, it.lon, lat, lon) <= config.locationSeparationMeters
             }
-            if (near != null) {
-                near.absorb(o, lat, lon)
+            if (near >= 0) {
+                clusters[near].absorb(o, lat, lon)
+                visits += near to o.timestamp
                 continue
             }
             val tooSoon = clusters.any {
@@ -224,12 +259,31 @@ class TrackerCorrelator @Inject constructor(
             if (tooSoon) {
                 // Treat it as continued presence at the most recent place rather than a
                 // new sighting, so transit between two points is not counted twice.
-                clusters.maxByOrNull { it.lastSeen }?.absorb(o, lat, lon)
+                val recent = clusters.indices.maxByOrNull { clusters[it].lastSeen }
+                if (recent != null) {
+                    clusters[recent].absorb(o, lat, lon)
+                    visits += recent to o.timestamp
+                }
                 continue
             }
             clusters.add(MutableEncounter(lat, lon, o.timestamp, o.timestamp, o.rssi, mutableSetOf(o.address)))
+            visits += clusters.lastIndex to o.timestamp
         }
-        return clusters.map { it.toEncounter() }
+        return Placement(clusters.map { it.toEncounter() }, visits)
+    }
+
+    /** Clusters plus the time-ordered sequence of which cluster each sighting landed in. */
+    private class Placement(val encounters: List<Encounter>, private val visits: List<Pair<Int, Long>>) {
+
+        /**
+         * Counts moves to a different place where the tag was heard shortly before leaving
+         * and shortly after arriving. A tag that turns up at the same three spots on
+         * separate occasions hours apart fails this; one riding along in a bag passes it.
+         */
+        fun accompaniedTransitions(maxGapMillis: Long): Int =
+            visits.zipWithNext().count { (from, to) ->
+                from.first != to.first && to.second - from.second <= maxGapMillis
+            }
     }
 
     private fun spreadOf(encounters: List<Encounter>): Double {

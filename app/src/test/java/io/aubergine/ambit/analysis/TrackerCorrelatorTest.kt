@@ -167,16 +167,42 @@ class TrackerCorrelatorTest {
     }
 
     @Test
-    fun `a single-address tag at three places is reported at the lowest band`() {
-        val alerts = correlator.analyse(
-            listOf(
-                sighting(0, now - 180 * minute, address = "AA:AA:AA:AA:AA:AA"),
-                sighting(1, now - 120 * minute, address = "AA:AA:AA:AA:AA:AA"),
-                sighting(2, now - 60 * minute, address = "AA:AA:AA:AA:AA:AA"),
-            ),
-            now = now,
+    fun `a faint short trail scores lower than a close long one`() {
+        val faint = followingTag().map { it.copy(rssi = -90) }
+        val close = (0..4).map { sighting(it, now - (300 - it * 60) * minute) }
+        val faintScore = correlator.analyse(faint, now = now).single().confidence.score
+        val closeScore = correlator.analyse(close, now = now).single().confidence.score
+        assertTrue("$faintScore vs $closeScore", faintScore < closeScore)
+    }
+
+    @Test
+    fun `the same three places on separate occasions hours apart is not following`() {
+        // A colleague's tag seen at the office, the canteen and the gym, on separate trips.
+        val crossedPaths = listOf(
+            sighting(0, now - 20 * 60 * minute),
+            sighting(1, now - 12 * 60 * minute),
+            sighting(2, now - 2 * 60 * minute),
         )
-        assertEquals(TrackerCorrelator.Severity.LOW, alerts.single().severity)
+        assertTrue(correlator.analyse(crossedPaths, now = now).isEmpty())
+    }
+
+    @Test
+    fun `a trusted identity is never reported`() {
+        val key = SignatureExtractor().extract(followingTag().first())?.key.orEmpty()
+        assertTrue(correlator.analyse(followingTag(), now = now, trustedKeys = setOf(key)).isEmpty())
+    }
+
+    @Test
+    fun `the phone's own paired devices are never reported`() {
+        val tag = followingTag().map { it.copy(address = "AA:BB:CC:DD:EE:FF") }
+        assertTrue(correlator.analyse(tag, now = now, ownAddresses = setOf("AA:BB:CC:DD:EE:FF")).isEmpty())
+    }
+
+    @Test
+    fun `alerts carry the sightings behind them for evidence`() {
+        val alert = correlator.analyse(followingTag(), now = now).single()
+        assertEquals(3, alert.sightings.size)
+        assertEquals(alert.sightings.sortedBy { it.timestamp }, alert.sightings)
     }
 
     @Test

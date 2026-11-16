@@ -7,11 +7,13 @@ import io.aubergine.ambit.analysis.TrackerCorrelator
 import io.aubergine.ambit.data.db.AppDatabase
 import io.aubergine.ambit.data.db.DeviceEntity
 import io.aubergine.ambit.data.db.SafeZoneEntity
+import io.aubergine.ambit.data.db.TrustedEntity
 import io.aubergine.ambit.data.db.toEntity
 import io.aubergine.ambit.data.db.toModel
 import io.aubergine.ambit.model.Device
 import io.aubergine.ambit.model.Observation
 import io.aubergine.ambit.model.RadioType
+import io.aubergine.ambit.scan.BondedDevices
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
@@ -29,6 +31,7 @@ class ObservationRepository @Inject constructor(
     private val classifier: OuiClassifier,
     private val signatures: SignatureExtractor,
     private val correlator: TrackerCorrelator,
+    private val bondedDevices: BondedDevices,
 ) {
 
     val devices: Flow<List<Device>> =
@@ -111,11 +114,7 @@ class ObservationRepository @Inject constructor(
         config: TrackerCorrelator.Config = TrackerCorrelator.Config(),
         includeWifi: Boolean = false,
     ): List<TrackerCorrelator.Alert> {
-        val since = now - config.lookbackMillis
-        val radios = if (includeWifi) listOf(RadioType.BLE.name, RadioType.WIFI.name) else listOf(RadioType.BLE.name)
-        val observations = db.observations().geotaggedSince(since, radios).map { it.toModel() }
-        val zones = db.safeZones().snapshot().map { it.toModel() }
-        val alerts = correlator.analyse(observations, zones, now, config)
+        val alerts = analyse(now, config, includeWifi)
 
         val fresh = mutableListOf<TrackerCorrelator.Alert>()
         alerts.forEach { alert ->
@@ -128,6 +127,38 @@ class ObservationRepository @Inject constructor(
         }
         return fresh
     }
+
+    /** Runs the correlator without storing anything. Used for evidence reports too. */
+    suspend fun analyse(
+        now: Long = System.currentTimeMillis(),
+        config: TrackerCorrelator.Config = TrackerCorrelator.Config(),
+        includeWifi: Boolean = false,
+    ): List<TrackerCorrelator.Alert> {
+        val since = now - config.lookbackMillis
+        val radios = if (includeWifi) listOf(RadioType.BLE.name, RadioType.WIFI.name) else listOf(RadioType.BLE.name)
+        val observations = db.observations().geotaggedSince(since, radios).map { it.toModel() }
+        val zones = db.safeZones().snapshot().map { it.toModel() }
+        return correlator.analyse(
+            observations = observations,
+            safeZones = zones,
+            now = now,
+            config = config,
+            trustedKeys = db.trusted().keys().toSet(),
+            ownAddresses = bondedDevices.addresses(),
+        )
+    }
+
+    fun trusted(): Flow<List<TrustedEntity>> = db.trusted().all()
+
+    /** "This is mine" from an alert: stop counting it and clear the alert. */
+    suspend fun trust(signatureKey: String, family: String) {
+        db.trusted().upsert(TrustedEntity(signatureKey, family, System.currentTimeMillis()))
+        db.trackerAlerts().dismiss(signatureKey)
+    }
+
+    suspend fun untrust(signatureKey: String) = db.trusted().delete(signatureKey)
+
+    fun pairedDeviceCount(): Int = bondedDevices.addresses().size
 
     fun activeAlerts(): Flow<List<io.aubergine.ambit.data.db.TrackerAlertEntity>> =
         db.trackerAlerts().active()
@@ -171,5 +202,6 @@ class ObservationRepository @Inject constructor(
         db.observations().deleteAll()
         db.devices().deleteAll()
         db.trackerAlerts().deleteAll()
+        db.trusted().clear()
     }
 }

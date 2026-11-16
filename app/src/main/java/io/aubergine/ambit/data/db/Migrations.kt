@@ -34,7 +34,20 @@ object Migrations {
         }
     }
 
-    val ALL = arrayOf(MIGRATION_1_2, MIGRATION_2_3)
+    /** v4 scores alerts and remembers devices the user has trusted. */
+    val MIGRATION_3_4 = object : Migration(3, 4) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL("ALTER TABLE tracker_alerts ADD COLUMN confidence INTEGER")
+            db.execSQL("ALTER TABLE tracker_alerts ADD COLUMN reasons TEXT")
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS trusted (" +
+                    "signature_key TEXT NOT NULL, family TEXT NOT NULL, added_at INTEGER NOT NULL, " +
+                    "PRIMARY KEY(signature_key))",
+            )
+        }
+    }
+
+    val ALL = arrayOf(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
 
     private const val SAMSUNG_COMPANY_ID = 0x0075
     private const val AIR_WEIGH_COMPANY_ID = 0x0A30

@@ -19,6 +19,8 @@ enum class Sensitivity {
             minDistinctLocations = 4,
             minTimeSpanMillis = 45 * MINUTE,
             minGapBetweenLocationsMillis = 10 * MINUTE,
+            maxAccompaniedGapMillis = 60 * MINUTE,
+            minAccompaniedTransitions = 3,
         )
         STANDARD -> TrackerCorrelator.Config()
         HIGH -> TrackerCorrelator.Config(
@@ -26,6 +28,7 @@ enum class Sensitivity {
             minDistinctLocations = 3,
             minTimeSpanMillis = 10 * MINUTE,
             minGapBetweenLocationsMillis = 3 * MINUTE,
+            maxAccompaniedGapMillis = 3 * 60 * MINUTE,
         )
     }
 

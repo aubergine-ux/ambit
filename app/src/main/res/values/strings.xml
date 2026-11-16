@@ -329,4 +329,28 @@ Written to be pasted into a language model of your choosing, or read as-is.</str
     <string name="alert_glasses_body">A close-range Bluetooth device uses Meta or Luxottica IDs, as Ray-Ban Meta and similar glasses do. It could also be a VR headset or other Meta hardware.</string>
     <string name="alert_wifi_body">Seen at %1$d separate places, spread over %2$d m. Often a hotspot on a nearby phone, or a bus, train or car network. Open Ambit to review.</string>
     <string name="alerts_wifi_note">This network was seen at several places you went. It may be a hotspot on someone\'s phone nearby, or the Wi-Fi of a bus, train or car you rode in. Locate isn\'t available for Wi-Fi, because Android allows only a few Wi-Fi scans every two minutes.</string>
+
+    <!-- Alert confidence: a 0–100 weighting of the evidence with a plain-language breakdown. Each reason is one short sentence; the points are added after it in code. -->
+    <string name="alerts_confidence">Confidence: %1$d/100</string>
+    <string name="alerts_confidence_note">A weighting of the evidence, not a probability.</string>
+    <string name="alerts_why">WHY THIS WAS FLAGGED</string>
+    <string name="reason_line">%1$s (%2$s)</string>
+    <string name="reason_places">Seen at %1$d separate places</string>
+    <string name="reason_accompanied">Moved with you from one place to the next %1$d times</string>
+    <string name="reason_duration">Followed for about %1$d h</string>
+    <string name="reason_separated">Said it is away from its owner</string>
+    <string name="reason_rotations">Kept following through %1$d address changes</string>
+    <string name="reason_close">Strong signal at %1$d places, so it was close to you, not just nearby</string>
+    <string name="reason_spread">Trail spread over %1$d km</string>
+    <string name="reason_known_tracker">Belongs to a known tracker network</string>
+    <string name="reason_unknown_beacon">Not a known tracker type, so this is less certain</string>
+    <string name="reason_wifi">Wi-Fi networks often travel with other people, so this is less certain</string>
+    <string name="action_trust">THIS IS MINE</string>
+
+    <!-- Trusted devices in settings. -->
+    <string name="panel_trusted">TRUSTED DEVICES</string>
+    <string name="trusted_empty">Nothing trusted yet. Use \"This is mine\" on an alert for your own tags.</string>
+    <string name="trusted_paired">Your %1$d paired Bluetooth devices (headphones, watch, car) are never flagged.</string>
+    <string name="trusted_rotation_note">Apple and Google tags change their identity about once a day, so trusting one of them only lasts about a day.</string>
+    <string name="trusted_added">Trusted %1$s</string>
 </resources>

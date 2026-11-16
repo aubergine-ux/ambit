@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.aubergine.ambit.R
+import io.aubergine.ambit.analysis.Confidence
 import io.aubergine.ambit.analysis.TrackerCorrelator
 import io.aubergine.ambit.data.db.TrackerAlertEntity
 import io.aubergine.ambit.model.TrackerFamily
@@ -44,6 +47,7 @@ fun AlertsScreen(
     onDismiss: (String) -> Unit,
     onLocate: (TrackerAlertEntity) -> Unit,
     onGuide: (String) -> Unit,
+    onTrust: (TrackerAlertEntity) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -107,6 +111,7 @@ fun AlertsScreen(
                     onDismiss = { onDismiss(alert.signatureKey) },
                     onLocate = { onLocate(alert) },
                     onGuide = { onGuide(alert.family) },
+                    onTrust = { onTrust(alert) },
                 )
             }
         }
@@ -119,6 +124,7 @@ private fun AlertCard(
     onDismiss: () -> Unit,
     onLocate: () -> Unit,
     onGuide: () -> Unit,
+    onTrust: () -> Unit,
 ) {
     val severity = runCatching { TrackerCorrelator.Severity.valueOf(alert.severity) }
         .getOrDefault(TrackerCorrelator.Severity.LOW)
@@ -135,6 +141,35 @@ private fun AlertCard(
         borderColor = tint,
         titleColor = tint,
     ) {
+        alert.confidence?.let { score ->
+            Text(
+                text = stringResource(R.string.alerts_confidence, score),
+                style = MaterialTheme.typography.titleMedium,
+                color = tint,
+            )
+            Text(
+                text = stringResource(R.string.alerts_confidence_note),
+                style = MaterialTheme.typography.bodySmall,
+                color = AmbitColors.TextDim,
+            )
+            val reasons = Confidence.decodeReasons(alert.reasons)
+            if (reasons.isNotEmpty()) {
+                Text(
+                    text = stringResource(R.string.alerts_why),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = AmbitColors.Accent,
+                    modifier = Modifier.padding(top = 6.dp),
+                )
+                reasons.forEach { reason ->
+                    Text(
+                        text = "• " + reason.sentence(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = if (reason.points < 0) AmbitColors.TextDim else AmbitColors.TextPrimary,
+                    )
+                }
+            }
+            Spacer(Modifier.height(6.dp))
+        }
         FieldLine(
             stringResource(R.string.field_distinct_locations),
             alert.distinctLocations.toString(),
@@ -176,6 +211,7 @@ private fun AlertCard(
         Column(Modifier.padding(top = 8.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             if (family.isBluetooth) AmbitButton(label = stringResource(R.string.action_locate), onClick = onLocate)
             AmbitOutlineButton(label = stringResource(R.string.action_open_guide), onClick = onGuide)
+            AmbitOutlineButton(label = stringResource(R.string.action_trust), onClick = onTrust, color = AmbitColors.Ok)
             AmbitOutlineButton(
                 label = stringResource(R.string.action_dismiss),
                 onClick = onDismiss,

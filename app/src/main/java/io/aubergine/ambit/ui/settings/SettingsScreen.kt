@@ -24,7 +24,9 @@ import io.aubergine.ambit.BuildConfig
 import io.aubergine.ambit.R
 import io.aubergine.ambit.analysis.Sensitivity
 import io.aubergine.ambit.data.db.SafeZoneEntity
+import io.aubergine.ambit.data.db.TrustedEntity
 import io.aubergine.ambit.data.repo.SettingsRepository
+import io.aubergine.ambit.model.TrackerFamily
 import io.aubergine.ambit.scan.WifiScanner
 import io.aubergine.ambit.ui.common.AmbitButton
 import io.aubergine.ambit.ui.common.AmbitChip
@@ -33,7 +35,11 @@ import io.aubergine.ambit.ui.common.AmbitPanel
 import io.aubergine.ambit.ui.common.EmptyNote
 import io.aubergine.ambit.ui.common.FieldLine
 import io.aubergine.ambit.ui.common.ToggleRow
+import io.aubergine.ambit.ui.guide.label
 import io.aubergine.ambit.ui.theme.AmbitColors
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun SettingsScreen(
@@ -52,6 +58,7 @@ fun SettingsScreen(
     onSetKeepScreenOn: (Boolean) -> Unit,
     onMarkSafeZone: () -> Unit,
     onDeleteSafeZone: (Long) -> Unit,
+    onUntrust: (String) -> Unit,
     onPrune: () -> Unit,
     onClearAll: () -> Unit,
     modifier: Modifier = Modifier,
@@ -182,6 +189,24 @@ fun SettingsScreen(
 
         item {
             Column(Modifier.padding(horizontal = 10.dp)) {
+                AmbitPanel(title = stringResource(R.string.panel_trusted)) {
+                    SettingNote(stringResource(R.string.trusted_paired, state.pairedDevices))
+                    SettingNote(stringResource(R.string.trusted_rotation_note))
+                    if (state.trusted.isEmpty()) EmptyNote(stringResource(R.string.trusted_empty))
+                }
+            }
+        }
+
+        items(state.trusted, key = { "trusted-" + it.signatureKey }) { trusted ->
+            TrustedRow(
+                trusted = trusted,
+                onRemove = { onUntrust(trusted.signatureKey) },
+                modifier = Modifier.padding(horizontal = 18.dp),
+            )
+        }
+
+        item {
+            Column(Modifier.padding(horizontal = 10.dp)) {
                 AmbitPanel(title = stringResource(R.string.panel_data)) {
                     FieldLine(stringResource(R.string.field_observations_stored), state.observationCount.toString())
                     Text(
@@ -302,6 +327,30 @@ private fun SettingNote(text: String) {
         modifier = Modifier.padding(bottom = 4.dp),
     )
 }
+
+@Composable
+private fun TrustedRow(trusted: TrustedEntity, onRemove: () -> Unit, modifier: Modifier = Modifier) {
+    val family = runCatching { TrackerFamily.valueOf(trusted.family) }.getOrDefault(TrackerFamily.UNKNOWN)
+    Row(
+        modifier = modifier.fillMaxWidth().padding(vertical = 3.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(Modifier.weight(1f)) {
+            Text(family.label(), style = MaterialTheme.typography.bodyMedium, color = AmbitColors.TextPrimary)
+            Text(
+                stringResource(R.string.trusted_added, TRUSTED_TIME.format(Instant.ofEpochMilli(trusted.addedAt))),
+                style = MaterialTheme.typography.bodySmall,
+                color = AmbitColors.TextDim,
+            )
+        }
+        Column(Modifier.clickable(onClick = onRemove)) {
+            AmbitChip(label = stringResource(R.string.chip_remove), color = AmbitColors.Danger)
+        }
+    }
+}
+
+private val TRUSTED_TIME: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withZone(ZoneId.systemDefault())
 
 @Composable
 private fun SafeZoneRow(

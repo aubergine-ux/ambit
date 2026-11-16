@@ -119,6 +119,32 @@ class MigrationTest {
         }
     }
 
+    @Test
+    fun `v3 alerts survive the move to v4 and the trusted table starts empty`() {
+        createAtVersion(3) { db ->
+            db.execSQL(
+                """
+                INSERT INTO tracker_alerts (signature_key, family, company_id, distinct_locations,
+                    addresses_seen, spread_m, closest_rssi, first_seen, last_seen, severity, notified_at, dismissed)
+                VALUES ('k', 'APPLE_FIND_MY', 76, 3, 3, 4000.0, -60, 1, 2, 'LOW', 2, 1)
+                """.trimIndent(),
+            )
+        }
+
+        openCurrent { db ->
+            db.query("SELECT dismissed, confidence, reasons FROM tracker_alerts").use { c ->
+                c.moveToFirst()
+                assertEquals(1, c.getInt(0))
+                assertTrue(c.isNull(1))
+                assertTrue(c.isNull(2))
+            }
+            db.query("SELECT COUNT(*) FROM trusted").use { c ->
+                c.moveToFirst()
+                assertEquals(0, c.getInt(0))
+            }
+        }
+    }
+
     private fun createAtVersion(version: Int, seed: (SQLiteDatabase) -> Unit) {
         val schema = Json.parseToJsonElement(schemaFile(version).readText())
             .jsonObject.getValue("database").jsonObject

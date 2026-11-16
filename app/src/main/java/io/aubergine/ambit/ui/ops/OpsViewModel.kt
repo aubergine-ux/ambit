@@ -337,6 +337,10 @@ class OpsViewModel @Inject constructor(
         viewModelScope.launch { repository.dismissAlert(key) }
     }
 
+    fun trustAlert(signatureKey: String, family: String) {
+        viewModelScope.launch { repository.trust(signatureKey, family) }
+    }
+
     override fun onCleared() {
         audioAlerts.release()
         super.onCleared()

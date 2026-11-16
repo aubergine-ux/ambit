@@ -13,8 +13,9 @@ import androidx.room.RoomDatabase
         DeviceEntity::class,
         SafeZoneEntity::class,
         TrackerAlertEntity::class,
+        TrustedEntity::class,
     ],
-    version = 3,
+    version = 4,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -22,6 +23,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun devices(): DeviceDao
     abstract fun safeZones(): SafeZoneDao
     abstract fun trackerAlerts(): TrackerAlertDao
+    abstract fun trusted(): TrustedDao
 
     companion object {
         const val NAME = "ambit.db"

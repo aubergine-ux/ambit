@@ -112,3 +112,22 @@ interface TrackerAlertDao {
     @Query("DELETE FROM tracker_alerts")
     suspend fun deleteAll()
 }
+
+@Dao
+interface TrustedDao {
+
+    @Upsert
+    suspend fun upsert(entity: TrustedEntity)
+
+    @Query("SELECT * FROM trusted ORDER BY added_at DESC")
+    fun all(): Flow<List<TrustedEntity>>
+
+    @Query("SELECT signature_key FROM trusted")
+    suspend fun keys(): List<String>
+
+    @Query("DELETE FROM trusted WHERE signature_key = :key")
+    suspend fun delete(key: String)
+
+    @Query("DELETE FROM trusted")
+    suspend fun clear()
+}

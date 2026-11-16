@@ -107,4 +107,6 @@ fun TrackerCorrelator.Alert.toEntity(notifiedAt: Long?, dismissed: Boolean = fal
     severity = severity.name,
     notifiedAt = notifiedAt,
     dismissed = dismissed,
+    confidence = confidence.score,
+    reasons = confidence.encode(),
 )

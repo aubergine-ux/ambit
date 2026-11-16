@@ -8,6 +8,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import io.aubergine.ambit.R
 import io.aubergine.ambit.analysis.Sensitivity
 import io.aubergine.ambit.data.db.SafeZoneEntity
+import io.aubergine.ambit.data.db.TrustedEntity
 import io.aubergine.ambit.data.repo.ObservationRepository
 import io.aubergine.ambit.data.repo.SettingsRepository
 import io.aubergine.ambit.scan.LocationSource
@@ -31,6 +32,8 @@ class SettingsViewModel @Inject constructor(
     data class UiState(
         val settings: SettingsRepository.Settings = SettingsRepository.Settings(),
         val safeZones: List<SafeZoneEntity> = emptyList(),
+        val trusted: List<TrustedEntity> = emptyList(),
+        val pairedDevices: Int = 0,
         val observationCount: Int = 0,
         val message: String? = null,
     )
@@ -45,14 +48,23 @@ class SettingsViewModel @Inject constructor(
         repository.safeZones,
         repository.observationCount,
         message,
-    ) { settings, zones, count, msg ->
-        UiState(settings, zones, count, msg)
+        repository.trusted(),
+    ) { settings, zones, count, msg, trusted ->
+        UiState(
+            settings = settings,
+            safeZones = zones,
+            trusted = trusted,
+            pairedDevices = repository.pairedDeviceCount(),
+            observationCount = count,
+            message = msg,
+        )
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), UiState())
 
     fun setWifiInterval(ms: Long) = launch { settingsRepository.setWifiInterval(ms) }
     fun setAudioAlerts(value: Boolean) = launch { settingsRepository.setAudioAlerts(value) }
     fun setAlertOnNewDevice(value: Boolean) = launch { settingsRepository.setAlertOnNewDevice(value) }
     fun setAlertOnPriority(value: Boolean) = launch { settingsRepository.setAlertOnPriority(value) }
+    fun untrust(key: String) = launch { repository.untrust(key) }
     fun setTrackerAlerts(value: Boolean) = launch { settingsRepository.setTrackerAlerts(value) }
     fun setSensitivity(value: Sensitivity) = launch { settingsRepository.setSensitivity(value) }
     fun setWifiFollowAlerts(value: Boolean) = launch { settingsRepository.setWifiFollowAlerts(value) }

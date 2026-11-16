@@ -217,6 +217,7 @@ fun AmbitApp(startOnAlerts: Boolean = false) {
                     onDismiss = opsViewModel::dismissAlert,
                     onLocate = { navController.navigate(Routes.locateTracker(it.signatureKey, it.family)) },
                     onGuide = { navController.navigate(Routes.guide(it)) },
+                    onTrust = { opsViewModel.trustAlert(it.signatureKey, it.family) },
                     contentPadding = padding,
                 )
             }
@@ -253,6 +254,7 @@ fun AmbitApp(startOnAlerts: Boolean = false) {
                         )
                     },
                     onDeleteSafeZone = settingsViewModel::deleteSafeZone,
+                    onUntrust = settingsViewModel::untrust,
                     onPrune = settingsViewModel::pruneNow,
                     onClearAll = settingsViewModel::clearAll,
                     contentPadding = padding,

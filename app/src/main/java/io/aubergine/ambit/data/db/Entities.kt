@@ -94,4 +94,19 @@ data class TrackerAlertEntity(
     @ColumnInfo(name = "severity") val severity: String,
     @ColumnInfo(name = "notified_at") val notifiedAt: Long?,
     @ColumnInfo(name = "dismissed") val dismissed: Boolean = false,
+    /** 0–100; null for alerts raised before scoring existed. */
+    @ColumnInfo(name = "confidence") val confidence: Int? = null,
+    /** Encoded [io.aubergine.ambit.analysis.Confidence] reasons. */
+    @ColumnInfo(name = "reasons") val reasons: String? = null,
+)
+
+/**
+ * An identity the user has said is theirs or is fine. Keys for Apple and Google tags change
+ * about once a day, so trusting one of those lasts roughly that long; the UI says so.
+ */
+@Entity(tableName = "trusted")
+data class TrustedEntity(
+    @PrimaryKey @ColumnInfo(name = "signature_key") val signatureKey: String,
+    @ColumnInfo(name = "family") val family: String,
+    @ColumnInfo(name = "added_at") val addedAt: Long,
 )
