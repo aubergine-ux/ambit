@@ -15,7 +15,7 @@ import androidx.room.RoomDatabase
         TrackerAlertEntity::class,
         TrustedEntity::class,
     ],
-    version = 5,
+    version = AppDatabase.SCHEMA_VERSION,
     exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -27,5 +27,6 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
         const val NAME = "ambit.db"
+        const val SCHEMA_VERSION = 5
     }
 }
