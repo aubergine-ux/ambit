@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import io.aubergine.ambit.ui.theme.CivColors
+import io.aubergine.ambit.ui.theme.AmbitColors
 
 /**
  * The panel is the app's one structural idea: a thin bordered box with a label sitting on
@@ -30,11 +30,11 @@ import io.aubergine.ambit.ui.theme.CivColors
  * scroll of dense readouts stay navigable.
  */
 @Composable
-fun CivPanel(
+fun AmbitPanel(
     title: String,
     modifier: Modifier = Modifier,
-    borderColor: Color = CivColors.AccentDim,
-    titleColor: Color = CivColors.Accent,
+    borderColor: Color = AmbitColors.AccentDim,
+    titleColor: Color = AmbitColors.Accent,
     trailing: (@Composable () -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -42,7 +42,7 @@ fun CivPanel(
         modifier = modifier
             .fillMaxWidth()
             .border(1.dp, borderColor, RoundedCornerShape(2.dp))
-            .background(CivColors.Panel, RoundedCornerShape(2.dp))
+            .background(AmbitColors.Panel, RoundedCornerShape(2.dp))
             .padding(horizontal = 10.dp, vertical = 8.dp),
     ) {
         Row(
@@ -67,15 +67,15 @@ fun CivPanel(
 
 /** A full-width action, drawn as a filled bar. The primary control idiom of the app. */
 @Composable
-fun CivButton(
+fun AmbitButton(
     label: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    color: Color = CivColors.Accent,
+    color: Color = AmbitColors.Accent,
 ) {
-    val background = if (enabled) color else CivColors.Divider
-    val foreground = if (enabled) CivColors.Background else CivColors.TextDim
+    val background = if (enabled) color else AmbitColors.Divider
+    val foreground = if (enabled) AmbitColors.Background else AmbitColors.TextDim
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -95,14 +95,14 @@ fun CivButton(
 
 /** Outlined variant, for secondary or destructive actions. */
 @Composable
-fun CivOutlineButton(
+fun AmbitOutlineButton(
     label: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    color: Color = CivColors.Accent,
+    color: Color = AmbitColors.Accent,
 ) {
-    val tint = if (enabled) color else CivColors.TextDim
+    val tint = if (enabled) color else AmbitColors.TextDim
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -121,8 +121,8 @@ fun FieldLine(
     label: String,
     value: String,
     modifier: Modifier = Modifier,
-    valueColor: Color = CivColors.TextPrimary,
-    labelColor: Color = CivColors.TextSecondary,
+    valueColor: Color = AmbitColors.TextPrimary,
+    labelColor: Color = AmbitColors.TextSecondary,
 ) {
     Row(modifier = modifier.fillMaxWidth()) {
         Text("$label: ", style = MaterialTheme.typography.bodyMedium, color = labelColor)
@@ -131,7 +131,7 @@ fun FieldLine(
 }
 
 @Composable
-fun StatusLine(text: String, modifier: Modifier = Modifier, color: Color = CivColors.TextSecondary) {
+fun StatusLine(text: String, modifier: Modifier = Modifier, color: Color = AmbitColors.TextSecondary) {
     Text(
         text = text,
         style = MaterialTheme.typography.bodySmall,
@@ -143,7 +143,7 @@ fun StatusLine(text: String, modifier: Modifier = Modifier, color: Color = CivCo
 
 /** Small uppercase pill used for categories, severities and radio types. */
 @Composable
-fun CivChip(label: String, color: Color, modifier: Modifier = Modifier) {
+fun AmbitChip(label: String, color: Color, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .border(1.dp, color, RoundedCornerShape(2.dp))
@@ -162,14 +162,14 @@ fun SignalBars(bars: Int, color: Color, modifier: Modifier = Modifier) {
                 modifier = Modifier
                     .width(4.dp)
                     .height((5 + index * 3).dp)
-                    .background(if (index < bars) color else CivColors.Divider),
+                    .background(if (index < bars) color else AmbitColors.Divider),
             )
         }
     }
 }
 
 @Composable
-fun SectionHeading(text: String, modifier: Modifier = Modifier, color: Color = CivColors.Accent) {
+fun SectionHeading(text: String, modifier: Modifier = Modifier, color: Color = AmbitColors.Accent) {
     Text(
         text = text,
         style = MaterialTheme.typography.titleSmall,
@@ -184,7 +184,7 @@ fun EmptyNote(text: String, modifier: Modifier = Modifier) {
     Text(
         text = text,
         style = MaterialTheme.typography.bodySmall,
-        color = CivColors.TextDim,
+        color = AmbitColors.TextDim,
         modifier = modifier.padding(vertical = 6.dp),
     )
 }

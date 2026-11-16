@@ -22,11 +22,11 @@ import io.aubergine.ambit.R
 import io.aubergine.ambit.analysis.PathLoss
 import io.aubergine.ambit.model.Observation
 import io.aubergine.ambit.scan.WifiScanner
-import io.aubergine.ambit.ui.common.CivOutlineButton
-import io.aubergine.ambit.ui.common.CivPanel
+import io.aubergine.ambit.ui.common.AmbitOutlineButton
+import io.aubergine.ambit.ui.common.AmbitPanel
 import io.aubergine.ambit.ui.common.EmptyNote
 import io.aubergine.ambit.ui.common.FieldLine
-import io.aubergine.ambit.ui.theme.CivColors
+import io.aubergine.ambit.ui.theme.AmbitColors
 import io.aubergine.ambit.ui.theme.color
 import java.time.Instant
 import java.time.ZoneId
@@ -47,7 +47,7 @@ fun DetailScreen(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(CivColors.Background),
+            .background(AmbitColors.Background),
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -55,7 +55,7 @@ fun DetailScreen(
             item { EmptyNote(stringResource(R.string.detail_missing)) }
             item {
                 Column(Modifier.padding(horizontal = 10.dp)) {
-                    CivOutlineButton(stringResource(R.string.action_back), onBack)
+                    AmbitOutlineButton(stringResource(R.string.action_back), onBack)
                 }
             }
             return@LazyColumn
@@ -63,17 +63,17 @@ fun DetailScreen(
 
         item {
             Column(Modifier.padding(horizontal = 10.dp, vertical = 8.dp)) {
-                CivPanel(
+                AmbitPanel(
                     title = device.displayName,
                     borderColor = device.category.color(),
-                    titleColor = CivColors.Ssid,
+                    titleColor = AmbitColors.Ssid,
                 ) {
                     FieldLine(stringResource(R.string.field_address), device.address)
                     FieldLine(stringResource(R.string.field_radio), device.radio.short)
                     FieldLine(
                         stringResource(R.string.field_category),
                         device.category.label,
-                        valueColor = CivColors.Ok,
+                        valueColor = AmbitColors.Ok,
                     )
                     FieldLine(
                         stringResource(R.string.field_vendor),
@@ -122,7 +122,7 @@ fun DetailScreen(
                                 PathLoss.DEFAULT_TX_POWER_WIFI,
                             ).roundToInt(),
                         ),
-                        valueColor = CivColors.TextSecondary,
+                        valueColor = AmbitColors.TextSecondary,
                     )
                     FieldLine(
                         stringResource(R.string.field_observations),
@@ -139,7 +139,7 @@ fun DetailScreen(
 
         item {
             Column(Modifier.padding(horizontal = 10.dp)) {
-                CivPanel(title = stringResource(R.string.panel_signal_trace)) {
+                AmbitPanel(title = stringResource(R.string.panel_signal_trace)) {
                     if (state.rssiSeries.size < 2) {
                         EmptyNote(stringResource(R.string.detail_trace_empty))
                     } else {
@@ -158,13 +158,13 @@ fun DetailScreen(
                                 state.rssiSeries.size,
                             ),
                             style = MaterialTheme.typography.bodySmall,
-                            color = CivColors.TextSecondary,
+                            color = AmbitColors.TextSecondary,
                         )
                     }
                     Text(
                         text = stringResource(R.string.detail_trace_note),
                         style = MaterialTheme.typography.bodySmall,
-                        color = CivColors.TextDim,
+                        color = AmbitColors.TextDim,
                         modifier = Modifier.padding(top = 4.dp),
                     )
                 }
@@ -173,7 +173,7 @@ fun DetailScreen(
 
         item {
             Column(Modifier.padding(horizontal = 10.dp)) {
-                CivPanel(title = stringResource(R.string.panel_sightings)) {
+                AmbitPanel(title = stringResource(R.string.panel_sightings)) {
                     if (state.geotagged.isEmpty()) {
                         EmptyNote(stringResource(R.string.detail_no_fixes))
                     } else {
@@ -199,7 +199,7 @@ fun DetailScreen(
 
         item {
             Column(Modifier.padding(horizontal = 10.dp, vertical = 12.dp)) {
-                CivOutlineButton(stringResource(R.string.action_back), onBack)
+                AmbitOutlineButton(stringResource(R.string.action_back), onBack)
             }
         }
     }
@@ -211,7 +211,7 @@ private fun ObservationRow(observation: Observation, modifier: Modifier = Modifi
         Text(
             text = "${formatTime(observation.timestamp)}  ${observation.rssi} dBm",
             style = MaterialTheme.typography.bodySmall,
-            color = CivColors.TextPrimary,
+            color = AmbitColors.TextPrimary,
         )
         val fix = if (observation.latitude != null && observation.longitude != null) {
             "%.5f, %.5f".format(observation.latitude, observation.longitude) +
@@ -222,7 +222,7 @@ private fun ObservationRow(observation: Observation, modifier: Modifier = Modifi
         Text(
             text = fix,
             style = MaterialTheme.typography.bodySmall,
-            color = CivColors.TextDim,
+            color = AmbitColors.TextDim,
         )
     }
 }
@@ -246,7 +246,7 @@ private fun RssiSparkline(values: List<Int>, modifier: Modifier = Modifier) {
             val point = Offset(index * stepX, size.height * (1f - normalised))
             previous?.let {
                 drawLine(
-                    color = CivColors.Accent,
+                    color = AmbitColors.Accent,
                     start = it,
                     end = point,
                     strokeWidth = 2f,
@@ -258,7 +258,7 @@ private fun RssiSparkline(values: List<Int>, modifier: Modifier = Modifier) {
         // Reference line at -70 dBm, the rough boundary between "near" and "mid".
         val referenceY = size.height * (1f - ((-70f - floor) / span))
         drawLine(
-            color = CivColors.Divider,
+            color = AmbitColors.Divider,
             start = Offset(0f, referenceY),
             end = Offset(size.width, referenceY),
             strokeWidth = 1f,

@@ -25,13 +25,13 @@ import io.aubergine.ambit.R
 import io.aubergine.ambit.data.db.SafeZoneEntity
 import io.aubergine.ambit.data.repo.SettingsRepository
 import io.aubergine.ambit.scan.WifiScanner
-import io.aubergine.ambit.ui.common.CivButton
-import io.aubergine.ambit.ui.common.CivChip
-import io.aubergine.ambit.ui.common.CivOutlineButton
-import io.aubergine.ambit.ui.common.CivPanel
+import io.aubergine.ambit.ui.common.AmbitButton
+import io.aubergine.ambit.ui.common.AmbitChip
+import io.aubergine.ambit.ui.common.AmbitOutlineButton
+import io.aubergine.ambit.ui.common.AmbitPanel
 import io.aubergine.ambit.ui.common.EmptyNote
 import io.aubergine.ambit.ui.common.FieldLine
-import io.aubergine.ambit.ui.theme.CivColors
+import io.aubergine.ambit.ui.theme.AmbitColors
 
 @Composable
 fun SettingsScreen(
@@ -55,17 +55,17 @@ fun SettingsScreen(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(CivColors.Background),
+            .background(AmbitColors.Background),
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         item {
             Column(Modifier.padding(horizontal = 10.dp, vertical = 8.dp)) {
-                CivPanel(title = stringResource(R.string.panel_scan_settings)) {
+                AmbitPanel(title = stringResource(R.string.panel_scan_settings)) {
                     Text(
                         stringResource(R.string.settings_interval_label),
                         style = MaterialTheme.typography.bodySmall,
-                        color = CivColors.TextSecondary,
+                        color = AmbitColors.TextSecondary,
                     )
                     ChoiceRow(
                         options = SettingsRepository.WIFI_INTERVALS,
@@ -79,7 +79,7 @@ fun SettingsScreen(
                         Text(
                             stringResource(R.string.settings_interval_warning),
                             style = MaterialTheme.typography.bodySmall,
-                            color = CivColors.Warn,
+                            color = AmbitColors.Warn,
                             modifier = Modifier.padding(top = 4.dp),
                         )
                     }
@@ -87,7 +87,7 @@ fun SettingsScreen(
                     Text(
                         stringResource(R.string.settings_list_limit_label),
                         style = MaterialTheme.typography.bodySmall,
-                        color = CivColors.TextSecondary,
+                        color = AmbitColors.TextSecondary,
                         modifier = Modifier.padding(top = 8.dp),
                     )
                     ChoiceRow(
@@ -108,7 +108,7 @@ fun SettingsScreen(
 
         item {
             Column(Modifier.padding(horizontal = 10.dp)) {
-                CivPanel(title = stringResource(R.string.panel_alerts_settings)) {
+                AmbitPanel(title = stringResource(R.string.panel_alerts_settings)) {
                     ToggleRow(
                         label = stringResource(R.string.settings_audio_alerts),
                         checked = state.settings.audioAlerts,
@@ -135,14 +135,14 @@ fun SettingsScreen(
 
         item {
             Column(Modifier.padding(horizontal = 10.dp)) {
-                CivPanel(title = stringResource(R.string.panel_known_places)) {
+                AmbitPanel(title = stringResource(R.string.panel_known_places)) {
                     Text(
                         stringResource(R.string.settings_known_places_body),
                         style = MaterialTheme.typography.bodySmall,
-                        color = CivColors.TextSecondary,
+                        color = AmbitColors.TextSecondary,
                     )
                     Column(Modifier.padding(top = 8.dp)) {
-                        CivButton(
+                        AmbitButton(
                             label = stringResource(R.string.action_mark_here_safe),
                             onClick = onMarkSafeZone,
                         )
@@ -164,12 +164,12 @@ fun SettingsScreen(
 
         item {
             Column(Modifier.padding(horizontal = 10.dp)) {
-                CivPanel(title = stringResource(R.string.panel_data)) {
+                AmbitPanel(title = stringResource(R.string.panel_data)) {
                     FieldLine(stringResource(R.string.field_observations_stored), state.observationCount.toString())
                     Text(
                         stringResource(R.string.settings_retention_label),
                         style = MaterialTheme.typography.bodySmall,
-                        color = CivColors.TextSecondary,
+                        color = AmbitColors.TextSecondary,
                         modifier = Modifier.padding(top = 6.dp),
                     )
                     ChoiceRow(
@@ -182,16 +182,16 @@ fun SettingsScreen(
                         Modifier.padding(top = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
-                        CivOutlineButton(
+                        AmbitOutlineButton(
                             label = stringResource(R.string.action_prune),
                             onClick = onPrune,
                             enabled = !busy,
                         )
-                        CivOutlineButton(
+                        AmbitOutlineButton(
                             label = stringResource(R.string.action_clear_all),
                             onClick = onClearAll,
                             enabled = !busy,
-                            color = CivColors.Danger,
+                            color = AmbitColors.Danger,
                         )
                     }
                 }
@@ -200,10 +200,10 @@ fun SettingsScreen(
 
         item {
             Column(Modifier.padding(horizontal = 10.dp, vertical = 12.dp)) {
-                CivPanel(
+                AmbitPanel(
                     title = stringResource(R.string.panel_about),
-                    borderColor = CivColors.Divider,
-                    titleColor = CivColors.TextSecondary,
+                    borderColor = AmbitColors.Divider,
+                    titleColor = AmbitColors.TextSecondary,
                 ) {
                     FieldLine(stringResource(R.string.field_version), BuildConfig.VERSION_NAME)
                     FieldLine(stringResource(R.string.field_package), BuildConfig.APPLICATION_ID)
@@ -211,7 +211,7 @@ fun SettingsScreen(
                         Text(
                             text = line,
                             style = MaterialTheme.typography.bodySmall,
-                            color = CivColors.TextDim,
+                            color = AmbitColors.TextDim,
                         )
                     }
                 }
@@ -237,9 +237,9 @@ private fun <T> ChoiceRow(
         options.forEach { option ->
             val active = option == selected
             Column(Modifier.clickable { onSelect(option) }) {
-                CivChip(
+                AmbitChip(
                     label = label(option),
-                    color = if (active) CivColors.Accent else CivColors.TextDim,
+                    color = if (active) AmbitColors.Accent else AmbitColors.TextDim,
                 )
             }
         }
@@ -262,18 +262,18 @@ private fun ToggleRow(
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = CivColors.TextPrimary,
+            color = AmbitColors.TextPrimary,
             modifier = Modifier.weight(1f),
         )
         Switch(
             checked = checked,
             onCheckedChange = onChange,
             colors = SwitchDefaults.colors(
-                checkedThumbColor = CivColors.Background,
-                checkedTrackColor = CivColors.Accent,
-                uncheckedThumbColor = CivColors.TextDim,
-                uncheckedTrackColor = CivColors.Panel,
-                uncheckedBorderColor = CivColors.Divider,
+                checkedThumbColor = AmbitColors.Background,
+                checkedTrackColor = AmbitColors.Accent,
+                uncheckedThumbColor = AmbitColors.TextDim,
+                uncheckedTrackColor = AmbitColors.Panel,
+                uncheckedBorderColor = AmbitColors.Divider,
             ),
         )
     }
@@ -290,15 +290,15 @@ private fun SafeZoneRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
-            Text(zone.label, style = MaterialTheme.typography.bodyMedium, color = CivColors.TextPrimary)
+            Text(zone.label, style = MaterialTheme.typography.bodyMedium, color = AmbitColors.TextPrimary)
             Text(
                 "%.4f, %.4f  r=%dm".format(zone.latitude, zone.longitude, zone.radiusMeters.toInt()),
                 style = MaterialTheme.typography.bodySmall,
-                color = CivColors.TextDim,
+                color = AmbitColors.TextDim,
             )
         }
         Column(Modifier.clickable(onClick = onDelete)) {
-            CivChip(label = stringResource(R.string.chip_remove), color = CivColors.Danger)
+            AmbitChip(label = stringResource(R.string.chip_remove), color = AmbitColors.Danger)
         }
     }
 }

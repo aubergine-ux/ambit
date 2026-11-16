@@ -19,17 +19,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.aubergine.ambit.R
 import io.aubergine.ambit.model.Device
-import io.aubergine.ambit.ui.common.CivButton
-import io.aubergine.ambit.ui.common.CivChip
-import io.aubergine.ambit.ui.common.CivOutlineButton
-import io.aubergine.ambit.ui.common.CivPanel
+import io.aubergine.ambit.ui.common.AmbitButton
+import io.aubergine.ambit.ui.common.AmbitChip
+import io.aubergine.ambit.ui.common.AmbitOutlineButton
+import io.aubergine.ambit.ui.common.AmbitPanel
 import io.aubergine.ambit.ui.common.EmptyNote
 import io.aubergine.ambit.ui.common.FieldLine
 import io.aubergine.ambit.ui.common.StatusLine
 import io.aubergine.ambit.ui.devicelist.CompactDeviceRow
 import io.aubergine.ambit.ui.devicelist.DeviceRow
 import io.aubergine.ambit.ui.radar.RadarView
-import io.aubergine.ambit.ui.theme.CivColors
+import io.aubergine.ambit.ui.theme.AmbitColors
 import io.aubergine.ambit.ui.theme.color
 import androidx.compose.ui.res.stringResource
 import io.aubergine.ambit.model.DeviceCategory
@@ -61,7 +61,7 @@ fun OpsScreen(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(CivColors.Background),
+            .background(AmbitColors.Background),
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -125,13 +125,13 @@ private fun HeaderBar(state: OpsViewModel.UiState) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(if (state.scanning) CivColors.Accent else CivColors.AccentDim)
+                .background(if (state.scanning) AmbitColors.Accent else AmbitColors.AccentDim)
                 .padding(horizontal = 12.dp, vertical = 6.dp),
         ) {
             Text(
                 text = stringResource(R.string.app_name),
                 style = MaterialTheme.typography.titleLarge,
-                color = CivColors.Background,
+                color = AmbitColors.Background,
             )
         }
         Row(
@@ -140,20 +140,20 @@ private fun HeaderBar(state: OpsViewModel.UiState) {
                 .padding(horizontal = 12.dp, vertical = 4.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            CivChip(
+            AmbitChip(
                 label = if (state.wifiRequested) "WI-FI ON" else "WI-FI OFF",
-                color = if (state.wifiRequested) CivColors.Ok else CivColors.TextDim,
+                color = if (state.wifiRequested) AmbitColors.Ok else AmbitColors.TextDim,
             )
-            CivChip(
+            AmbitChip(
                 label = if (state.bleRequested) "BLE ON" else "BLE OFF",
-                color = if (state.bleRequested) CivColors.Ok else CivColors.TextDim,
+                color = if (state.bleRequested) AmbitColors.Ok else AmbitColors.TextDim,
             )
-            CivChip(
+            AmbitChip(
                 label = if (state.locationAvailable) "GPS FIX" else "NO FIX",
-                color = if (state.locationAvailable) CivColors.Ok else CivColors.Warn,
+                color = if (state.locationAvailable) AmbitColors.Ok else AmbitColors.Warn,
             )
             if (state.wifi.throttled) {
-                CivChip(label = stringResource(R.string.chip_throttled), color = CivColors.Warn)
+                AmbitChip(label = stringResource(R.string.chip_throttled), color = AmbitColors.Warn)
             }
         }
     }
@@ -162,10 +162,10 @@ private fun HeaderBar(state: OpsViewModel.UiState) {
 @Composable
 private fun AlertBanner(count: Int, onClick: () -> Unit) {
     Column(Modifier.padding(horizontal = 10.dp)) {
-        CivButton(
+        AmbitButton(
             label = stringResource(R.string.alerts_banner, count),
             onClick = onClick,
-            color = CivColors.Danger,
+            color = AmbitColors.Danger,
         )
     }
 }
@@ -173,11 +173,11 @@ private fun AlertBanner(count: Int, onClick: () -> Unit) {
 @Composable
 private fun RadarPanel(state: OpsViewModel.UiState) {
     Column(Modifier.padding(horizontal = 10.dp)) {
-        CivPanel(title = stringResource(R.string.panel_radar)) {
+        AmbitPanel(title = stringResource(R.string.panel_radar)) {
             Text(
                 text = stringResource(R.string.radar_caption),
                 style = MaterialTheme.typography.bodySmall,
-                color = CivColors.TextSecondary,
+                color = AmbitColors.TextSecondary,
             )
             Row(
                 modifier = Modifier
@@ -186,13 +186,13 @@ private fun RadarPanel(state: OpsViewModel.UiState) {
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 DeviceCategory.LEGEND.forEach { category ->
-                    CivChip(label = category.legendLabel(), color = category.color())
+                    AmbitChip(label = category.legendLabel(), color = category.color())
                 }
             }
             Text(
                 text = stringResource(R.string.radar_shapes),
                 style = MaterialTheme.typography.bodySmall,
-                color = CivColors.TextDim,
+                color = AmbitColors.TextDim,
             )
 
             RadarView(
@@ -209,7 +209,7 @@ private fun RadarPanel(state: OpsViewModel.UiState) {
                     state.bleDevices.size,
                     state.lastRefreshSeconds?.toString() ?: "-",
                 ),
-                color = CivColors.TextPrimary,
+                color = AmbitColors.TextPrimary,
             )
         }
     }
@@ -235,7 +235,7 @@ private fun WifiPanel(
     val shown = state.wifiRanked.take(state.settings.listLimit)
 
     Column(Modifier.padding(horizontal = 10.dp)) {
-        CivPanel(title = stringResource(R.string.panel_wifi)) {
+        AmbitPanel(title = stringResource(R.string.panel_wifi)) {
             if (!state.wifi.permissionGranted) {
                 EmptyNote(stringResource(R.string.wifi_needs_location))
             } else if (!state.wifi.enabled) {
@@ -267,7 +267,7 @@ private fun WifiPanel(
                         state.wifiDevices.size,
                     ),
                     style = MaterialTheme.typography.bodySmall,
-                    color = CivColors.Ok,
+                    color = AmbitColors.Ok,
                     modifier = Modifier.padding(top = 4.dp),
                 )
             }
@@ -279,7 +279,7 @@ private fun WifiPanel(
                 Text(
                     text = stringResource(R.string.wifi_throttled_hint),
                     style = MaterialTheme.typography.bodySmall,
-                    color = CivColors.Warn,
+                    color = AmbitColors.Warn,
                     modifier = Modifier.padding(top = 4.dp),
                 )
             }
@@ -289,9 +289,9 @@ private fun WifiPanel(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 if (state.wifiRequested) {
-                    CivOutlineButton(stringResource(R.string.action_stop_wifi), onStopWifi)
+                    AmbitOutlineButton(stringResource(R.string.action_stop_wifi), onStopWifi)
                 } else {
-                    CivButton(stringResource(R.string.action_start_wifi), onStartWifi)
+                    AmbitButton(stringResource(R.string.action_start_wifi), onStartWifi)
                 }
             }
         }
@@ -306,18 +306,18 @@ private fun BlePanel(
     onToggleDetails: () -> Unit,
 ) {
     Column(Modifier.padding(horizontal = 10.dp)) {
-        CivPanel(title = stringResource(R.string.panel_ble)) {
-            CivButton(
+        AmbitPanel(title = stringResource(R.string.panel_ble)) {
+            AmbitButton(
                 label = stringResource(R.string.action_start_ble),
                 onClick = onStartBle,
                 enabled = !state.bleRequested,
             )
-            CivButton(
+            AmbitButton(
                 label = stringResource(R.string.action_stop_ble),
                 onClick = onStopBle,
                 enabled = state.bleRequested,
             )
-            CivButton(
+            AmbitButton(
                 label = if (state.bleDetailsExpanded) {
                     stringResource(R.string.action_hide_ble_details)
                 } else {
@@ -332,13 +332,13 @@ private fun BlePanel(
                     if (state.bleRequested) "ON" else "OFF",
                 ),
                 style = MaterialTheme.typography.bodySmall,
-                color = if (state.bleRequested) CivColors.Ok else CivColors.TextSecondary,
+                color = if (state.bleRequested) AmbitColors.Ok else AmbitColors.TextSecondary,
                 modifier = Modifier.padding(top = 6.dp),
             )
             Text(
                 text = stringResource(R.string.ble_optional),
                 style = MaterialTheme.typography.bodySmall,
-                color = CivColors.TextDim,
+                color = AmbitColors.TextDim,
             )
 
             if (!state.ble.supported) {
@@ -383,7 +383,7 @@ private fun BleDetails(state: OpsViewModel.UiState) {
                 ble.count { it.randomizedAddress },
                 ble.size,
             ),
-            valueColor = CivColors.TextSecondary,
+            valueColor = AmbitColors.TextSecondary,
         )
         newest?.let {
             FieldLine(
@@ -410,7 +410,7 @@ private fun BleDetails(state: OpsViewModel.UiState) {
         Text(
             text = stringResource(R.string.ble_rotation_note),
             style = MaterialTheme.typography.bodySmall,
-            color = CivColors.TextDim,
+            color = AmbitColors.TextDim,
             modifier = Modifier.padding(top = 4.dp),
         )
     }
@@ -424,20 +424,20 @@ private fun ExportPanel(
     onExportDebrief: () -> Unit,
 ) {
     Column(Modifier.padding(horizontal = 10.dp)) {
-        CivPanel(title = stringResource(R.string.panel_export)) {
+        AmbitPanel(title = stringResource(R.string.panel_export)) {
             Text(
                 text = stringResource(R.string.export_caption),
                 style = MaterialTheme.typography.bodySmall,
-                color = CivColors.TextSecondary,
+                color = AmbitColors.TextSecondary,
                 modifier = Modifier.padding(bottom = 4.dp),
             )
-            CivButton(stringResource(R.string.action_export_csv), onExportCsv, enabled = !busy)
-            CivButton(stringResource(R.string.action_export_json), onExportJson, enabled = !busy)
-            CivButton(stringResource(R.string.action_export_debrief), onExportDebrief, enabled = !busy)
+            AmbitButton(stringResource(R.string.action_export_csv), onExportCsv, enabled = !busy)
+            AmbitButton(stringResource(R.string.action_export_json), onExportJson, enabled = !busy)
+            AmbitButton(stringResource(R.string.action_export_debrief), onExportDebrief, enabled = !busy)
             Text(
                 text = stringResource(R.string.export_offline_note),
                 style = MaterialTheme.typography.bodySmall,
-                color = CivColors.TextDim,
+                color = AmbitColors.TextDim,
                 modifier = Modifier.padding(top = 6.dp),
             )
         }
@@ -447,16 +447,16 @@ private fun ExportPanel(
 @Composable
 private fun DisclaimerPanel() {
     Column(Modifier.padding(horizontal = 10.dp)) {
-        CivPanel(
+        AmbitPanel(
             title = stringResource(R.string.panel_scope),
-            borderColor = CivColors.Divider,
-            titleColor = CivColors.TextSecondary,
+            borderColor = AmbitColors.Divider,
+            titleColor = AmbitColors.TextSecondary,
         ) {
             stringResource(R.string.scope_body).split("\n").forEach { line ->
                 Text(
                     text = line,
                     style = MaterialTheme.typography.bodySmall,
-                    color = CivColors.TextDim,
+                    color = AmbitColors.TextDim,
                     textAlign = TextAlign.Start,
                 )
             }

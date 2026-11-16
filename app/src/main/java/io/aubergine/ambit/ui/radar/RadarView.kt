@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import io.aubergine.ambit.analysis.PathLoss
 import io.aubergine.ambit.model.Device
 import io.aubergine.ambit.model.RadioType
-import io.aubergine.ambit.ui.theme.CivColors
+import io.aubergine.ambit.ui.theme.AmbitColors
 import io.aubergine.ambit.ui.theme.color
 import kotlin.math.PI
 import kotlin.math.abs
@@ -115,7 +115,7 @@ private fun Device.toBlip(rimMeters: Double): Blip {
 private fun DrawScope.drawGrid(centre: Offset, radius: Float) {
     RING_FRACTIONS.forEach { fraction ->
         drawCircle(
-            color = CivColors.AccentDim.copy(alpha = 0.55f),
+            color = AmbitColors.AccentDim.copy(alpha = 0.55f),
             radius = radius * fraction,
             center = centre,
             style = Stroke(width = 1f),
@@ -127,7 +127,7 @@ private fun DrawScope.drawGrid(centre: Offset, radius: Float) {
         val dx = (cos(rad) * radius).toFloat()
         val dy = (sin(rad) * radius).toFloat()
         drawLine(
-            color = CivColors.AccentDim.copy(alpha = 0.28f),
+            color = AmbitColors.AccentDim.copy(alpha = 0.28f),
             start = Offset(centre.x - dx, centre.y - dy),
             end = Offset(centre.x + dx, centre.y + dy),
             strokeWidth = 1f,
@@ -140,8 +140,8 @@ private fun DrawScope.drawSweep(centre: Offset, radius: Float, angle: Float) {
         drawArc(
             brush = Brush.sweepGradient(
                 colorStops = arrayOf(
-                    0.0f to CivColors.Accent.copy(alpha = 0.22f),
-                    0.08f to CivColors.Accent.copy(alpha = 0.05f),
+                    0.0f to AmbitColors.Accent.copy(alpha = 0.22f),
+                    0.08f to AmbitColors.Accent.copy(alpha = 0.05f),
                     0.16f to Color.Transparent,
                     1.0f to Color.Transparent,
                 ),
@@ -154,7 +154,7 @@ private fun DrawScope.drawSweep(centre: Offset, radius: Float, angle: Float) {
             size = Size(radius * 2, radius * 2),
         )
         drawLine(
-            color = CivColors.Accent.copy(alpha = 0.7f),
+            color = AmbitColors.Accent.copy(alpha = 0.7f),
             start = centre,
             end = Offset(centre.x + radius, centre.y),
             strokeWidth = 1.5f,
@@ -204,9 +204,9 @@ private fun DrawScope.drawBlip(
 }
 
 private fun DrawScope.drawCentre(centre: Offset) {
-    drawCircle(color = CivColors.Accent, radius = 2.5f, center = centre)
+    drawCircle(color = AmbitColors.Accent, radius = 2.5f, center = centre)
     drawCircle(
-        color = CivColors.Accent.copy(alpha = 0.35f),
+        color = AmbitColors.Accent.copy(alpha = 0.35f),
         radius = 6f,
         center = centre,
         style = Stroke(width = 1f),

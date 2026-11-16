@@ -18,11 +18,11 @@ import io.aubergine.ambit.R
 import io.aubergine.ambit.analysis.TrackerCorrelator
 import io.aubergine.ambit.data.db.TrackerAlertEntity
 import io.aubergine.ambit.model.TrackerFamily
-import io.aubergine.ambit.ui.common.CivButton
-import io.aubergine.ambit.ui.common.CivOutlineButton
-import io.aubergine.ambit.ui.common.CivPanel
+import io.aubergine.ambit.ui.common.AmbitButton
+import io.aubergine.ambit.ui.common.AmbitOutlineButton
+import io.aubergine.ambit.ui.common.AmbitPanel
 import io.aubergine.ambit.ui.common.FieldLine
-import io.aubergine.ambit.ui.theme.CivColors
+import io.aubergine.ambit.ui.theme.AmbitColors
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -47,22 +47,22 @@ fun AlertsScreen(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(CivColors.Background),
+            .background(AmbitColors.Background),
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         item {
             Column(Modifier.padding(horizontal = 10.dp, vertical = 8.dp)) {
-                CivPanel(title = stringResource(R.string.panel_method)) {
+                AmbitPanel(title = stringResource(R.string.panel_method)) {
                     stringResource(R.string.alerts_method_body).split("\n").forEach { line ->
                         Text(
                             text = line,
                             style = MaterialTheme.typography.bodySmall,
-                            color = CivColors.TextSecondary,
+                            color = AmbitColors.TextSecondary,
                         )
                     }
                     Column(Modifier.padding(top = 8.dp)) {
-                        CivButton(
+                        AmbitButton(
                             label = stringResource(R.string.action_run_correlation),
                             onClick = onRunNow,
                             enabled = !busy,
@@ -75,16 +75,16 @@ fun AlertsScreen(
         if (alerts.isEmpty()) {
             item {
                 Column(Modifier.padding(horizontal = 10.dp)) {
-                    CivPanel(
+                    AmbitPanel(
                         title = stringResource(R.string.panel_no_alerts),
-                        borderColor = CivColors.Divider,
-                        titleColor = CivColors.Ok,
+                        borderColor = AmbitColors.Divider,
+                        titleColor = AmbitColors.Ok,
                     ) {
                         stringResource(R.string.alerts_empty_body).split("\n").forEach { line ->
                             Text(
                                 text = line,
                                 style = MaterialTheme.typography.bodySmall,
-                                color = CivColors.TextDim,
+                                color = AmbitColors.TextDim,
                             )
                         }
                     }
@@ -107,12 +107,12 @@ private fun AlertCard(alert: TrackerAlertEntity, onDismiss: () -> Unit) {
     val family = runCatching { TrackerFamily.valueOf(alert.family) }
         .getOrDefault(TrackerFamily.UNKNOWN)
     val tint = when (severity) {
-        TrackerCorrelator.Severity.HIGH -> CivColors.Danger
-        TrackerCorrelator.Severity.ELEVATED -> CivColors.Warn
-        TrackerCorrelator.Severity.LOW -> CivColors.Info
+        TrackerCorrelator.Severity.HIGH -> AmbitColors.Danger
+        TrackerCorrelator.Severity.ELEVATED -> AmbitColors.Warn
+        TrackerCorrelator.Severity.LOW -> AmbitColors.Info
     }
 
-    CivPanel(
+    AmbitPanel(
         title = "${family.label}  [${severity.label}]",
         borderColor = tint,
         titleColor = tint,
@@ -142,15 +142,15 @@ private fun AlertCard(alert: TrackerAlertEntity, onDismiss: () -> Unit) {
         Text(
             text = stringResource(R.string.alerts_card_note),
             style = MaterialTheme.typography.bodySmall,
-            color = CivColors.TextDim,
+            color = AmbitColors.TextDim,
             modifier = Modifier.padding(top = 6.dp),
         )
 
         Column(Modifier.padding(top = 8.dp)) {
-            CivOutlineButton(
+            AmbitOutlineButton(
                 label = stringResource(R.string.action_dismiss),
                 onClick = onDismiss,
-                color = CivColors.TextSecondary,
+                color = AmbitColors.TextSecondary,
             )
         }
     }

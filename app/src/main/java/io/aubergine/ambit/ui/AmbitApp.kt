@@ -35,7 +35,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.aubergine.ambit.R
 import io.aubergine.ambit.ui.alerts.AlertsScreen
-import io.aubergine.ambit.ui.common.CivChip
+import io.aubergine.ambit.ui.common.AmbitChip
 import io.aubergine.ambit.ui.detail.DetailScreen
 import io.aubergine.ambit.ui.export.ExportScreen
 import io.aubergine.ambit.ui.detail.DetailViewModel
@@ -45,7 +45,7 @@ import io.aubergine.ambit.ui.ops.OpsScreen
 import io.aubergine.ambit.ui.ops.OpsViewModel
 import io.aubergine.ambit.ui.settings.SettingsScreen
 import io.aubergine.ambit.ui.settings.SettingsViewModel
-import io.aubergine.ambit.ui.theme.CivColors
+import io.aubergine.ambit.ui.theme.AmbitColors
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavHostController
@@ -120,7 +120,7 @@ fun AmbitApp(startOnAlerts: Boolean = false) {
     val start = if (permissionsGranted && onboardingDone) Routes.OPS else Routes.ONBOARDING
 
     Scaffold(
-        containerColor = CivColors.Background,
+        containerColor = AmbitColors.Background,
         snackbarHost = { SnackbarHost(snackbar) },
         bottomBar = {
             val entry by navController.currentBackStackEntryAsState()
@@ -264,7 +264,7 @@ private fun BottomBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(CivColors.Panel)
+            .background(AmbitColors.Panel)
             .windowInsetsPadding(WindowInsets.navigationBars)
             .padding(horizontal = 12.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -280,7 +280,7 @@ private fun BottomBar(
                 stringResource(R.string.tab_alerts)
             },
             selected = current == Routes.ALERTS,
-            tint = if (alertCount > 0) CivColors.Danger else null,
+            tint = if (alertCount > 0) AmbitColors.Danger else null,
         ) { onSelect(Routes.ALERTS) }
         Tab(stringResource(R.string.tab_export), current == Routes.EXPORT) {
             onSelect(Routes.EXPORT)
@@ -298,8 +298,8 @@ private fun Tab(
     tint: androidx.compose.ui.graphics.Color? = null,
     onClick: () -> Unit,
 ) {
-    val color = tint ?: if (selected) CivColors.Accent else CivColors.TextDim
+    val color = tint ?: if (selected) AmbitColors.Accent else AmbitColors.TextDim
     Box(modifier = Modifier.clickable(onClick = onClick)) {
-        CivChip(label = label, color = color)
+        AmbitChip(label = label, color = color)
     }
 }

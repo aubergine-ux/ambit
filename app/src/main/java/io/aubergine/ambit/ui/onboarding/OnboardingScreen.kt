@@ -15,9 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.aubergine.ambit.R
-import io.aubergine.ambit.ui.common.CivButton
-import io.aubergine.ambit.ui.common.CivPanel
-import io.aubergine.ambit.ui.theme.CivColors
+import io.aubergine.ambit.ui.common.AmbitButton
+import io.aubergine.ambit.ui.common.AmbitPanel
+import io.aubergine.ambit.ui.theme.AmbitColors
 
 /**
  * First run. Says what the app does, what it cannot do, and why it needs location — before
@@ -34,7 +34,7 @@ fun OnboardingScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(CivColors.Background)
+            .background(AmbitColors.Background)
             .verticalScroll(rememberScrollState())
             .padding(contentPadding)
             .padding(10.dp),
@@ -43,30 +43,30 @@ fun OnboardingScreen(
         Text(
             text = stringResource(R.string.app_name),
             style = MaterialTheme.typography.displaySmall,
-            color = CivColors.Accent,
+            color = AmbitColors.Accent,
             modifier = Modifier.padding(vertical = 12.dp),
         )
 
-        CivPanel(title = stringResource(R.string.onboarding_what_title)) {
+        AmbitPanel(title = stringResource(R.string.onboarding_what_title)) {
             Body(stringResource(R.string.onboarding_what_body))
         }
 
-        CivPanel(
+        AmbitPanel(
             title = stringResource(R.string.onboarding_cannot_title),
-            borderColor = CivColors.Warn,
-            titleColor = CivColors.Warn,
+            borderColor = AmbitColors.Warn,
+            titleColor = AmbitColors.Warn,
         ) {
             Body(stringResource(R.string.onboarding_cannot_body))
         }
 
-        CivPanel(title = stringResource(R.string.onboarding_location_title)) {
+        AmbitPanel(title = stringResource(R.string.onboarding_location_title)) {
             Body(stringResource(R.string.onboarding_location_body))
         }
 
-        CivPanel(
+        AmbitPanel(
             title = stringResource(R.string.onboarding_offline_title),
-            borderColor = CivColors.Ok,
-            titleColor = CivColors.Ok,
+            borderColor = AmbitColors.Ok,
+            titleColor = AmbitColors.Ok,
         ) {
             Body(stringResource(R.string.onboarding_offline_body))
         }
@@ -76,15 +76,15 @@ fun OnboardingScreen(
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             if (!permissionsGranted) {
-                CivButton(
+                AmbitButton(
                     label = stringResource(R.string.action_grant_permissions),
                     onClick = onRequestPermissions,
                 )
             }
-            CivButton(
+            AmbitButton(
                 label = stringResource(R.string.action_continue),
                 onClick = onContinue,
-                color = if (permissionsGranted) CivColors.Accent else CivColors.AccentDim,
+                color = if (permissionsGranted) AmbitColors.Accent else AmbitColors.AccentDim,
             )
         }
     }
@@ -96,7 +96,7 @@ private fun Body(text: String) {
         Text(
             text = line,
             style = MaterialTheme.typography.bodyMedium,
-            color = if (line.startsWith("  ")) CivColors.TextDim else CivColors.TextSecondary,
+            color = if (line.startsWith("  ")) AmbitColors.TextDim else AmbitColors.TextSecondary,
         )
     }
 }

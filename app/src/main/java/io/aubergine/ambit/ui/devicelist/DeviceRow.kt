@@ -25,7 +25,7 @@ import io.aubergine.ambit.model.RadioType
 import io.aubergine.ambit.scan.WifiScanner
 import io.aubergine.ambit.ui.common.FieldLine
 import io.aubergine.ambit.ui.common.SignalBars
-import io.aubergine.ambit.ui.theme.CivColors
+import io.aubergine.ambit.ui.theme.AmbitColors
 import io.aubergine.ambit.ui.theme.color
 
 /**
@@ -47,7 +47,7 @@ fun DeviceRow(
         modifier = modifier
             .fillMaxWidth()
             .border(1.dp, accent.copy(alpha = 0.85f), RoundedCornerShape(2.dp))
-            .background(CivColors.PanelRaised.copy(alpha = 0.5f), RoundedCornerShape(2.dp))
+            .background(AmbitColors.PanelRaised.copy(alpha = 0.5f), RoundedCornerShape(2.dp))
             .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
             .padding(horizontal = 8.dp, vertical = 6.dp),
         verticalArrangement = Arrangement.spacedBy(1.dp),
@@ -59,7 +59,7 @@ fun DeviceRow(
             Text(
                 text = device.displayName,
                 style = MaterialTheme.typography.bodyLarge,
-                color = CivColors.Ssid,
+                color = AmbitColors.Ssid,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f),
@@ -77,7 +77,7 @@ fun DeviceRow(
         FieldLine(
             label = stringResource(R.string.field_category),
             value = device.category.label,
-            valueColor = CivColors.Ok,
+            valueColor = AmbitColors.Ok,
         )
 
         // A randomized address has no manufacturer behind it, and saying "unknown vendor"
@@ -86,7 +86,7 @@ fun DeviceRow(
             device.randomizedAddress -> FieldLine(
                 label = stringResource(R.string.field_vendor),
                 value = stringResource(R.string.value_randomized_no_vendor),
-                valueColor = CivColors.TextDim,
+                valueColor = AmbitColors.TextDim,
             )
             device.vendor != null ->
                 FieldLine(label = stringResource(R.string.field_vendor), value = device.vendor)
@@ -96,23 +96,23 @@ fun DeviceRow(
             Text(
                 stringResource(R.string.field_rssi) + ": ",
                 style = MaterialTheme.typography.bodyMedium,
-                color = CivColors.TextSecondary,
+                color = AmbitColors.TextSecondary,
             )
             Text(
                 stringResource(R.string.value_dbm, device.lastRssi),
                 style = MaterialTheme.typography.bodyMedium,
-                color = CivColors.TextPrimary,
+                color = AmbitColors.TextPrimary,
             )
             device.frequencyMhz?.let { freq ->
                 Text(
                     "    " + stringResource(R.string.field_frequency) + ": ",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = CivColors.TextSecondary,
+                    color = AmbitColors.TextSecondary,
                 )
                 Text(
                     "$freq MHz",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = CivColors.TextPrimary,
+                    color = AmbitColors.TextPrimary,
                 )
             }
         }
@@ -163,14 +163,14 @@ fun CompactDeviceRow(
             Text(
                 text = device.displayName,
                 style = MaterialTheme.typography.bodyMedium,
-                color = if (device.name.isNullOrBlank()) CivColors.TextDim else CivColors.Ssid,
+                color = if (device.name.isNullOrBlank()) AmbitColors.TextDim else AmbitColors.Ssid,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = device.address,
                 style = MaterialTheme.typography.bodySmall,
-                color = CivColors.TextSecondary,
+                color = AmbitColors.TextSecondary,
                 maxLines = 1,
             )
             if (device.category != DeviceCategory.RANDOMIZED && device.vendor != null) {
@@ -187,12 +187,12 @@ fun CompactDeviceRow(
             Text(
                 stringResource(R.string.value_dbm, device.lastRssi),
                 style = MaterialTheme.typography.bodySmall,
-                color = CivColors.TextPrimary,
+                color = AmbitColors.TextPrimary,
             )
             Text(
                 "${device.ageSeconds(now)}s",
                 style = MaterialTheme.typography.bodySmall,
-                color = CivColors.TextDim,
+                color = AmbitColors.TextDim,
             )
         }
     }

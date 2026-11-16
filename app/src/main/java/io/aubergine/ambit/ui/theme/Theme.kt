@@ -23,7 +23,7 @@ import io.aubergine.ambit.model.DeviceCategory
  * frequencies and signal levels, and those read wrong in a proportional face.
  */
 
-object CivColors {
+object AmbitColors {
     val Background = Color(0xFF05080C)
     val Panel = Color(0xFF080E15)
     val PanelRaised = Color(0xFF0C141D)
@@ -47,32 +47,32 @@ object CivColors {
 
 /** Each category owns one colour, used for its border, its radar dot, and its legend chip. */
 fun DeviceCategory.color(): Color = when (this) {
-    DeviceCategory.PRIORITY -> CivColors.Danger
-    DeviceCategory.FLEET -> CivColors.Warn
-    DeviceCategory.INFRASTRUCTURE -> CivColors.Info
-    DeviceCategory.COMMERCIAL -> CivColors.Accent
+    DeviceCategory.PRIORITY -> AmbitColors.Danger
+    DeviceCategory.FLEET -> AmbitColors.Warn
+    DeviceCategory.INFRASTRUCTURE -> AmbitColors.Info
+    DeviceCategory.COMMERCIAL -> AmbitColors.Accent
     DeviceCategory.RESIDENTIAL -> Color(0xFF4E7A86)
     DeviceCategory.RANDOMIZED -> Color(0xFF5E5470)
-    DeviceCategory.UNKNOWN -> CivColors.TextDim
+    DeviceCategory.UNKNOWN -> AmbitColors.TextDim
 }
 
 private val Scheme = darkColorScheme(
-    primary = CivColors.Accent,
-    onPrimary = CivColors.Background,
-    secondary = CivColors.AccentDim,
-    background = CivColors.Background,
-    onBackground = CivColors.TextPrimary,
-    surface = CivColors.Panel,
-    onSurface = CivColors.TextPrimary,
-    surfaceVariant = CivColors.PanelRaised,
-    onSurfaceVariant = CivColors.TextSecondary,
-    error = CivColors.Danger,
-    outline = CivColors.Divider,
+    primary = AmbitColors.Accent,
+    onPrimary = AmbitColors.Background,
+    secondary = AmbitColors.AccentDim,
+    background = AmbitColors.Background,
+    onBackground = AmbitColors.TextPrimary,
+    surface = AmbitColors.Panel,
+    onSurface = AmbitColors.TextPrimary,
+    surfaceVariant = AmbitColors.PanelRaised,
+    onSurfaceVariant = AmbitColors.TextSecondary,
+    error = AmbitColors.Danger,
+    outline = AmbitColors.Divider,
 )
 
 private val Mono = FontFamily.Monospace
 
-private val CivTypography = Typography(
+private val AmbitTypography = Typography(
     displaySmall = TextStyle(fontFamily = Mono, fontSize = 24.sp, fontWeight = FontWeight.Bold, letterSpacing = 2.sp),
     titleLarge = TextStyle(fontFamily = Mono, fontSize = 18.sp, fontWeight = FontWeight.Bold, letterSpacing = 3.sp),
     titleMedium = TextStyle(fontFamily = Mono, fontSize = 14.sp, fontWeight = FontWeight.Bold, letterSpacing = 2.sp),
@@ -95,7 +95,7 @@ fun AmbitTheme(
     CompositionLocalProvider(LocalMono provides Mono) {
         MaterialTheme(
             colorScheme = Scheme,
-            typography = CivTypography,
+            typography = AmbitTypography,
             content = content,
         )
     }

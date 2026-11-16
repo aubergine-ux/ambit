@@ -18,11 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.aubergine.ambit.R
-import io.aubergine.ambit.ui.common.CivButton
-import io.aubergine.ambit.ui.common.CivOutlineButton
-import io.aubergine.ambit.ui.common.CivPanel
+import io.aubergine.ambit.ui.common.AmbitButton
+import io.aubergine.ambit.ui.common.AmbitOutlineButton
+import io.aubergine.ambit.ui.common.AmbitPanel
 import io.aubergine.ambit.ui.common.EmptyNote
-import io.aubergine.ambit.ui.theme.CivColors
+import io.aubergine.ambit.ui.theme.AmbitColors
 
 /**
  * The full export surface.
@@ -53,30 +53,30 @@ fun ExportScreen(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(CivColors.Background),
+            .background(AmbitColors.Background),
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         item {
             Column(Modifier.padding(horizontal = 10.dp, vertical = 8.dp)) {
-                CivPanel(title = stringResource(R.string.panel_export_tabular)) {
+                AmbitPanel(title = stringResource(R.string.panel_export_tabular)) {
                     Text(
                         stringResource(R.string.export_tabular_caption),
                         style = MaterialTheme.typography.bodySmall,
-                        color = CivColors.TextSecondary,
+                        color = AmbitColors.TextSecondary,
                         modifier = Modifier.padding(bottom = 6.dp),
                     )
-                    CivButton(
+                    AmbitButton(
                         stringResource(R.string.action_export_devices_csv),
                         onExportDeviceCsv,
                         enabled = !busy,
                     )
-                    CivButton(
+                    AmbitButton(
                         stringResource(R.string.action_export_log_csv),
                         onExportLogCsv,
                         enabled = !busy,
                     )
-                    CivButton(
+                    AmbitButton(
                         stringResource(R.string.action_export_json),
                         onExportJson,
                         enabled = !busy,
@@ -87,24 +87,24 @@ fun ExportScreen(
 
         item {
             Column(Modifier.padding(horizontal = 10.dp)) {
-                CivPanel(title = stringResource(R.string.panel_export_debrief)) {
+                AmbitPanel(title = stringResource(R.string.panel_export_debrief)) {
                     stringResource(R.string.export_debrief_caption).split("\n").forEach { line ->
                         Text(
                             text = line,
                             style = MaterialTheme.typography.bodySmall,
-                            color = CivColors.TextSecondary,
+                            color = AmbitColors.TextSecondary,
                         )
                     }
                     Column(
                         Modifier.padding(top = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
-                        CivOutlineButton(
+                        AmbitOutlineButton(
                             stringResource(R.string.action_preview_debrief),
                             onPreviewDebrief,
                             enabled = !busy,
                         )
-                        CivButton(
+                        AmbitButton(
                             stringResource(R.string.action_export_debrief),
                             onExportDebrief,
                             enabled = !busy,
@@ -117,15 +117,15 @@ fun ExportScreen(
         if (debriefPreview != null) {
             item {
                 Column(Modifier.padding(horizontal = 10.dp)) {
-                    CivPanel(
+                    AmbitPanel(
                         title = stringResource(R.string.panel_debrief_preview),
-                        borderColor = CivColors.Ok,
-                        titleColor = CivColors.Ok,
+                        borderColor = AmbitColors.Ok,
+                        titleColor = AmbitColors.Ok,
                     ) {
                         Text(
                             text = debriefPreview,
                             style = MaterialTheme.typography.bodySmall,
-                            color = CivColors.TextPrimary,
+                            color = AmbitColors.TextPrimary,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .heightIn(max = 420.dp)
@@ -138,9 +138,9 @@ fun ExportScreen(
 
         item {
             Column(Modifier.padding(horizontal = 10.dp)) {
-                CivPanel(title = stringResource(R.string.panel_share)) {
+                AmbitPanel(title = stringResource(R.string.panel_share)) {
                     if (canShare) {
-                        CivButton(
+                        AmbitButton(
                             stringResource(R.string.action_share_last),
                             onShareLast,
                             enabled = !busy,
@@ -151,7 +151,7 @@ fun ExportScreen(
                     Text(
                         stringResource(R.string.export_offline_note),
                         style = MaterialTheme.typography.bodySmall,
-                        color = CivColors.TextDim,
+                        color = AmbitColors.TextDim,
                         modifier = Modifier.padding(top = 6.dp),
                     )
                 }
