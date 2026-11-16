@@ -121,8 +121,9 @@ class ObservationRepository @Inject constructor(
         alerts.forEach { alert ->
             val existing = db.trackerAlerts().find(alert.signatureKey)
             if (existing == null || existing.notifiedAt == null) fresh += alert
+            // A dismissal has to survive the next refresh, or the alert keeps coming back.
             db.trackerAlerts().upsert(
-                alert.toEntity(notifiedAt = existing?.notifiedAt ?: now),
+                alert.toEntity(notifiedAt = existing?.notifiedAt ?: now, dismissed = existing?.dismissed ?: false),
             )
         }
         return fresh

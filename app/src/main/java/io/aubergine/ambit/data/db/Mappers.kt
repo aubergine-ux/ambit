@@ -94,7 +94,7 @@ fun SafeZoneEntity.toModel(): TrackerCorrelator.SafeZone = TrackerCorrelator.Saf
     radiusMeters = radiusMeters,
 )
 
-fun TrackerCorrelator.Alert.toEntity(notifiedAt: Long?): TrackerAlertEntity = TrackerAlertEntity(
+fun TrackerCorrelator.Alert.toEntity(notifiedAt: Long?, dismissed: Boolean = false): TrackerAlertEntity = TrackerAlertEntity(
     signatureKey = signatureKey,
     family = family.name,
     companyId = companyId,
@@ -106,4 +106,5 @@ fun TrackerCorrelator.Alert.toEntity(notifiedAt: Long?): TrackerAlertEntity = Tr
     lastSeen = lastSeen,
     severity = severity.name,
     notifiedAt = notifiedAt,
+    dismissed = dismissed,
 )
