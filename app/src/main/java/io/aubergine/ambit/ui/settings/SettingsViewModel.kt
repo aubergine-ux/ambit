@@ -210,7 +210,12 @@ class SettingsViewModel @Inject constructor(
             val days = state.value.settings.retentionDays
             val cutoff = System.currentTimeMillis() - days * 24L * 60L * 60L * 1000L
             val removed = repository.pruneBefore(cutoff)
-            message.value = context.getString(R.string.toast_pruned, removed, days)
+            message.value = context.resources.getQuantityString(
+                R.plurals.toast_pruned,
+                removed,
+                removed,
+                context.resources.getQuantityString(R.plurals.days, days, days),
+            )
             _busy.value = false
         }
     }

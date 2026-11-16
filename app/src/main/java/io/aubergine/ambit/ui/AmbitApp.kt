@@ -3,6 +3,7 @@ package io.aubergine.ambit.ui
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.text.format.Formatter
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -136,7 +137,7 @@ fun AmbitApp(
                         context.getString(
                             R.string.toast_export_saved,
                             artifact.file.name,
-                            artifact.bytes,
+                            Formatter.formatShortFileSize(context, artifact.bytes),
                         ),
                     )
                 }

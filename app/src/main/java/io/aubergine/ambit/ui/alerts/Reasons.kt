@@ -10,12 +10,12 @@ import io.aubergine.ambit.analysis.Confidence
 fun reasonText(context: Context, reason: Confidence.Reason): String {
     val v = reason.value
     val text = when (reason.factor) {
-        Confidence.Factor.PLACES -> context.getString(R.string.reason_places, v)
-        Confidence.Factor.ACCOMPANIED -> context.getString(R.string.reason_accompanied, v)
+        Confidence.Factor.PLACES -> context.resources.getQuantityString(R.plurals.reason_places, v, v)
+        Confidence.Factor.ACCOMPANIED -> context.resources.getQuantityString(R.plurals.reason_accompanied, v, v)
         Confidence.Factor.DURATION -> context.getString(R.string.reason_duration, v)
         Confidence.Factor.SEPARATED -> context.getString(R.string.reason_separated)
-        Confidence.Factor.ROTATIONS -> context.getString(R.string.reason_rotations, v)
-        Confidence.Factor.CLOSE -> context.getString(R.string.reason_close, v)
+        Confidence.Factor.ROTATIONS -> context.resources.getQuantityString(R.plurals.reason_rotations, v, v)
+        Confidence.Factor.CLOSE -> context.resources.getQuantityString(R.plurals.reason_close, v, v)
         Confidence.Factor.SPREAD -> context.getString(R.string.reason_spread, v)
         Confidence.Factor.KNOWN_TRACKER -> context.getString(R.string.reason_known_tracker)
         Confidence.Factor.UNKNOWN_BEACON -> context.getString(R.string.reason_unknown_beacon)

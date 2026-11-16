@@ -15,10 +15,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.aubergine.ambit.R
 import io.aubergine.ambit.model.Device
+import io.aubergine.ambit.model.DeviceCategory
 import io.aubergine.ambit.ui.common.AmbitButton
 import io.aubergine.ambit.ui.common.AmbitChip
 import io.aubergine.ambit.ui.common.AmbitOutlineButton
@@ -26,13 +28,12 @@ import io.aubergine.ambit.ui.common.AmbitPanel
 import io.aubergine.ambit.ui.common.EmptyNote
 import io.aubergine.ambit.ui.common.FieldLine
 import io.aubergine.ambit.ui.common.StatusLine
+import io.aubergine.ambit.ui.common.legendLabel
 import io.aubergine.ambit.ui.devicelist.CompactDeviceRow
 import io.aubergine.ambit.ui.devicelist.DeviceRow
 import io.aubergine.ambit.ui.radar.RadarView
 import io.aubergine.ambit.ui.theme.AmbitColors
 import io.aubergine.ambit.ui.theme.color
-import androidx.compose.ui.res.stringResource
-import io.aubergine.ambit.model.DeviceCategory
 
 /**
  * The primary screen: one vertical scroll of panels, in the order an operator reads them.
@@ -141,15 +142,15 @@ private fun HeaderBar(state: OpsViewModel.UiState) {
             horizontalArrangement = Arrangement.spacedBy(6.dp),
         ) {
             AmbitChip(
-                label = if (state.wifiRequested) "WI-FI ON" else "WI-FI OFF",
+                label = stringResource(if (state.wifiRequested) R.string.chip_wifi_on else R.string.chip_wifi_off),
                 color = if (state.wifiRequested) AmbitColors.Ok else AmbitColors.TextDim,
             )
             AmbitChip(
-                label = if (state.bleRequested) "BLE ON" else "BLE OFF",
+                label = stringResource(if (state.bleRequested) R.string.chip_ble_on else R.string.chip_ble_off),
                 color = if (state.bleRequested) AmbitColors.Ok else AmbitColors.TextDim,
             )
             AmbitChip(
-                label = if (state.locationAvailable) "GPS FIX" else "NO FIX",
+                label = stringResource(if (state.locationAvailable) R.string.chip_gps_fix else R.string.chip_no_fix),
                 color = if (state.locationAvailable) AmbitColors.Ok else AmbitColors.Warn,
             )
             if (state.wifi.throttled) {
@@ -215,15 +216,6 @@ private fun RadarPanel(state: OpsViewModel.UiState) {
     }
 }
 
-private fun DeviceCategory.legendLabel(): String = when (this) {
-    DeviceCategory.PRIORITY -> "PRIORITY"
-    DeviceCategory.FLEET -> "FLEET"
-    DeviceCategory.COMMERCIAL -> "COMMERCIAL"
-    DeviceCategory.RESIDENTIAL -> "RESIDENTIAL"
-    DeviceCategory.INFRASTRUCTURE -> "INFRA"
-    DeviceCategory.RANDOMIZED -> "RANDOM"
-    DeviceCategory.UNKNOWN -> "UNKNOWN"
-}
 
 @Composable
 private fun WifiPanel(
@@ -329,7 +321,7 @@ private fun BlePanel(
             Text(
                 text = stringResource(
                     R.string.ble_status,
-                    if (state.bleRequested) "ON" else "OFF",
+                    stringResource(if (state.bleRequested) R.string.value_on else R.string.value_off),
                 ),
                 style = MaterialTheme.typography.bodySmall,
                 color = if (state.bleRequested) AmbitColors.Ok else AmbitColors.TextSecondary,

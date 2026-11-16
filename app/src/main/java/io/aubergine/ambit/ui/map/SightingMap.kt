@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -45,7 +46,7 @@ fun SightingMap(points: List<MapPoint>, modifier: Modifier = Modifier, height: D
     var renderer by remember { mutableStateOf<MapRenderer?>(null) }
     LaunchedEffect(Unit) { renderer = offlineMaps(context).renderer() }
     val attribution = mapAttribution(context)
-    val description = stringResource(R.string.map_description, points.size)
+    val description = pluralStringResource(R.plurals.map_description, points.size, points.size)
 
     Canvas(
         modifier

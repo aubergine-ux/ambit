@@ -218,15 +218,15 @@ class OpsViewModel @Inject constructor(
         bleDetailsExpanded.value = !bleDetailsExpanded.value
     }
 
-    fun exportDevicesCsv() = export(ExportManager.Kind.DEVICES_CSV, "AMBIT device export") {
+    fun exportDevicesCsv() = export(ExportManager.Kind.DEVICES_CSV, context.getString(R.string.share_subject_devices)) {
         csvExporter.devices(repository.deviceSnapshot())
     }
 
-    fun exportObservationsCsv() = export(ExportManager.Kind.OBSERVATIONS_CSV, "AMBIT observation log") {
+    fun exportObservationsCsv() = export(ExportManager.Kind.OBSERVATIONS_CSV, context.getString(R.string.share_subject_log)) {
         csvExporter.observations(repository.observationsSince(sessionWindowStart()))
     }
 
-    fun exportJson() = export(ExportManager.Kind.JSON, "AMBIT JSON export") {
+    fun exportJson() = export(ExportManager.Kind.JSON, context.getString(R.string.share_subject_json)) {
         jsonExporter.export(
             devices = repository.deviceSnapshot(),
             observations = repository.observationsSince(sessionWindowStart()),
@@ -234,16 +234,16 @@ class OpsViewModel @Inject constructor(
         )
     }
 
-    fun exportGpx() = export(ExportManager.Kind.GPX, "AMBIT sightings (GPX)") {
+    fun exportGpx() = export(ExportManager.Kind.GPX, context.getString(R.string.share_subject_gpx)) {
         geoExporter.gpx(repository.observationsSince(sessionWindowStart()), "Ambit sightings", asTrack = false)
     }
 
-    fun exportKml() = export(ExportManager.Kind.KML, "AMBIT sightings (KML)") {
+    fun exportKml() = export(ExportManager.Kind.KML, context.getString(R.string.share_subject_kml)) {
         geoExporter.kml(repository.observationsSince(sessionWindowStart()), "Ambit sightings", asTrack = false)
     }
 
     fun exportDebrief(label: String? = null) =
-        export(ExportManager.Kind.DEBRIEF, "AMBIT debrief") { buildDebrief(label) }
+        export(ExportManager.Kind.DEBRIEF, context.getString(R.string.share_subject_debrief)) { buildDebrief(label) }
 
     /**
      * Renders the debrief without writing it, so the user can read exactly what they would
@@ -335,7 +335,7 @@ class OpsViewModel @Inject constructor(
                     if (fresh.isEmpty()) {
                         context.getString(R.string.toast_correlation_clean)
                     } else {
-                        context.getString(R.string.toast_correlation_flagged, fresh.size)
+                        context.resources.getQuantityString(R.plurals.toast_correlation_flagged, fresh.size, fresh.size)
                     },
                 ),
             )

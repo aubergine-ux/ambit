@@ -26,6 +26,7 @@ import io.aubergine.ambit.scan.WifiScanner
 import io.aubergine.ambit.ui.common.FieldLine
 import io.aubergine.ambit.ui.common.SignalBars
 import io.aubergine.ambit.ui.common.descriptionRes
+import io.aubergine.ambit.ui.common.label
 import io.aubergine.ambit.ui.theme.AmbitColors
 import io.aubergine.ambit.ui.theme.color
 
@@ -77,7 +78,7 @@ fun DeviceRow(
 
         FieldLine(
             label = stringResource(R.string.field_category),
-            value = device.category.label,
+            value = device.category.label(),
             valueColor = AmbitColors.Ok,
         )
 

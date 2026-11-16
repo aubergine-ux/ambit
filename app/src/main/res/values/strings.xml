@@ -17,7 +17,7 @@
 
     <!-- Tracker notification -->
     <string name="alert_tracker_title">Possible tracker: %1$s</string>
-    <string name="alert_tracker_body">Seen at %1$d separate places under %2$d rotating addresses, spread over %3$d m. Open AMBIT to review the evidence.</string>
+    <string name="alert_tracker_body">Places: %1$d. Address changes: %2$d. Spread: %3$d m. Open Ambit to review the evidence.</string>
 
     <!-- Radar panel -->
     <string name="panel_radar">RADAR</string>
@@ -185,16 +185,14 @@ Exports are plain files that stay on your phone until you share them yourself.</
     <string name="value_channel_band">%1$d  (%2$s)</string>
     <string name="chip_throttled">THROTTLED</string>
     <string name="chip_remove">REMOVE</string>
-    <string name="trace_range">%1$d dBm .. %2$d dBm over %3$d sightings</string>
+    <string name="trace_range">%1$d to %2$d dBm · sightings: %3$d</string>
 
     <!-- Transient feedback -->
-    <string name="toast_export_saved">Saved %1$s (%2$d bytes)</string>
+    <string name="toast_export_saved">Saved %1$s (%2$s)</string>
     <string name="toast_no_fix_yet">No location fix yet. Wait for GPS and try again.</string>
     <string name="toast_known_place_saved">Saved \"%1$s\" as a known place.</string>
-    <string name="toast_pruned">Removed %1$d observations older than %2$d days.</string>
     <string name="toast_log_cleared">Observation log cleared.</string>
     <string name="toast_correlation_clean">Correlation complete. Nothing met the threshold.</string>
-    <string name="toast_correlation_flagged">Correlation complete. %1$d signature(s) flagged.</string>
     <string name="toast_export_failed">Export failed.</string>
     <string name="toast_correlation_failed">Correlation failed.</string>
     <string name="default_known_place_label">Known place</string>
@@ -327,7 +325,7 @@ Readable as-is, or pasted wherever you need it.</string>
     <string name="settings_glasses_note">Matches Meta and Luxottica Bluetooth IDs at close range. VR headsets and controllers use the same IDs. At most one alert every 15 minutes.</string>
     <string name="alert_glasses_title">Possible camera glasses nearby</string>
     <string name="alert_glasses_body">A close-range Bluetooth device uses Meta or Luxottica IDs, as Ray-Ban Meta and similar glasses do. It could also be a VR headset or other Meta hardware.</string>
-    <string name="alert_wifi_body">Seen at %1$d separate places, spread over %2$d m. Often a hotspot on a nearby phone, or a bus, train or car network. Open Ambit to review.</string>
+    <string name="alert_wifi_body">Places: %1$d. Spread: %2$d m. Often a hotspot on a nearby phone, or a bus, train or car network. Open Ambit to review.</string>
     <string name="alerts_wifi_note">This network was seen at several places you went. It may be a hotspot on someone\'s phone nearby, or the Wi-Fi of a bus, train or car you rode in. Locate isn\'t available for Wi-Fi, because Android allows only a few Wi-Fi scans every two minutes.</string>
 
     <!-- Alert confidence: a 0–100 weighting of the evidence with a plain-language breakdown. Each reason is one short sentence; the points are added after it in code. -->
@@ -335,12 +333,8 @@ Readable as-is, or pasted wherever you need it.</string>
     <string name="alerts_confidence_note">A weighting of the evidence, not a probability.</string>
     <string name="alerts_why">WHY THIS WAS FLAGGED</string>
     <string name="reason_line">%1$s (%2$s)</string>
-    <string name="reason_places">Seen at %1$d separate places</string>
-    <string name="reason_accompanied">Moved with you from one place to the next %1$d times</string>
     <string name="reason_duration">Followed for about %1$d h</string>
     <string name="reason_separated">Said it is away from its owner</string>
-    <string name="reason_rotations">Kept following through %1$d address changes</string>
-    <string name="reason_close">Strong signal at %1$d places, so it was close to you, not just nearby</string>
     <string name="reason_spread">Trail spread over %1$d km</string>
     <string name="reason_known_tracker">Belongs to a known tracker network</string>
     <string name="reason_unknown_beacon">Not a known tracker type, so this is less certain</string>
@@ -350,13 +344,11 @@ Readable as-is, or pasted wherever you need it.</string>
     <!-- Trusted devices in settings. -->
     <string name="panel_trusted">TRUSTED DEVICES</string>
     <string name="trusted_empty">Nothing trusted yet. Use \"This is mine\" on an alert for your own tags.</string>
-    <string name="trusted_paired">Your %1$d paired Bluetooth devices (headphones, watch, car) are never flagged.</string>
     <string name="trusted_rotation_note">Apple and Google tags change their identity about once a day, so trusting one of them only lasts about a day.</string>
     <string name="trusted_added">Trusted %1$s</string>
 
     <!-- Offline maps. -->
     <string name="value_km">%1$d km</string>
-    <string name="map_description">Map of %1$d sightings</string>
     <string name="map_attribution_basemap">Basemap: Natural Earth</string>
     <string name="panel_offline_map">OFFLINE MAP</string>
     <string name="settings_map_note">Maps never download anything. The built-in map shows coastlines, lakes and borders. For streets, import a raster MBTiles file you made or downloaded yourself.</string>
@@ -521,7 +513,7 @@ Readable as-is, or pasted wherever you need it.</string>
     <string name="panel_expert">EXPERT: PACKET LOG</string>
     <string name="expert_note">A live log of the raw Bluetooth advertisements Ambit receives: manufacturer data, service UUIDs and service data, with what Ambit made of each one.</string>
     <string name="action_open_expert">OPEN PACKET LOG</string>
-    <string name="expert_counts">Showing %1$d of %2$d packets received</string>
+    <string name="expert_counts">Packets shown: %1$d. Received: %2$d.</string>
     <string name="expert_start_ble">Start Bluetooth scanning to see packets.</string>
     <string name="expert_filter">Filter: address, company ID, UUID, bytes</string>
     <string name="expert_trackers_only">Only packets recognised as trackers</string>
@@ -563,5 +555,86 @@ Readable as-is, or pasted wherever you need it.</string>
     <plurals name="widget_alerts">
         <item quantity="one">%1$d open alert</item>
         <item quantity="other">%1$d open alerts</item>
+    </plurals>
+
+    <!-- Plurals: translators supply the forms their language needs (Albanian uses one/other). -->
+    <plurals name="toast_pruned">
+        <item quantity="one">Removed %1$d observation older than %2$s.</item>
+        <item quantity="other">Removed %1$d observations older than %2$s.</item>
+    </plurals>
+    <plurals name="days">
+        <item quantity="one">%1$d day</item>
+        <item quantity="other">%1$d days</item>
+    </plurals>
+    <plurals name="toast_correlation_flagged">
+        <item quantity="one">Correlation complete. %1$d tracker flagged.</item>
+        <item quantity="other">Correlation complete. %1$d trackers flagged.</item>
+    </plurals>
+    <plurals name="reason_places">
+        <item quantity="one">Seen at %1$d separate place</item>
+        <item quantity="other">Seen at %1$d separate places</item>
+    </plurals>
+    <plurals name="reason_accompanied">
+        <item quantity="one">Moved with you from one place to the next %1$d time</item>
+        <item quantity="other">Moved with you from one place to the next %1$d times</item>
+    </plurals>
+    <plurals name="reason_rotations">
+        <item quantity="one">Kept following through %1$d address change</item>
+        <item quantity="other">Kept following through %1$d address changes</item>
+    </plurals>
+    <plurals name="reason_close">
+        <item quantity="one">Strong signal at %1$d place, so it was close to you, not just nearby</item>
+        <item quantity="other">Strong signal at %1$d places, so it was close to you, not just nearby</item>
+    </plurals>
+    <plurals name="trusted_paired">
+        <item quantity="one">Your %1$d paired Bluetooth device (headphones, watch, car) is never flagged.</item>
+        <item quantity="other">Your %1$d paired Bluetooth devices (headphones, watch, car) are never flagged.</item>
+    </plurals>
+    <plurals name="map_description">
+        <item quantity="one">Map of %1$d sighting</item>
+        <item quantity="other">Map of %1$d sightings</item>
+    </plurals>
+
+    <!-- Alert severity bands, shown in brackets after the tracker name. -->
+    <string name="severity_low">POSSIBLE</string>
+    <string name="severity_elevated">LIKELY</string>
+    <string name="severity_high">STRONG</string>
+
+    <!-- Vendor categories. A category describes the manufacturer, never the owner. -->
+    <string name="category_priority">Priority / public safety vendor</string>
+    <string name="category_fleet">Fleet / cellular router</string>
+    <string name="category_infrastructure">Infrastructure / network</string>
+    <string name="category_commercial">Commercial</string>
+    <string name="category_residential">Residential</string>
+    <string name="category_randomized">Randomized address</string>
+    <string name="category_unknown">Unclassified</string>
+    <string name="legend_priority">PRIORITY</string>
+    <string name="legend_fleet">FLEET</string>
+    <string name="legend_infrastructure">INFRA</string>
+    <string name="legend_commercial">COMMERCIAL</string>
+    <string name="legend_residential">RESIDENTIAL</string>
+    <string name="legend_randomized">RANDOM</string>
+    <string name="legend_unknown">UNKNOWN</string>
+
+    <!-- Status chips and share-sheet subjects. -->
+    <string name="value_no_fix">no fix</string>
+    <string name="chip_wifi_on">WI-FI ON</string>
+    <string name="chip_wifi_off">WI-FI OFF</string>
+    <string name="chip_ble_on">BLE ON</string>
+    <string name="chip_ble_off">BLE OFF</string>
+    <string name="chip_gps_fix">GPS FIX</string>
+    <string name="chip_no_fix">NO FIX</string>
+    <string name="value_on">ON</string>
+    <string name="value_off">OFF</string>
+    <string name="share_subject_devices">Ambit device export</string>
+    <string name="share_subject_log">Ambit observation log</string>
+    <string name="share_subject_json">Ambit JSON export</string>
+    <string name="share_subject_gpx">Ambit sightings (GPX)</string>
+    <string name="share_subject_kml">Ambit sightings (KML)</string>
+    <string name="share_subject_debrief">Ambit debrief</string>
+    <!-- Spoken by screen readers for the radar picture. %2$d is how many are close. -->
+    <plurals name="radar_description">
+        <item quantity="one">Radar showing %1$d device, %2$d of them close. Distance only; position around the circle has no meaning.</item>
+        <item quantity="other">Radar showing %1$d devices, %2$d of them close. Distance only; position around the circle has no meaning.</item>
     </plurals>
 </resources>

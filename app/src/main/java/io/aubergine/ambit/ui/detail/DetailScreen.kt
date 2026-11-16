@@ -30,6 +30,7 @@ import io.aubergine.ambit.ui.common.AmbitPanel
 import io.aubergine.ambit.ui.common.EmptyNote
 import io.aubergine.ambit.ui.common.FieldLine
 import io.aubergine.ambit.ui.common.descriptionRes
+import io.aubergine.ambit.ui.common.label
 import io.aubergine.ambit.ui.map.SightingMap
 import io.aubergine.ambit.ui.theme.AmbitColors
 import io.aubergine.ambit.ui.theme.color
@@ -78,7 +79,7 @@ fun DetailScreen(
                     FieldLine(stringResource(R.string.field_radio), device.radio.short)
                     FieldLine(
                         stringResource(R.string.field_category),
-                        device.category.label,
+                        device.category.label(),
                         valueColor = AmbitColors.Ok,
                     )
                     FieldLine(
@@ -260,7 +261,7 @@ private fun ObservationRow(observation: Observation, modifier: Modifier = Modifi
             "%.5f, %.5f".format(observation.latitude, observation.longitude) +
                 (observation.accuracyMeters?.let { " ±${it.roundToInt()}m" } ?: "")
         } else {
-            "no fix"
+            stringResource(R.string.value_no_fix)
         }
         Text(
             text = fix,

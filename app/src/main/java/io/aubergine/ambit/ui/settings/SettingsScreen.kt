@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import io.aubergine.ambit.BuildConfig
@@ -205,7 +206,7 @@ fun SettingsScreen(
         item {
             Column(Modifier.padding(horizontal = 10.dp)) {
                 AmbitPanel(title = stringResource(R.string.panel_trusted)) {
-                    SettingNote(stringResource(R.string.trusted_paired, state.pairedDevices))
+                    SettingNote(pluralStringResource(R.plurals.trusted_paired, state.pairedDevices, state.pairedDevices))
                     SettingNote(stringResource(R.string.trusted_rotation_note))
                     if (state.trusted.isEmpty()) EmptyNote(stringResource(R.string.trusted_empty))
                 }

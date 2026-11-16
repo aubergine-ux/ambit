@@ -20,7 +20,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import io.aubergine.ambit.R
 import io.aubergine.ambit.analysis.PathLoss
 import io.aubergine.ambit.model.Device
 import io.aubergine.ambit.model.RadioType
@@ -65,11 +69,20 @@ fun RadarView(
     )
 
     val blips = remember(devices, rimMeters) { devices.map { it.toBlip(rimMeters) } }
+    // The picture carries no information a list does not, so TalkBack gets the counts and
+    // the same caveat sighted users see.
+    val description = pluralStringResource(
+        R.plurals.radar_description,
+        devices.size,
+        devices.size,
+        devices.count { it.lastRssi >= NEAR_RSSI },
+    )
 
     Canvas(
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(1f),
+            .aspectRatio(1f)
+            .semantics { contentDescription = description },
     ) {
         val radius = size.minDimension / 2f * 0.92f
         val centre = Offset(size.width / 2f, size.height / 2f)
@@ -220,3 +233,5 @@ private fun angularDistance(a: Float, b: Float): Float {
 
 private val RING_FRACTIONS = listOf(0.25f, 0.5f, 0.75f, 1.0f)
 private const val SWEEP_PERIOD_MS = 4_000
+
+private const val NEAR_RSSI = -70

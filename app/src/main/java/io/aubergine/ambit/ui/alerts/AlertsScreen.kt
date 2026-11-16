@@ -25,6 +25,7 @@ import io.aubergine.ambit.ui.common.AmbitButton
 import io.aubergine.ambit.ui.common.AmbitOutlineButton
 import io.aubergine.ambit.ui.common.AmbitPanel
 import io.aubergine.ambit.ui.common.FieldLine
+import io.aubergine.ambit.ui.common.label
 import io.aubergine.ambit.ui.guide.label
 import io.aubergine.ambit.ui.theme.AmbitColors
 import java.time.Instant
@@ -146,7 +147,7 @@ private fun AlertCard(
     }
 
     AmbitPanel(
-        title = "${family.label()}  [${severity.label}]",
+        title = "${family.label()}  [${severity.label()}]",
         borderColor = tint,
         titleColor = tint,
     ) {
