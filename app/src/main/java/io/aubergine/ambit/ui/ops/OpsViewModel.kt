@@ -237,7 +237,7 @@ class OpsViewModel @Inject constructor(
 
     /**
      * Renders the debrief without writing it, so the user can read exactly what they would
-     * be pasting into a model before they decide to.
+     * be sharing before they decide to.
      */
     fun previewDebrief() {
         if (_busy.value) return

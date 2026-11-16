@@ -16,13 +16,11 @@ import kotlin.math.roundToInt
 /**
  * A plaintext summary of the current radio environment.
  *
- * Built entirely on-device. The app never calls a model itself — that would break the
- * offline promise the whole design rests on. Instead it produces a block the user can
- * paste wherever they like, and the decision to send anything anywhere stays theirs.
+ * Built entirely on-device, and only ever leaves the phone when the user shares it.
  *
- * The format is written to be read by a language model *and* by a person: labelled
- * sections, no tables that depend on column alignment, units on every number, and an
- * explicit limitations block so a downstream reader does not over-read the data.
+ * Written to survive being pasted anywhere: labelled sections, no tables that depend on
+ * column alignment, units on every number, and an explicit limitations block so whoever
+ * reads it does not over-read the data.
  */
 @Singleton
 class DebriefBuilder @Inject constructor() {

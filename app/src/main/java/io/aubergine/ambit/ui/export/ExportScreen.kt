@@ -31,10 +31,9 @@ import io.aubergine.ambit.ui.theme.AmbitColors
  * screen is where the same data is available in every shape, with the debrief previewed
  * before it goes anywhere.
  *
- * The preview matters more than it looks. The debrief is the one export designed to be
- * pasted into a language model, and a user about to do that should be able to read exactly
- * what they are handing over first. The app itself never sends it — there is no network
- * permission in the manifest to send it with.
+ * The preview matters more than it looks. The debrief is the export most likely to be
+ * pasted somewhere else, and the user should be able to read exactly what they are handing
+ * over first. The app itself never sends it; there is no network permission to send it with.
  */
 @Composable
 fun ExportScreen(

@@ -128,7 +128,7 @@ Location is also what makes the tracker correlator work: deciding whether a beac
 Your position is written to the local log and nowhere else.</string>
     <string name="onboarding_offline_title">OFFLINE BY DESIGN</string>
     <string name="onboarding_offline_body">No network permission is requested. No telemetry, no accounts, no cloud.
-The debrief export is plain text. If you want a model to read it, you paste it yourself - the app never sends anything anywhere.</string>
+Exports are plain files that stay on your phone until you share them yourself.</string>
     <string name="action_grant_permissions">GRANT PERMISSIONS</string>
     <string name="action_continue">CONTINUE</string>
 
@@ -205,7 +205,7 @@ The debrief export is plain text. If you want a model to read it, you paste it y
     <string name="action_export_log_csv">OBSERVATION LOG (CSV)</string>
     <string name="panel_export_debrief">DEBRIEF</string>
     <string name="export_debrief_caption">A plain-text summary of the environment: totals, density, band spread, category breakdown, notable hardware, and the limits of the method.
-Written to be pasted into a language model of your choosing, or read as-is.</string>
+Readable as-is, or pasted wherever you need it.</string>
     <string name="action_preview_debrief">PREVIEW DEBRIEF</string>
     <string name="panel_debrief_preview">PREVIEW</string>
     <string name="panel_share">SHARE</string>
