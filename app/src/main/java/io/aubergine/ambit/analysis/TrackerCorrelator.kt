@@ -1,6 +1,7 @@
 package io.aubergine.ambit.analysis
 
 import io.aubergine.ambit.model.Observation
+import io.aubergine.ambit.model.OwnerState
 import io.aubergine.ambit.model.TrackerFamily
 import io.aubergine.ambit.model.TrackerSignature
 import javax.inject.Inject
@@ -37,6 +38,11 @@ class TrackerCorrelator @Inject constructor(
         val maxAcceptableAccuracyMeters: Float = 120f,
         /** How far back to consider. Older sightings say nothing about today. */
         val lookbackMillis: Long = 24 * 60 * 60 * 1000L,
+        /** Nominal identity rotation for tags that publish a rotation counter. */
+        val rotationPeriodMillis: Long = 15 * 60 * 1000L,
+        val rotationToleranceMillis: Long = 5 * 60 * 1000L,
+        /** Missed rotations we will bridge. Beyond an hour the guess gets too loose. */
+        val maxLinkedRotations: Long = 4,
     )
 
     /** A place the user has told us to ignore — home, work, a regular haunt. */
@@ -114,10 +120,14 @@ class TrackerCorrelator @Inject constructor(
             if (safeZones.any { inZone(it, lat, lon) }) continue
 
             val sig = extractor.extract(o) ?: continue
+            // A tag beside its owner's phone is the normal case for every tag the user
+            // walks past. See OwnerState for the trade-off.
+            if (sig.ownerState == OwnerState.NEAR_OWNER) continue
             buckets.getOrPut(sig.key) { mutableListOf() }.add(sig to o)
         }
 
-        return buckets.values.mapNotNull { entries -> alertFor(entries, config) }
+        return linkRotations(buckets.values.toList(), config)
+            .mapNotNull { entries -> alertFor(entries, config) }
             .sortedWith(
                 compareByDescending<Alert> { it.severity.ordinal }
                     .thenByDescending { it.distinctLocations }
@@ -154,6 +164,40 @@ class TrackerCorrelator @Inject constructor(
             spreadMeters = spreadOf(clusters),
             observationCount = sorted.size,
         )
+    }
+
+    /**
+     * Joins buckets that are consecutive identities of one rotating tag.
+     *
+     * A SmartTag's privacy ID changes every ~15 minutes but its aging counter goes up by one
+     * at each change. Bucket B continues bucket A when B's first counter is A's last plus k
+     * and the time between them fits k rotations. Links are made only when exactly one
+     * candidate fits; with two tags in range a wrong guess would be worse than none.
+     */
+    private fun linkRotations(
+        buckets: List<List<Pair<TrackerSignature, Observation>>>,
+        config: Config,
+    ): List<List<Pair<TrackerSignature, Observation>>> {
+        val (sequenced, rest) = buckets.partition { entries -> entries.all { it.first.sequence != null } }
+        if (sequenced.size < 2) return buckets
+
+        val chains = mutableListOf<MutableList<Pair<TrackerSignature, Observation>>>()
+        for (bucket in sequenced.sortedBy { b -> b.minOf { it.second.timestamp } }) {
+            val head = bucket.minBy { it.second.timestamp }
+            val headSeq = head.first.sequence ?: continue
+            val candidates = chains.filter { chain ->
+                val tail = chain.maxBy { it.second.timestamp }
+                val tailSeq = tail.first.sequence ?: return@filter false
+                val steps = headSeq - tailSeq
+                val gap = head.second.timestamp - tail.second.timestamp
+                tail.first.family == head.first.family &&
+                    steps in 1..config.maxLinkedRotations &&
+                    gap >= 0 &&
+                    gap <= steps * config.rotationPeriodMillis + config.rotationToleranceMillis
+            }
+            if (candidates.size == 1) candidates.single().addAll(bucket) else chains.add(bucket.toMutableList())
+        }
+        return chains + rest
     }
 
     /**

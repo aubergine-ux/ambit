@@ -121,12 +121,27 @@ class TrackerCorrelatorTest {
         assertTrue(correlator.analyse(stale, now = now).isEmpty())
     }
 
+    private val smartTagUuid = "0000fd5a-0000-1000-8000-00805f9b34fb"
+
+    /** SmartTag service data: overmature-offline frame, aging counter, privacy ID. */
+    private fun smartTagData(counter: Int, privacyId: String) =
+        "13" + "%02X%02X%02X".format(counter and 0xFF, (counter shr 8) and 0xFF, (counter shr 16) and 0xFF) +
+            privacyId + "00000000"
+
+    private fun smartTag(placeIndex: Int, atMillis: Long, counter: Int, privacyId: String, address: String) =
+        sighting(placeIndex, atMillis, address = address).copy(
+            companyId = null,
+            manufacturerDataHex = null,
+            serviceData = mapOf(smartTagUuid to smartTagData(counter, privacyId)),
+        )
+
     @Test
     fun `two different tags are reported separately`() {
         val other = followingTag().map {
             it.copy(
-                companyId = 0x0075,
-                manufacturerDataHex = "4204100100000000",
+                companyId = null,
+                manufacturerDataHex = null,
+                serviceData = mapOf(smartTagUuid to smartTagData(7, "1122334455667788")),
                 address = "99:99:99:99:99:99",
             )
         }
@@ -176,6 +191,56 @@ class TrackerCorrelatorTest {
         val alert = correlator.analyse(followingTag(), now = now).single()
         assertNotNull(alert.encounters.firstOrNull())
         assertEquals(3, alert.encounters.sumOf { it.addresses.size })
+    }
+
+    @Test
+    fun `tags beside their owner's phone never count`() {
+        // Short-form Apple advertisement: the owner is nearby. That is every AirTag on a
+        // stranger's keyring, and none of them are following anyone.
+        val nearOwner = followingTag().map { it.copy(manufacturerDataHex = "12021000") }
+        assertTrue(correlator.analyse(nearOwner, now = now).isEmpty())
+    }
+
+    @Test
+    fun `three different lost airtags at three places are not one tracker`() {
+        val strangers = listOf("AA", "BB", "CC").mapIndexed { index, key ->
+            sighting(
+                placeIndex = index,
+                atMillis = now - (180 - index * 60) * minute,
+                address = "0$index:00:00:00:00:00",
+                payload = "121910" + key.repeat(22) + "0100",
+            )
+        }
+        assertTrue(correlator.analyse(strangers, now = now).isEmpty())
+    }
+
+    @Test
+    fun `a smarttag is followed across its fifteen-minute rotations`() {
+        val ids = listOf("1111111111111111", "2222222222222222", "3333333333333333", "4444444444444444")
+        val trail = ids.mapIndexed { index, id ->
+            smartTag(
+                placeIndex = index,
+                atMillis = now - (60 - index * 15) * minute,
+                counter = 40 + index,
+                privacyId = id,
+                address = "5$index:00:00:00:00:00",
+            )
+        }
+        val alert = correlator.analyse(trail, now = now).single()
+        assertEquals(TrackerFamily.SAMSUNG_SMARTTAG, alert.family)
+        assertEquals(4, alert.distinctLocations)
+        assertEquals(4, alert.addressesSeen.size)
+    }
+
+    @Test
+    fun `smarttag rotations are not linked when the counter does not fit the clock`() {
+        // Counter says one rotation, clock says three hours. Two different tags.
+        val trail = listOf(
+            smartTag(0, now - 240 * minute, counter = 10, privacyId = "1111111111111111", address = "60:00:00:00:00:00"),
+            smartTag(1, now - 60 * minute, counter = 11, privacyId = "2222222222222222", address = "61:00:00:00:00:00"),
+            smartTag(2, now - 30 * minute, counter = 11, privacyId = "2222222222222222", address = "61:00:00:00:00:00"),
+        )
+        assertTrue(correlator.analyse(trail, now = now).isEmpty())
     }
 
     @Test

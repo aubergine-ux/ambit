@@ -16,6 +16,13 @@ data class TrackerSignature(
     /** Hex of the payload bytes considered stable across key rotations. May be empty. */
     val stableBytes: String,
     val family: TrackerFamily,
+    /** Per-advertisement state, deliberately left out of [key]. */
+    val ownerState: OwnerState = OwnerState.UNKNOWN,
+    /**
+     * Rotation counter for families that publish one (SmartTag's aging counter), used to
+     * stitch consecutive identities together. Not part of [key].
+     */
+    val sequence: Long? = null,
 ) {
     /** Stable string key for bucketing observations. */
     val key: String
@@ -31,13 +38,26 @@ data class TrackerSignature(
             append(stableBytes)
         }
 
-    companion object {
-        /**
-         * Bytes of an Apple offline-finding payload that carry the rolling public key.
-         * They change every rotation, so they must not enter the signature.
-         */
-        val APPLE_ROLLING_RANGE = 2 until 24
-    }
+}
+
+/**
+ * Whether the tracker says it is near its owner's phone.
+ *
+ * Every major network advertises this, because it is what lets the networks themselves
+ * warn about unwanted tracking: a tag riding along with its owner is the normal case and
+ * not worth an alert. Trusting it is a trade-off — a stalker who travels with the victim
+ * keeps the tag in [NEAR_OWNER] — and it is the same trade-off Apple, Google and the IETF
+ * DULT draft make.
+ */
+enum class OwnerState {
+    /** Advertising in its separated / lost mode. Counts toward an alert. */
+    SEPARATED,
+
+    /** Paired phone recently in range. Never counts toward an alert. */
+    NEAR_OWNER,
+
+    /** Format carries no state, or we cannot read it. Counts, conservatively. */
+    UNKNOWN,
 }
 
 /**
