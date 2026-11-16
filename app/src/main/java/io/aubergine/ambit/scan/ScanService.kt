@@ -145,6 +145,13 @@ class ScanService : Service() {
     /** Heartbeat for the watchdog, a battery reading for the settings screen, retention. */
     private fun startHousekeeping() {
         scope.launch {
+            while (true) {
+                val days = settings.settings.first().retentionDays
+                runCatching { repository.pruneBefore(System.currentTimeMillis() - days * DAY_MS) }
+                kotlinx.coroutines.delay(RETENTION_INTERVAL_MS)
+            }
+        }
+        scope.launch {
             repository.activeAlerts().collect { alerts ->
                 heartbeat.setActiveAlerts(alerts.size)
                 refreshSurfaces()
@@ -368,6 +375,8 @@ class ScanService : Service() {
 
         private const val FLUSH_INTERVAL_MS = 3_000L
         private const val HEARTBEAT_INTERVAL_MS = 60_000L
+        private const val DAY_MS = 24 * 60 * 60 * 1000L
+        private const val RETENTION_INTERVAL_MS = 6 * 60 * 60 * 1000L
         private const val BATTERY_EVERY_TICKS = 15L
 
         fun send(context: Context, action: String) {
